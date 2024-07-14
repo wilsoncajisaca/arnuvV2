@@ -41,6 +41,11 @@ public class SecurityConfiguration {
                         request.requestMatchers("/api/autenticacion/**").permitAll()
                         .requestMatchers("/landing/**").permitAll()
                         .requestMatchers("/index").permitAll()
+                        .requestMatchers("/login").permitAll()
+                        .requestMatchers("/register").permitAll()
+                        .requestMatchers("/templates/**").permitAll()
+                        .requestMatchers("/admin/**").permitAll()
+                        .requestMatchers("/v1/auth/**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(
