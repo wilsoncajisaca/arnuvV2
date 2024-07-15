@@ -46,6 +46,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/admin/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/usuario/**").permitAll()
+                        .requestMatchers("/mascota/**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(
