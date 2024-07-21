@@ -11,5 +11,7 @@ public interface ITarifarioService {
 	
 	public Tarifario actualizarTarifario(Tarifario data);
 
-	public Tarifario buscarPorId(Long id);
+	public Tarifario buscarPorId(int id);
+	
+	public void eliminarTarifario(int id);
 }

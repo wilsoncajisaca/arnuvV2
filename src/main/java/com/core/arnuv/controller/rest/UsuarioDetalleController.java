@@ -105,11 +105,11 @@ public class UsuarioDetalleController {
 		resp.mapearDato(entity, UsuarioDetalleResponse.UsuarioDetalleDto.class,  "usuariorols","idpersona");
 		return new ResponseEntity<>(resp, serviceJwt.regeneraToken(), HttpStatus.OK);
 	}
-
+/*
 	@PostMapping("/crear-persona-usuario")
 	public ResponseEntity<RespuestaComun> crearUsuarioCompleto(@RequestBody UsuarioUnificadoRequest request) throws Exception {
 		var data = serviceJwt.extraerTokenData();
-		var catDetEntity = servicioCatalogoDetalle.buscarPorId(request.getIdcatalogoidentificacion(), request.getIddetalleidentificacion());
+	//	var catDetEntity = servicioCatalogoDetalle.buscarPorId(request.getIdcatalogoidentificacion(), request.getIddetalleidentificacion());
 		var rolEntity = servicioRol.buscarPorId(request.getIdrol());
 		Personadetalle entityPersonaDetalle = null;
 		Usuariodetalle entityUsuarioDetalle = null;
@@ -149,6 +149,7 @@ public class UsuarioDetalleController {
 
 		return new ResponseEntity<>(resp, serviceJwt.regeneraToken(), HttpStatus.OK);
 	}
+	*/
 
 	private void eliminacionPersona(Personadetalle personadetalle,	Usuariodetalle usuariodetalle, 	Usuariorol usuariorol) {
 		if (usuariorol != null) {

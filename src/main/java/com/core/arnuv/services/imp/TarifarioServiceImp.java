@@ -29,16 +29,29 @@ public class TarifarioServiceImp implements ITarifarioService {
 
 	@Override
 	public Tarifario actualizarTarifario(Tarifario data) {
-		Tarifario existeTarifario = repo.findById(data.getId()).orElse(null);
+		/*Tarifario existeTarifario = repo.findById(data.getId()).orElse(null);
 		existeTarifario.setNombre(data.getNombre());
 		existeTarifario.setTiempo(data.getTiempo());
 		existeTarifario.setPrecio(data.getPrecio());
-		existeTarifario.setActivo(data.getActivo());
-		return repo.save(existeTarifario);
+		existeTarifario.setActivo(data.getActivo());*/
+		return repo.save(data);
 	}
 
 	@Override
-	public Tarifario buscarPorId(Long id) {
-		return repo.findById(id).orElse(null);
+	public Tarifario buscarPorId(int codigo) {
+		return repo.findById(codigo).get();
 	}
+
+	@Override
+	public void eliminarTarifario(int codigo) {
+		try {
+			repo.deleteById(codigo);
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println("Error al eliminar item");
+		}
+		
+	}
+	
+	
 }

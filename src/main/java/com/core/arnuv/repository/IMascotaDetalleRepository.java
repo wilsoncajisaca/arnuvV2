@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.core.arnuv.model.MascotaDetalle;
 
 @Repository
-public interface IMascotaDetalleRepository extends JpaRepository<MascotaDetalle, Long>{
+public interface IMascotaDetalleRepository extends JpaRepository<MascotaDetalle, Integer>{
 
 }

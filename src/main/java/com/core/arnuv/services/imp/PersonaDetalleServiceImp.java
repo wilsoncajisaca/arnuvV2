@@ -37,7 +37,7 @@ public class PersonaDetalleServiceImp implements IPersonaDetalleService {
 		existePersonaDetalle.setIdentificacion(data.getIdentificacion());
 		existePersonaDetalle.setCelular(data.getCelular());
 		existePersonaDetalle.setEmail(data.getEmail());
-		existePersonaDetalle.setCatalogodetalle(data.getCatalogodetalle());
+		//existePersonaDetalle.setCatalogodetalle(data.getCatalogodetalle());
 		return repo.save(existePersonaDetalle);
 	}
 

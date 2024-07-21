@@ -12,5 +12,9 @@ public interface IMascotaDetalleService {
 	
 	public MascotaDetalle actualizarMascotaDetalle(MascotaDetalle data);
 
-	public MascotaDetalle buscarPorId(Long id);
+	public MascotaDetalle buscarMascotaID(int codigo);
+	
+	public  void EliminarMascotaDetalle(int codigo);
+
+	
 }

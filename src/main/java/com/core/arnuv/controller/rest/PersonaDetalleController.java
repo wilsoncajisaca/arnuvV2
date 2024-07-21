@@ -35,7 +35,7 @@ public class PersonaDetalleController {
 		resp.setListaDto(entity, PersonaDetalleResponse.PersonaDetalleDto.class, "usuariodetalles", "personadireccions", "paseoscliente", "paseospaseador", "mascotaDetalles" );
 		return new ResponseEntity<>(resp, serviceJwt.regeneraToken(), HttpStatus.OK);
 	}
-
+/*
 	@PostMapping("/crear")
 	public ResponseEntity<RespuestaComun> crearCatalogo(@RequestBody PersonaDetalleRequest persona) throws Exception {
 		var catDetEntity = servicioCatalogoDetalle.buscarPorId(persona.getIdcatalogoidentificacion(), persona.getIddetalleidentificacion());
@@ -75,6 +75,7 @@ public class PersonaDetalleController {
 		resp.mapearDato(entity, PersonaDetalleResponse.PersonaDetalleDto.class,  "usuariodetalles", "personadireccions", "paseoscliente", "paseospaseador", "mascotaDetalles");
 		return new ResponseEntity<>(resp, serviceJwt.regeneraToken(), HttpStatus.OK);
 	}
+	*/
 
 	@GetMapping("/buscaridentificacion/{identificacion}")
 	public ResponseEntity<RespuestaComun> buscarPorIdentificacion(@PathVariable String identificacion) throws Exception {

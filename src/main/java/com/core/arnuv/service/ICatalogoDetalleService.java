@@ -9,12 +9,14 @@ import java.util.List;
  */
 public interface ICatalogoDetalleService {
 
-	public List<CatalogoDetalle> listarPorCatalogo(int idCatalogo);
+	public List<CatalogoDetalle> listarCatalogoDetalle();
 
 	public CatalogoDetalle insertarCatalogoDetalle(CatalogoDetalle data);
 
 	public CatalogoDetalle actualizarCatalogoDetalle(CatalogoDetalle data);
 
-	public CatalogoDetalle buscarPorId(int idCatalogo, String idDetalle);
+	public CatalogoDetalle buscarCatalogoDetalleId(int idCatalogo);
+	
+	public void eliminarCatalogoDetalle(int idCataldoDetalle);
 
 }

@@ -51,13 +51,13 @@ public class Personadetalle implements Serializable {
 	@Column(name = "apellidos", length = 120)
 	private String apellidos;
 
-	@ManyToOne()
+	/*@ManyToOne()
 	@JoinColumns({ @JoinColumn(name = "idcatalogoidentificacion", referencedColumnName = "iddetalle"),
 			@JoinColumn(name = "iddetalleidentificacion", referencedColumnName = "idcatalogo") })
 	@Comment("Codigo de catalogo")
 	@ToString.Exclude
 	private CatalogoDetalle catalogodetalle;
-
+*/
 	@Comment("Identificacion, cedula, ruc, pasaporte")
 	@Column(name = "identificacion", length = 15, unique=true)
 	private String identificacion;

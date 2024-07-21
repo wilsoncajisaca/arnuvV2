@@ -7,17 +7,19 @@ import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.math.BigDecimal;
 
 @Data
 @Comment("Tabla que almacena el detalle de la mascota")
 @Entity
 @Table(name = "mascotadetalle")
-public class MascotaDetalle {
+public class MascotaDetalle  {
+	
+	//private static final long serialVersionUID = 1L;
 	@Id
     @Comment("Codigo de la mascota")
-    @Column(name = "idmascota")
-    private Long id;
+    //@Column(name = "idmascota")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long idmascota;
 
     @ManyToOne()
     @Comment("Codigo de personas")
@@ -27,14 +29,10 @@ public class MascotaDetalle {
     private Personadetalle idpersona;
 
     @ManyToOne()
-    @JoinColumns({
-            @JoinColumn(name = "idcatalogorasa", referencedColumnName = "iddetalle"),
-            @JoinColumn(name = "iddetallerasa", referencedColumnName = "idcatalogo")
-    })
-    @Comment("Codigo de catalogo")
-    @OnDelete(action = OnDeleteAction.RESTRICT)
-    @ToString.Exclude
-    private CatalogoDetalle catalogodetalle;
+    //@JoinColumns({ @JoinColumn(name = "idcatalogorasa", referencedColumnName = "iddetalle"),  @JoinColumn(name = "iddetallerasa", referencedColumnName = "idcatalogo")    })
+    //@Comment("Codigo de catalogo")   // @OnDelete(action = OnDeleteAction.RESTRICT)    //@ToString.Exclude
+    @JoinColumn(name="id_catalogodetalle")
+    private CatalogoDetalle fkcatalogodetalle;
 
     @Comment("Nombre de la mascota")
     @Column(name = "nombre", length = 120)

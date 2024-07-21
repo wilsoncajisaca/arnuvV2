@@ -5,7 +5,6 @@ import com.core.arnuv.model.CatalogoDetalle;
 import com.core.arnuv.request.CatalogoDetalleRequest;
 import com.core.arnuv.response.CatalogoDetalleResponse;
 import com.core.arnuv.service.ICatalogoDetalleService;
-import com.core.arnuv.service.ICatalogoService;
 import com.core.arnuv.utils.ArnuvUtils;
 import com.core.arnuv.utils.RespuestaComun;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,15 +17,14 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/catalogo-detalle")
 public class CatalogoDetalleController {
 
-	@Autowired
-	private ICatalogoService servicioCatalogo;
-
+	
 	@Autowired
 	private ICatalogoDetalleService servicioCatalogoDetalle;
 
 	@Autowired
 	private JwtServiceImpl serviceJwt;
 
+	/*
 	@PostMapping("/crear")
 	public ResponseEntity<RespuestaComun> crearCatalogoDetalle(@RequestBody CatalogoDetalleRequest catalogo) throws Exception {
 		CatalogoDetalle catalogoDetalle = catalogo.mapearDato(catalogo, CatalogoDetalle.class, "mascotaDetalles","personadetalles");
@@ -45,7 +43,8 @@ public class CatalogoDetalleController {
 		resp.mapearDato(entity, CatalogoDetalleResponse.CatalogoDetalleDto.class,  "mascotaDetalles","personadetalles");
 		return new ResponseEntity<>(resp, serviceJwt.regeneraToken(), HttpStatus.OK);
 	}
-
+*/
+	/*
 	@GetMapping("/listarCatalogo/{idcatalogo}")
 	public ResponseEntity<RespuestaComun> buscarCatalogoDetallePorId(@PathVariable int idcatalogo) throws Exception {
 		var lentity = servicioCatalogoDetalle.listarPorCatalogo(idcatalogo);
@@ -53,4 +52,5 @@ public class CatalogoDetalleController {
 		resp.setListaDto(lentity, CatalogoDetalleResponse.CatalogoDetalleDto.class,  "mascotaDetalles","personadetalles");
 		return new ResponseEntity<>(resp, serviceJwt.regeneraToken(), HttpStatus.OK);
 	}
+	*/
 }

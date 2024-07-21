@@ -58,6 +58,7 @@ public class TarifarioController {
 		return new ResponseEntity<>(resp, HttpStatus.OK);
 	}
 
+	/*
 	@GetMapping("/buscar/{id}")
 	public ResponseEntity<RespuestaComun> buscarPorId(@PathVariable Long id) throws Exception {
 		var entity = servicioTarifario.buscarPorId(id);
@@ -65,4 +66,5 @@ public class TarifarioController {
 		resp.mapearDato(entity, TarifarioResponse.TarifarioDto.class, "paseos");
 		return new ResponseEntity<>(resp, serviceJwt.regeneraToken(), HttpStatus.OK);
 	}
+	*/
 }

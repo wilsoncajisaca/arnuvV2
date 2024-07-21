@@ -64,6 +64,7 @@ public class MascotaDetalleController {
 		return new ResponseEntity<>(resp, HttpStatus.OK);
 	}
 
+	/*
 	@GetMapping("/buscar/{id}")
 	public ResponseEntity<RespuestaComun> buscarMascotaPorId(@PathVariable Long id) throws Exception {
 		var entity = servicioMascota.buscarPorId(id);
@@ -71,4 +72,5 @@ public class MascotaDetalleController {
 		resp.mapearDato(entity, MascotaDetalleReponse.MascotaDetalleDto.class,  "catalogodetalle");
 		return new ResponseEntity<>(resp, serviceJwt.regeneraToken(), HttpStatus.OK);
 	}
+	*/
 }

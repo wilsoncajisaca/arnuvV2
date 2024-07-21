@@ -16,6 +16,7 @@ public class Tarifario {
 	@Id
     @Comment("Codigo de tarifas")
     @Column(name = "idtarifario")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Comment("Nombre del tarifario")

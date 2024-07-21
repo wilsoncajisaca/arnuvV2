@@ -14,7 +14,7 @@ public class UsuarioUnificadoHelper {
         persona.setCelular(request.getCelular());
         persona.setEmail(request.getEmail());
         persona.setIdentificacion(request.getIdentificacion());
-        persona.setCatalogodetalle(catDetEntity);
+      //  persona.setCatalogodetalle(catDetEntity);
         persona.setFechaingreso(new Date());
         persona.setIdusuarioing(idusuario.toString());
         return persona;

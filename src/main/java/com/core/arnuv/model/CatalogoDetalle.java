@@ -2,7 +2,6 @@ package com.core.arnuv.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.ToString;
 import org.hibernate.annotations.Comment;
 import org.hibernate.type.NumericBooleanConverter;
 
@@ -13,15 +12,19 @@ import java.util.List;
 @Entity
 @Table(name = "catalogodetalle")
 public class CatalogoDetalle {
-    @EmbeddedId
-    private CatalogoDetalleId id;
+    
+	//@EmbeddedId
+    //private CatalogoDetalleId id;
 
-    @MapsId("idcatalogo")
+    /*@MapsId("idcatalogo")
     @ManyToOne()
     @Comment("Codigo de catalogo")
     @JoinColumn(name = "idcatalogo")
-    @ToString.Exclude
-    private Catalogo idcatalogo;
+    @ToString.Exclude*/
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "idCatalogoDetalle")
+    private int id;
 
     @Comment("Nombre del catalogo")
     @Column(name = "nombre", length = 100)
@@ -31,10 +34,10 @@ public class CatalogoDetalle {
     @Convert(converter = NumericBooleanConverter.class)
     private Boolean activo;
 
-    @OneToMany(mappedBy = "catalogodetalle")
+    @OneToMany(mappedBy = "fkcatalogodetalle")
     private List<MascotaDetalle> mascotaDetalles;
 
-    @OneToMany(mappedBy = "catalogodetalle")
-    private List<Personadetalle> personadetalles;
+  //  @OneToMany(mappedBy = "catalogodetalle")
+   // private List<Personadetalle> personadetalles;
 
 }

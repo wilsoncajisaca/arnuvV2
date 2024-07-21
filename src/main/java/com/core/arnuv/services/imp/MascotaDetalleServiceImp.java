@@ -29,14 +29,25 @@ public class MascotaDetalleServiceImp implements IMascotaDetalleService {
 
 	@Override
 	public MascotaDetalle actualizarMascotaDetalle(MascotaDetalle data) {
-		MascotaDetalle existeMascota = repo.findById(data.getId()).orElse(null);
-		existeMascota.setNombre(data.getNombre());
-		existeMascota.setEdad(data.getEdad());
-		return repo.save(existeMascota);
+		//MascotaDetalle existeMascota = repo.findById(data.getId()).orElse(null);
+		//existeMascota.setNombre(data.getNombre());
+		//existeMascota.setEdad(data.getEdad());
+		return repo.save(data);
+	}
+	
+	@Override
+	public void EliminarMascotaDetalle(int codigo) {
+		// TODO Auto-generated method stub
+		try {
+			repo.deleteById(codigo);
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println("Error al eliminar item");
+		}
 	}
 
 	@Override
-	public MascotaDetalle buscarPorId(Long id) {
-		return repo.findById(id).orElse(null);
+	public MascotaDetalle buscarMascotaID(int codigo) {
+		return repo.findById(codigo).get();
 	}
 }
