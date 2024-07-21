@@ -64,18 +64,18 @@ public class AutenticacionRestController {
             if (entity.getUsuariosession() == null) {
                 Usuariosession sesion = new Usuariosession();
                 sesion.setEstado(EnumEstadoSession.INGRESADO.getCodigo());
-                sesion.setFechainicio(new Date());
+                sesion.setFechaInicio(new Date());
                 sesion.setActivo(true);
-                sesion.setIdsession(login.getSerial());
-                sesion.setIptermialremoto("127.1.1.1");
-                sesion.setUseragent("Movil");
-                sesion.setNumerointentos(1);
-                sesion.setUsuariodetalle(entity);
+                sesion.setIdSession(login.getSerial());
+                sesion.setIpTermialRemoto("127.1.1.1");
+                sesion.setUserAgent("Movil");
+                sesion.setNumeroIntentos(1);
+                sesion.setUsuarioDetalle(entity);
                 servicioSesion.insertarUsuarioSesion(sesion);
             } else {
-                entity.getUsuariosession().setNumerointentos(0);
-                entity.getUsuariosession().setUseragent("Movil");
-                entity.getUsuariosession().setIptermialremoto("127.1.1.1");
+                entity.getUsuariosession().setNumeroIntentos(0);
+                entity.getUsuariosession().setUserAgent("Movil");
+                entity.getUsuariosession().setIpTermialRemoto("127.1.1.1");
                 servicioSesion.actualizarUsuarioSesion(entity.getUsuariosession());
                 Usuariosessionhistorial sesionhistorial = ArnuvUtils.convertirObjeto(entity, Usuariosessionhistorial.class);
 //                TODO: guardar el historial
@@ -171,18 +171,18 @@ public class AutenticacionRestController {
             if (entity.getUsuariosession() == null) {
                 Usuariosession sesion = new Usuariosession();
                 sesion.setEstado(EnumEstadoSession.INGRESADO.getCodigo());
-                sesion.setFechainicio(new Date());
+                sesion.setFechaInicio(new Date());
                 sesion.setActivo(true);
-                sesion.setIdsession(login.getSerial());
-                sesion.setIptermialremoto("127.1.1.1");
-                sesion.setUseragent("Movil");
-                sesion.setNumerointentos(1);
-                sesion.setUsuariodetalle(entity);
+                sesion.setIdSession(login.getSerial());
+                sesion.setIpTermialRemoto("127.1.1.1");
+                sesion.setUserAgent("Movil");
+                sesion.setNumeroIntentos(1);
+                sesion.setUsuarioDetalle(entity);
                 servicioSesion.insertarUsuarioSesion(sesion);
             } else {
-                entity.getUsuariosession().setNumerointentos(0);
-                entity.getUsuariosession().setUseragent("Movil");
-                entity.getUsuariosession().setIptermialremoto("127.1.1.1");
+                entity.getUsuariosession().setNumeroIntentos(0);
+                entity.getUsuariosession().setUserAgent("Movil");
+                entity.getUsuariosession().setIpTermialRemoto("127.1.1.1");
                 servicioSesion.actualizarUsuarioSesion(entity.getUsuariosession());
                 Usuariosessionhistorial sesionhistorial = ArnuvUtils.convertirObjeto(entity, Usuariosessionhistorial.class);
 //                TODO: guardar el historial

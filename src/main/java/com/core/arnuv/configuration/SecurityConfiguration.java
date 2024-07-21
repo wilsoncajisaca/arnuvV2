@@ -24,6 +24,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -33,24 +35,26 @@ public class SecurityConfiguration {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     @Autowired
     private final IUsuarioDetalleService userService;
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.cors().and().csrf(AbstractHttpConfigurer::disable)
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.cors(withDefaults()).csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request ->
                         request.requestMatchers("/api/autenticacion/**").permitAll()
-                        .requestMatchers("/landing/**").permitAll()
-                        .requestMatchers("/index").permitAll()
-                        .requestMatchers("/login").permitAll()
-                        .requestMatchers("/register").permitAll()
-                        .requestMatchers("/templates/**").permitAll()
-                        .requestMatchers("/admin/**").permitAll()
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/usuario/**").permitAll()
-                        .requestMatchers("/mascota/**").permitAll()
-                        .anyRequest().authenticated())
+                                .requestMatchers("/landing/**").permitAll()
+                                .requestMatchers("/index").permitAll()
+                                .requestMatchers("/login").permitAll()
+                                .requestMatchers("/register").permitAll()
+                                .requestMatchers("/templates/**").permitAll()
+                                .requestMatchers("/admin/**").permitAll()
+                                .requestMatchers("/auth/**").permitAll()
+                                .requestMatchers("/persona/**").permitAll()
+                                .requestMatchers("/mascota/**").permitAll()
+                                .requestMatchers("/usuario/**").permitAll()
+                                .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(
-                        jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

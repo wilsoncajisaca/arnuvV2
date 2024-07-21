@@ -63,13 +63,8 @@ public class UsuarioDetalleServiceImp implements IUsuarioDetalleService {
 
 	@Override
 	public UserDetailsService userDetailsService() {
-		return new UserDetailsService() {
-			@Override
-			public UserDetails loadUserByUsername(String username) {
-				return repo.buscarPorUsername(username)
-						.orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
-			}
-		};
+		return username -> repo.buscarPorUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 	}
 
 	@Override

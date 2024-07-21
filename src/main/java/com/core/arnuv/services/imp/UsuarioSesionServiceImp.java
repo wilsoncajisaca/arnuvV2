@@ -38,16 +38,16 @@ public class UsuarioSesionServiceImp implements IUsuarioSesionService {
 
 	@Override
 	public Usuariosession actualizarUsuarioSesion(Usuariosession data) {
-		Usuariosession existeUsuarioSesion = repo.findById(data.getIdusuario()).orElse(null);
-		existeUsuarioSesion.setNumerointentos(data.getNumerointentos());
-		existeUsuarioSesion.setIdsession(data.getIdsession());
-		existeUsuarioSesion.setFechainicio(data.getFechainicio());
-		existeUsuarioSesion.setFechasalida(data.getFechasalida());
+		Usuariosession existeUsuarioSesion = repo.findById(data.getIdUsuario()).orElse(null);
+		existeUsuarioSesion.setNumeroIntentos(data.getNumeroIntentos());
+		existeUsuarioSesion.setIdSession(data.getIdSession());
+		existeUsuarioSesion.setFechaInicio(data.getFechaInicio());
+		existeUsuarioSesion.setFechaSalida(data.getFechaSalida());
 		existeUsuarioSesion.setActivo(data.getActivo());
 		existeUsuarioSesion.setEstado(data.getEstado());
-		existeUsuarioSesion.setUseragent(data.getUseragent());
-		existeUsuarioSesion.setIptermialremoto(data.getIptermialremoto());
-		existeUsuarioSesion.setUsuariodetalle(data.getUsuariodetalle());
+		existeUsuarioSesion.setUserAgent(data.getUserAgent());
+		existeUsuarioSesion.setIpTermialRemoto(data.getIpTermialRemoto());
+		existeUsuarioSesion.setUsuarioDetalle(data.getUsuarioDetalle());
 		return repo.save(existeUsuarioSesion);
 	}
 

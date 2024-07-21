@@ -15,5 +15,5 @@ public class LoginRequest {
     private String password;
 
     @Comment("Codigo de rol")
-    private Integer idrol;
+    private Integer idRol;
 }

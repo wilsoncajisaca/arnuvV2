@@ -88,7 +88,7 @@ public class Usuariodetalle implements Serializable, UserDetails {
 	@ToString.Exclude
 	private List<Usuariorol> usuariorols;
 
-	@OneToOne(mappedBy = "usuariodetalle")
+	@OneToOne(mappedBy = "usuarioDetalle")
 	@ToString.Exclude
 	private Usuariosession usuariosession;
 

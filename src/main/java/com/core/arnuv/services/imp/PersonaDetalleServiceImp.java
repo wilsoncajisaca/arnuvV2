@@ -12,7 +12,6 @@ import java.util.List;
 @Service
 @Component
 public class PersonaDetalleServiceImp implements IPersonaDetalleService {
-
 	@Autowired
 	private IPersonaDetalleRepository repo;
 	

@@ -822,7 +822,56 @@
         <main class="h-full pb-16 overflow-y-auto">
           <!-- Remove everything INSIDE this div to a really blank page -->
           <div class="container px-6 mx-auto grid">
-            <div layout:fragment="espaciocontenidohtml"></div>
+
+            <!-- General elements -->
+            <br>
+            <h4 class="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-300">
+              Nuevo Usuario
+            </h4>
+            <form th:action="@{/persona/create-access}" th:object="${personDetRequest}" role="form" method="post">
+              <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
+                <label class="block text-sm">
+                  <span class="text-gray-700 dark:text-gray-400">Nombres</span>
+                  <input th:field="*{nombres}" class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                          placeholder=""/>
+                </label>
+
+                <label class="block text-sm">
+                  <span class="text-gray-700 dark:text-gray-400">Apellidos</span>
+                  <input th:field="*{apellidos}" class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                         placeholder=""/>
+                </label>
+
+                <label class="block text-sm">
+                  <span class="text-gray-700 dark:text-gray-400">Identificación</span>
+                  <input th:field="*{identificacion}" class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                         placeholder=""/>
+                </label>
+
+                <label class="block text-sm">
+                  <span class="text-gray-700 dark:text-gray-400">Celular</span>
+                  <input th:field="*{celular}" class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                         placeholder=""/>
+                </label>
+
+                <label class="block text-sm">
+                  <span class="text-gray-700 dark:text-gray-400">Correo Electronico</span>
+                  <input th:field="*{email}" class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                         placeholder=""/>
+                </label>
+
+                <button
+                        class="block w-full px-4 py-2 mt-4 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
+                        type="submit">
+                  CREAR USUARIO</button>
+              </div>
+            </form>
+
+
+
+
+
+
           </div>
         </main>
       </div>
