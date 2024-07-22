@@ -31,9 +31,9 @@ public class RoleController {
     @GetMapping("/nuevo/{userId}")
     public String crear(Model model, @PathVariable("userId") Integer userId) {
         model.addAttribute("roles", servicioRol.listarTodosRoles());
-        model.addAttribute("usuario", servicioUsuarioDetalle.buscarPorId(userId));
         UsuarioRolRequest nuevo = new UsuarioRolRequest();
         nuevo.setIdusuario(userId);
+        nuevo.setUsername(servicioUsuarioDetalle.buscarPorId(userId).getUsername());
         model.addAttribute("nuevo", nuevo);
         return "/admin/rol-crear";
     }
@@ -52,6 +52,6 @@ public class RoleController {
         usuariorolentity.setId(usuariorolId);
 
         servicioUsuarioRol.insertarUsuarioRol(usuariorolentity);
-        return "roles";
+        return "redirect:/admin/welcome";
     }
 }

@@ -31,4 +31,7 @@ public class UsuarioRolRequest extends RequestComun<Usuariorol> {
     @Comment("Fecha de modificacion del registro")
     private Date fechamodificacion;
 
+    @Comment("Nombre de usuario ")
+    private String username;
+
 }
