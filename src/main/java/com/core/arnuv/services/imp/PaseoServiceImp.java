@@ -29,7 +29,7 @@ public class PaseoServiceImp implements IPaseoService {
 
 	@Override
 	public Paseo actualizarPaseo(Paseo data) {
-		Paseo existePaseo = repo.findById(data.getIdpaseo()).orElse(null);
+		/*Paseo existePaseo = repo.findById(data.getIdpaseo()).orElse(null);
 		existePaseo.setFecharealinicio(data.getFecharealinicio());
 		existePaseo.setFecharealfin(data.getFecharealfin());
 		existePaseo.setFechainicio(data.getFechainicio());
@@ -38,12 +38,24 @@ public class PaseoServiceImp implements IPaseoService {
 		existePaseo.setHorafin(data.getHorafin());
 		existePaseo.setPreciototal(data.getPreciototal());
 		existePaseo.setObservacionpaseo(data.getObservacionpaseo());
-		existePaseo.setObservacionpaseador(data.getObservacionpaseador());
-		return repo.save(existePaseo);
+		existePaseo.setObservacionpaseador(data.getObservacionpaseador());*/
+		return repo.save(data);
 	}
 
 	@Override
-	public Paseo buscarPorId(String id) {
-		return repo.findById(id).orElse(null);
+	public Paseo buscarPorId(int codigo) {
+		return repo.findById(codigo).get();
 	}
+	
+	@Override
+	public void eliminarPaseo(int codigo) {
+		// TODO Auto-generated method stub
+		try {
+			repo.deleteById(codigo);
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println("Error al eliminar item");
+		}
+	}
+	
 }

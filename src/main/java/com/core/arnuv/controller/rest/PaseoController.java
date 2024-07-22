@@ -57,7 +57,7 @@ public class PaseoController {
 		resp.mapearDato(entity, PaseoResponse.PaseoDto.class);
 		return new ResponseEntity<>(resp, HttpStatus.OK);
 	}
-
+/*
 	@GetMapping("/buscar/{id}")
 	public ResponseEntity<RespuestaComun> buscarPorId(@PathVariable String id) throws Exception {
 		var entity = servicioPase.buscarPorId(id);
@@ -65,4 +65,5 @@ public class PaseoController {
 		resp.mapearDato(entity, PaseoResponse.PaseoDto.class);
 		return new ResponseEntity<>(resp, serviceJwt.regeneraToken(), HttpStatus.OK);
 	}
+	*/
 }

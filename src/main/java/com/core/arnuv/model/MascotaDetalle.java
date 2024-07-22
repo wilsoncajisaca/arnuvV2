@@ -3,6 +3,10 @@ package com.core.arnuv.model;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -41,5 +45,9 @@ public class MascotaDetalle  {
     @Comment("Edad de la mascota")
     @Column(name = "edad", precision = 2)
     private Integer edad;
+    
+   
+    @OneToMany(mappedBy = "idMascota")
+	private List<Paseo> paseos= new ArrayList<>();
 
 }

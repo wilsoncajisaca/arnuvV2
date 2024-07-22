@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.core.arnuv.model.Paseo;
 
 @Repository
-public interface IPaseoRepository extends JpaRepository<Paseo, String> {
+public interface IPaseoRepository extends JpaRepository<Paseo, Integer> {
 
 }

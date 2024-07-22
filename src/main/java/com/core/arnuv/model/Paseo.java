@@ -6,9 +6,8 @@ import lombok.ToString;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-
+import org.springframework.format.annotation.DateTimeFormat;
 import java.math.BigDecimal;
-import java.time.LocalTime;
 import java.util.Date;
 
 @Data
@@ -19,7 +18,8 @@ public class Paseo {
 	@Id
     @Comment("Codigo del paseo")
     @Column(name = "idpaseo", length = 100)
-    private String idpaseo;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
     @ManyToOne()
     @Comment("Codigo de personas")
@@ -34,6 +34,13 @@ public class Paseo {
     @JoinColumn(name = "idpersonacliente")
     @ToString.Exclude
     private Personadetalle idpersonacliente;
+    
+    @ManyToOne()
+    @Comment("Codigo de mascotas")
+    @OnDelete(action = OnDeleteAction.RESTRICT)
+    @JoinColumn(name = "idMascota")
+    @ToString.Exclude
+    private MascotaDetalle idMascota;
 
     @ManyToOne()
     @Comment("Codigo de tarifas")
@@ -44,14 +51,16 @@ public class Paseo {
 
     @Comment("Fecha real de inicio del paseo")
     @Column(name = "fecharealinicio")
-    @Temporal(TemporalType.DATE)
+    //@Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern="yyyy-MM-dd'T'HH:mm")
     private Date fecharealinicio;
 
     @Comment("Fecha real de fin del paseo")
     @Column(name = "fecharealfin")
-    @Temporal(TemporalType.DATE)
+    //@Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern="yyyy-MM-dd'T'HH:mm")
     private Date fecharealfin;
-
+/*
     @Comment("Fecha de inicio del paseo formato YYYYMMDD")
     @Column(name = "fechainicio", precision = 8)
     private BigDecimal fechainicio;
@@ -67,7 +76,7 @@ public class Paseo {
     @Comment("Hora de fin del paseo")
     @Column(name = "horafin")
     private LocalTime horafin;
-
+*/
     @Comment("Precio total del paseo")
     @Column(name = "preciototal", precision = 10, scale = 7)
     private BigDecimal preciototal;

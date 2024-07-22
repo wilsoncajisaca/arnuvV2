@@ -28,7 +28,7 @@ public class Tarifario {
     private BigDecimal tiempo;
 
     @Comment("precio de la tarifa")
-    @Column(name = "precio", precision = 10, scale = 7)
+    @Column(name = "precio", precision = 10, scale = 2)
     private BigDecimal precio;
 
     @Comment("1 tarifa activa, 0 inactiva")
