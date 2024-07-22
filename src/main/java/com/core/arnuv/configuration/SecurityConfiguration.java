@@ -54,6 +54,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/catalogo/**").permitAll()
                         .requestMatchers("/tarifario/**").permitAll()
                         .requestMatchers("/paseo/**").permitAll()
+                        .requestMatchers("/role/**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(

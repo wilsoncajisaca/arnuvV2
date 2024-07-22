@@ -1,7 +1,10 @@
 package com.core.arnuv.services.imp;
 
+import java.io.IOException;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -12,10 +15,13 @@ import com.core.arnuv.service.IMascotaDetalleService;
 
 @Service
 @Component
+@Slf4j
 public class MascotaDetalleServiceImp implements IMascotaDetalleService {
 
 	@Autowired
 	private IMascotaDetalleRepository repo;
+	@Autowired
+	private FirebaseFileService firebaseFileService;
 
 	@Override
 	public List<MascotaDetalle> listarMascotasDetalle() {
@@ -23,7 +29,14 @@ public class MascotaDetalleServiceImp implements IMascotaDetalleService {
 	}
 
 	@Override
-	public MascotaDetalle insertarMascotaDetalle(MascotaDetalle data) {
+	public MascotaDetalle insertarMascotaDetalle(MascotaDetalle data) throws IOException {
+		log.info("Service for create the sinister");
+		String fileUrl = Strings.EMPTY;
+		if (data.getPhotoPet() != null && !data.getPhotoPet().isEmpty()) {
+			fileUrl = firebaseFileService.saveFile(data.getPhotoPet());
+			log.info("File url: " + fileUrl);
+			data.setUrlPhotoPet(fileUrl);
+		}
 		return repo.save(data);
 	}
 

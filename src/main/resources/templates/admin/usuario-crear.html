@@ -871,7 +871,7 @@
             <h4 class="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-300">
               Nuevo Usuario
             </h4>
-            <form th:action="@{/usuario/create-access}" th:object="${userDetRequest}" role="form" method="post">
+            <form th:action="@{/usuario/create-access}" th:object="${nuevo}" role="form" method="post">
               <input type="hidden" th:field="*{idpersona}" >
               <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
                 <label class="block text-sm">
@@ -898,12 +898,6 @@
                   CREAR USUARIO</button>
               </div>
             </form>
-
-
-
-
-
-
           </div>
         </main>
       </div>

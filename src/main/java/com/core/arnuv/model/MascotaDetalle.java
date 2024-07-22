@@ -10,6 +10,7 @@ import java.util.List;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @Data
@@ -49,5 +50,12 @@ public class MascotaDetalle  {
    
     @OneToMany(mappedBy = "idMascota")
 	private List<Paseo> paseos= new ArrayList<>();
+
+    @Comment("Url de la foto de la mascota")
+    private String urlPhotoPet;
+
+    @Comment("Foto de la mascota")
+    @Transient
+    private MultipartFile photoPet;
 
 }

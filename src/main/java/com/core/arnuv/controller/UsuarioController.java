@@ -24,12 +24,12 @@ public class UsuarioController {
     public String personCreate(Model model, @PathVariable("personaId") Integer personaId) {
         UsuarioDetalleRequest requestUser = new UsuarioDetalleRequest();
         requestUser.setIdpersona(personaId);
-        model.addAttribute("userDetRequest", requestUser);
+        model.addAttribute("nuevo", requestUser);
         return "/admin/usuario-crear";
     }
 
     @PostMapping("create-access")
-    private String personCreateAccess(@ModelAttribute("userDetRequest") UsuarioDetalleRequest usuario) {
+    private String personCreateAccess(@ModelAttribute("nuevo") UsuarioDetalleRequest usuario) {
         var personaentity = servicioPersonaDetalle.buscarPorId(usuario.getIdpersona());
         Usuariodetalle usuariodetalle = usuario.mapearDato(usuario, Usuariodetalle.class);
         usuariodetalle.setIdpersona(personaentity);
@@ -39,6 +39,6 @@ public class UsuarioController {
         } catch (DataIntegrityViolationException e) {
             throw new ArnuvNotFoundException("Error al guardar datos: {0}", e.getMessage().split("Detail:")[1].split("]")[0]);
         }
-        return "redirect:/persona/crear";
+        return "redirect:/role/nuevo/".concat(entity.getIdusuario().toString());
     }
 }
