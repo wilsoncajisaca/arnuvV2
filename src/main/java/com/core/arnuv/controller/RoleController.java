@@ -1,0 +1,57 @@
+package com.core.arnuv.controller;
+
+import com.core.arnuv.model.Usuariorol;
+import com.core.arnuv.model.UsuariorolId;
+import com.core.arnuv.request.UsuarioRolRequest;
+import com.core.arnuv.service.IRolService;
+import com.core.arnuv.service.IUsuarioDetalleService;
+import com.core.arnuv.service.IUsuarioRolService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+@Controller
+@RequestMapping("/role")
+public class RoleController {
+    @Autowired
+    private IRolService servicioRol;
+    @Autowired
+    private IUsuarioDetalleService servicioUsuarioDetalle;
+
+    @Autowired
+    private IUsuarioRolService servicioUsuarioRol;
+
+    @GetMapping("/listar")
+    public String getRoles(Model model) {
+        model.addAttribute("roles", servicioRol.listarTodosRoles());
+        return "/admin/roles";
+    }
+
+    @GetMapping("/nuevo/{userId}")
+    public String crear(Model model, @PathVariable("userId") Integer userId) {
+        model.addAttribute("roles", servicioRol.listarTodosRoles());
+        model.addAttribute("usuario", servicioUsuarioDetalle.buscarPorId(userId));
+        UsuarioRolRequest nuevo = new UsuarioRolRequest();
+        nuevo.setIdusuario(userId);
+        model.addAttribute("nuevo", nuevo);
+        return "/admin/rol-crear";
+    }
+
+    @PostMapping("/insertar")
+    public String nuevo(@ModelAttribute("nuevo") UsuarioRolRequest nuevo) {
+        UsuariorolId usuariorolId = new UsuariorolId();
+        usuariorolId.setIdusuario(nuevo.getIdusuario());
+        usuariorolId.setIdrol(nuevo.getIdrol());
+        var rolentity = servicioRol.buscarPorId(nuevo.getIdrol());
+        var usuariodetalleentity = servicioUsuarioDetalle.buscarPorId(nuevo.getIdusuario());
+
+        var usuariorolentity = nuevo.mapearDato(nuevo, Usuariorol.class, "idrol","idusuario");
+        usuariorolentity.setIdrol(rolentity);
+        usuariorolentity.setIdusuario(usuariodetalleentity);
+        usuariorolentity.setId(usuariorolId);
+
+        servicioUsuarioRol.insertarUsuarioRol(usuariorolentity);
+        return "roles";
+    }
+}

@@ -24,12 +24,12 @@ public class PersonaController {
 	
 	@GetMapping("crear")
 	public String personCreate(Model model) {
-		model.addAttribute("personDetRequest", new PersonaDetalleRequest());
+		model.addAttribute("nuevo", new PersonaDetalleRequest());
 		return "/admin/persona-crear";
 	}
 
 	@PostMapping("create-access")
-	private String personCreateAccess(@ModelAttribute("personDetRequest") PersonaDetalleRequest persona) {
+	private String personCreateAccess(@ModelAttribute("nuevo") PersonaDetalleRequest persona) {
 		//var catDetEntity = servicioCatalogoDetalle.buscarPorId(persona.getIdcatalogoidentificacion(), persona.getIddetalleidentificacion());
 		Personadetalle personadetalle = persona.mapearDato(persona, Personadetalle.class, "idcatalogoidentificacion", "iddetalleidentificacion");
 		//personadetalle.setCatalogodetalle(catDetEntity);
