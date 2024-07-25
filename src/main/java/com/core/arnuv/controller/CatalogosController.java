@@ -28,14 +28,14 @@ public class CatalogosController {
 	public String listarColores(Model model) {
 		List<CatalogoDetalle> listacatalogos = catalogoDetalleService.listarCatalogoDetalle(); 
 		model.addAttribute("lista", listacatalogos);
-		return "/admin/listarcatalogo"; 
+		return "/admin/catalogo-listar"; 
 	}
 
 	@GetMapping("/nuevo")
 	public String crear(Model model) {
 		model.addAttribute("nuevo", new CatalogoDetalle());
 
-		return "/admin/catalogo"; 
+		return "/admin/catalogo-crear"; 
 	}
 
 	// guardar
@@ -51,7 +51,7 @@ public class CatalogosController {
 	public String editarCurso(@PathVariable(value = "idcatalogo") int codigo, Model model) {
 		CatalogoDetalle itemrecuperado = catalogoDetalleService.buscarCatalogoDetalleId(codigo);
 		model.addAttribute("nuevo", itemrecuperado);
-		return "/admin/catalogo";
+		return "/admin/catalogo-crear";
 	}
 
 	// eliminar
