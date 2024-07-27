@@ -1,18 +1,13 @@
 package com.core.arnuv.controller;
 
-import com.core.arnuv.model.Personadetalle;
-import com.core.arnuv.model.Usuariodetalle;
+import com.core.arnuv.jwt.IJwtService;
 import com.core.arnuv.request.LoginRequest;
-import com.core.arnuv.request.PersonaDetalleRequest;
-import com.core.arnuv.request.UsuarioDetalleRequest;
-import com.core.arnuv.response.LoginResponse;
-import com.core.arnuv.service.ICatalogoDetalleService;
-import com.core.arnuv.service.IPersonaDetalleService;
-import com.core.arnuv.service.IUsuarioDetalleService;
-import com.core.arnuv.utils.ArnuvNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.authentication.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,41 +21,38 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Slf4j
 public class AuthController {
     @Autowired
-    private IUsuarioDetalleService serviceUsuarioDetalle;
+    private AuthenticationManager authenticationManager;
     @Autowired
-    private ICatalogoDetalleService servicioCatalogoDetalle;
+    private IJwtService jwtService;
     @Autowired
-    private IPersonaDetalleService servicioPersonaDetalle;
-    @Autowired
-    private IUsuarioDetalleService servicioUsuarioDetalle;
+    private UserDetailsService userDetailsService;
+
     @GetMapping("/login")
     public String login(Model model) {
         model.addAttribute("loginRequest", new LoginRequest());
         return "/login";
     }
 
-    /**
-     * @param loginRequest
-     * @return
-     */
     @PostMapping("/login-access")
-    public String loginAccess(@ModelAttribute("loginRequest") LoginRequest loginRequest, RedirectAttributes redirectAttributes) {
-        var entity = serviceUsuarioDetalle.buscarPorEmail(loginRequest.getEmail());
-        LoginResponse resp = new LoginResponse();
-        if (entity == null) {
-            redirectAttributes.addFlashAttribute("message", "El usuario "+ loginRequest.getEmail() +" no existe");
+    public String authenticateUser(@ModelAttribute("loginRequest") LoginRequest loginRequest, RedirectAttributes redirectAttributes) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            return "redirect:/admin/welcome";
+        } catch (BadCredentialsException e) {
+            redirectAttributes.addFlashAttribute("message", "Credenciales incorrectas. Por favor, intenta de nuevo.");
             return "redirect:/auth/login";
-        } else {
-            if (!entity.getPassword().equals(loginRequest.getPassword())) {
-                redirectAttributes.addFlashAttribute("message", "Usuario y/o contraseña no son validos");
-                return "redirect:/auth/login";
-            }
-            if (!entity.getEstado()) {
-                redirectAttributes.addFlashAttribute("message", "El usuario esta deshabilitado");
-                return "redirect:/auth/login";
-            }
+        }catch (InternalAuthenticationServiceException e) {
+            redirectAttributes.addFlashAttribute("message", e.getMessage());
+            return "redirect:/auth/login";
         }
-        log.info("Login exitoso");
-        return "redirect:/usuario/listar";
+        catch (Exception e) {
+            log.error("Error durante la autenticación: ", e);
+            redirectAttributes.addFlashAttribute("message", "Ha ocurrido un error. Por favor, intenta más tarde.");
+            return "redirect:/auth/login";
+        }
     }
 }

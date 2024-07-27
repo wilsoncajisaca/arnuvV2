@@ -9,6 +9,7 @@ import com.core.arnuv.service.IUsuarioDetalleService;
 import com.core.arnuv.utils.ArnuvNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,8 @@ public class UsuarioController {
     private IPersonaDetalleService servicioPersonaDetalle;
     @Autowired
     private IUsuarioDetalleService usuarioDetalleService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @GetMapping("crear/{personaId}")
     public String personCreate(Model model, @PathVariable("personaId") Integer personaId) {
         UsuarioDetalleRequest requestUser = new UsuarioDetalleRequest();
@@ -32,6 +35,7 @@ public class UsuarioController {
     private String personCreateAccess(@ModelAttribute("nuevo") UsuarioDetalleRequest usuario) {
         var personaentity = servicioPersonaDetalle.buscarPorId(usuario.getIdpersona());
         Usuariodetalle usuariodetalle = usuario.mapearDato(usuario, Usuariodetalle.class);
+        usuariodetalle.setPassword(passwordEncoder.encode(usuario.getPassword()));
         usuariodetalle.setIdpersona(personaentity);
         Usuariodetalle entity = null;
         try {

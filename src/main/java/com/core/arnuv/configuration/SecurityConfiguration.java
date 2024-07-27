@@ -2,6 +2,7 @@ package com.core.arnuv.configuration;
 
 import com.core.arnuv.jwt.JwtAuthenticationFilter;
 import com.core.arnuv.service.IUsuarioDetalleService;
+import com.core.arnuv.services.imp.UsuarioDetalleServiceImp;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -30,35 +31,36 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfiguration {
-
     @Autowired
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     @Autowired
     private final IUsuarioDetalleService userService;
+    @Autowired
+    private UsuarioDetalleServiceImp usuarioDetalleServiceImp;
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.cors(withDefaults()).csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request ->
                         request.requestMatchers("/api/autenticacion/**").permitAll()
-                        .requestMatchers("/landing/**").permitAll()
-                        .requestMatchers("/index").permitAll()
-                        .requestMatchers("/login").permitAll()
-                        .requestMatchers("/register").permitAll()
-                        .requestMatchers("/templates/**").permitAll()
-                        .requestMatchers("/admin/**").permitAll()
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/persona/**").permitAll()
-                        .requestMatchers("/usuario/**").permitAll()
-                        .requestMatchers("/mascota/**").permitAll()
-                        .requestMatchers("/catalogo/**").permitAll()
-                        .requestMatchers("/tarifario/**").permitAll()
-                        .requestMatchers("/paseo/**").permitAll()
-                        .requestMatchers("/role/**").permitAll()
-                        .anyRequest().authenticated())
-                .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticationProvider()).addFilterBefore(
-                jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                                .requestMatchers("/landing/**").permitAll()
+                                .requestMatchers("/index").permitAll()
+                                .requestMatchers("/login").permitAll()
+                                .requestMatchers("/register").permitAll()
+                                .requestMatchers("/templates/**").permitAll()
+                                .requestMatchers("/admin/**").permitAll()
+                                .requestMatchers("/auth/**").permitAll()
+                                .requestMatchers("/persona/**").permitAll()
+                                .requestMatchers("/usuario/**").permitAll()
+                                .requestMatchers("/mascota/**").permitAll()
+                                .requestMatchers("/catalogo/**").permitAll()
+                                .requestMatchers("/tarifario/**").permitAll()
+                                .requestMatchers("/paseo/**").permitAll()
+                                .requestMatchers("/role/**").permitAll()
+                                .anyRequest().authenticated())
+                .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 
@@ -81,12 +83,12 @@ public class SecurityConfiguration {
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userService.userDetailsService());
+        authProvider.setUserDetailsService(usuarioDetalleServiceImp);
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }
 
-    @Bean
+   @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }

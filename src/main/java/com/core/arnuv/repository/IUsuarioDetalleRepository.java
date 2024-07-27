@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface IUsuarioDetalleRepository extends JpaRepository<Usuariodetalle, Integer> {
 
     @Query("Select t from Usuariodetalle t where t.idpersona.email = ?1")
-    Usuariodetalle buscarPorEmail(String email);
+    Optional<Usuariodetalle> buscarPorEmail(String email);
 
 
     @Query("Select t from Usuariodetalle t where t.username= ?1")

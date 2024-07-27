@@ -1,6 +1,7 @@
 package com.core.arnuv.jwt;
 
 import com.core.arnuv.service.IUsuarioDetalleService;
+import com.core.arnuv.services.imp.UsuarioDetalleServiceImp;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -9,6 +10,8 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -17,18 +20,17 @@ import java.util.Date;
 import java.util.Map;
 import java.util.function.Function;
 
+
 @Service
 public class JwtServiceImpl implements IJwtService {
+
     @Value("${token.signing.key}")
     private String jwtSigningKey;
 
     private String tokenSession;
 
     @Autowired
-    private IUsuarioDetalleService serviceUsuarioDetalle;
-
-//    @Autowired
-//    private AuthenticationManager authenticationManager;
+    private UsuarioDetalleServiceImp serviceUsuarioDetalle;
 
     @Override
     public String extractUserName(String token) {
@@ -69,13 +71,7 @@ public class JwtServiceImpl implements IJwtService {
 
     @Override
     public HttpHeaders regeneraToken() {
-//        var data = extraerTokenData();
-//        String username = (String) data.get("username");
-//        var entity = serviceUsuarioDetalle.buscarPorUsuario(username);
-//
-//        var jwt = this.generateToken(data, entity);
         HttpHeaders responseHeaders = new HttpHeaders();
-//        responseHeaders.set("token", jwt);
         return responseHeaders;
     }
 
@@ -113,5 +109,9 @@ public class JwtServiceImpl implements IJwtService {
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(diaexp))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256).compact();
+    }
+
+    public UserDetails loadUserByUsername(String email) {
+        return serviceUsuarioDetalle.loadUserByUsername(extractUserName(email));
     }
 }

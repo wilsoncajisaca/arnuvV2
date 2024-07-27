@@ -6,6 +6,10 @@ import com.core.arnuv.repository.IUsuarioDetalleRepository;
 import com.core.arnuv.service.IUsuarioDetalleService;
 import com.google.common.hash.Hashing;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.LockedException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,12 +18,17 @@ import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.stream.Collectors;
+
+import static com.core.arnuv.constants.Constants.EMAIL_PATTERN;
 
 @Service
 @Component
-public class UsuarioDetalleServiceImp implements IUsuarioDetalleService {
+public class UsuarioDetalleServiceImp implements IUsuarioDetalleService, UserDetailsService {
 
 	@Autowired
 	private IUsuarioDetalleRepository repo;
@@ -58,7 +67,7 @@ public class UsuarioDetalleServiceImp implements IUsuarioDetalleService {
 
 	@Override
 	public Usuariodetalle buscarPorEmail(String email) {
-		return repo.buscarPorEmail(email);
+		return repo.buscarPorEmail(email).get();
 	}
 
 	@Override
@@ -97,4 +106,20 @@ public class UsuarioDetalleServiceImp implements IUsuarioDetalleService {
 				.toString();
 	}
 
+	@Override
+	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException, LockedException {
+		var usuario = repo.buscarPorEmail(email)
+				.orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+
+		if(usuario.getEstado() != null && usuario.getEstado()){
+			return new User(usuario.getUsername(), usuario.getPassword(), getAuthorities(usuario));
+		}
+		throw new LockedException("Usuario actualmente deshabilitado");
+	}
+
+	private Collection<? extends GrantedAuthority> getAuthorities(Usuariodetalle usuario) {
+		return usuario.getAuthorities().stream()
+				.map(role -> new SimpleGrantedAuthority(role.getAuthority()))
+				.collect(Collectors.toList());
+	}
 }
