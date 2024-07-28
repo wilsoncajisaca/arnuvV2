@@ -8,19 +8,19 @@
 <body>
 
 	<div layout:fragment="espaciocontenidohtml">
-		<main class="h-full pb-16 overflow-y-auto">
-			<div class="container px-6 mx-auto grid">
+		<main class="h-full pb-16 overflow-y-auto comic-font">
+			<div class="container px-6 mx-auto grid comic-font">
 				<h2
-					class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
+					class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200 ">
 					catalogos</h2>
 
 
 
 				<div
-					class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray">
+					class=" flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray">
 					<a class="btn btn-outline-secondary" href="#" role="button"
 						th:href="@{/catalogo/nuevo}"> <i
-						class="fas fa-plus-circle mr-1 text-secondary"></i> Añadir
+						class="fas fa-plus-circle mr-1 text-secondary comic-font"></i> Añadir
 					</a>
 				</div>
 
@@ -28,7 +28,7 @@
 					<thead>
 						<tr
 							class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
-							<th scope="col" class="text-primary">ID</th>
+							<th scope="col" class="text-primary ">ID</th>
 							<th scope="col" class="text-primary">Nombre</th>
 							<!-- <th scope="col" class="text-primary">Edad</th> -->
 							<th scope="col" class="text-primary">Estado</th>
@@ -51,7 +51,7 @@
 
 
 									<div
-										class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray">
+										class="bg-cream flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray">
 										<a th:href="@{/catalogo/editar/}+ ${datos.id}"> <i>
 												<svg class="w-5 h-5" aria-hidden="true" fill="currentColor"
 													viewBox="0 0 20 20">
@@ -63,7 +63,7 @@
 									</div>
 
 									<div
-										class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray">
+										class="bg-cream flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray">
 										<a th:href="@{/catalogo/eliminar/}+ ${datos.id}"> <i>
 												<svg class="w-5 h-5" aria-hidden="true" fill="currentColor"
 													viewBox="0 0 20 20">

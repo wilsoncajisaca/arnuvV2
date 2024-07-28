@@ -39,14 +39,14 @@ public class MascotaController {
 	public String listarColores(Model model) {
 		List<MascotaDetalle> listaMascotas = mscotaDetalleService.listarMascotasDetalle();
 		model.addAttribute("lista", listaMascotas);
-		return "/admin/listarmascotas";
+		return "/admin/mascotas-listar";
 	}
 
 	@GetMapping("/nuevo")
 	public String crear(Model model) {
 		model.addAttribute("nuevo", new MascotaDetalle());	 
 		model.addAttribute("catalogo",catalogoDetalleService.listarCatalogoDetalle());
-		return "/admin/mascotas";
+		return "/admin/mascotas-crear";
 	}
 
 	// guardar
@@ -59,7 +59,7 @@ public class MascotaController {
 			return "redirect:/mascota/listar";
         } catch (IOException e) {
 			redirectAttributes.addFlashAttribute("message", "La imagen no se pudo guardar");
-			return "/admin/mascotas";
+			return "/admin/mascotas-crear";
         }
 	}
 

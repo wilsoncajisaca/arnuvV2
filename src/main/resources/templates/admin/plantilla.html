@@ -11,6 +11,7 @@
             rel="stylesheet"
     />
     <link rel="stylesheet" th:href="@{/admin/assets/css/tailwind.output.css}" />
+    <link rel="stylesheet" th:href="@{/admin/assets/css/styles.css}">
     <script
             src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"
             defer
@@ -304,7 +305,7 @@
                             <li
                                     class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
                             >
-                                <a class="w-full" href="../landing/register.html">
+                                <a class="w-full" th:href="@{/persona/crear}">
                                     Create account
                                 </a>
                             </li>
@@ -330,12 +331,10 @@
                 </li>
             </ul>
             <div class="px-6 my-6">
-                <button
-                        class="flex items-center justify-between w-full px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
-                >
+                <a class="flex items-center justify-between w-full px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
+                   th:href="@{/persona/crear}">
                     Create account
-                    <span class="ml-2" aria-hidden="true">+</span>
-                </button>
+                </a>
             </div>
         </div>
     </aside>

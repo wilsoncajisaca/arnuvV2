@@ -9,7 +9,7 @@
 
 	<div layout:fragment="espaciocontenidohtml">
 		<main class="h-full pb-16 overflow-y-auto">
-			<div class="container px-6 mx-auto grid">
+			<div class="container px-6 mx-auto grid comic-font">
 				<h2
 					class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
 					Paseos</h2>
@@ -55,7 +55,7 @@
 
 
 									<div
-										class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray">
+										class="bg-cream flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray">
 										<a th:href="@{/paseo/editar/}+ ${datos.id}"> <i>
 												<svg class="w-5 h-5" aria-hidden="true" fill="currentColor"
 													viewBox="0 0 20 20">
@@ -67,7 +67,7 @@
 									</div>
 
 									<div
-										class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray">
+										class="bg-cream flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray">
 										<a th:href="@{/paseo/eliminar/}+ ${datos.id}"> <i>
 												<svg class="w-5 h-5" aria-hidden="true" fill="currentColor"
 													viewBox="0 0 20 20">
