@@ -2,10 +2,7 @@ package com.core.arnuv.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.ToString;
 import org.hibernate.annotations.Comment;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -84,5 +81,7 @@ public class Personadetalle implements Serializable {
 
 	@OneToMany(mappedBy = "idpersona")
 	private List<Usuariodetalle> usuariodetalles;
-
+	// ubicacion
+	@OneToMany(mappedBy = "idpersona")
+	private List<Ubicacion> ubicaciones;
 }
