@@ -28,8 +28,8 @@ public class RoleController {
         return "/admin/roles";
     }
 
-    @GetMapping("/nuevo/{userId}")
-    public String crear(Model model, @PathVariable("userId") Integer userId) {
+    @GetMapping("/anclar-rol/{userId}")
+    public String crearRolUsuario(Model model, @PathVariable("userId") Integer userId) {
         model.addAttribute("roles", servicioRol.listarTodosRoles());
         UsuarioRolRequest nuevo = new UsuarioRolRequest();
         nuevo.setIdusuario(userId);

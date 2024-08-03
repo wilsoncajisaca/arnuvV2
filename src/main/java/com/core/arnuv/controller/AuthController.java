@@ -6,7 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,7 +30,7 @@ public class AuthController {
     private UserDetailsService userDetailsService;
 
     @GetMapping("/login")
-    public String login(Model model) {
+    public String login(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         model.addAttribute("loginRequest", new LoginRequest());
         return "/login";
     }

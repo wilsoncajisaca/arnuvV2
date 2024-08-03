@@ -28,7 +28,7 @@ import static com.core.arnuv.constants.Constants.EMAIL_PATTERN;
 
 @Service
 @Component
-public class UsuarioDetalleServiceImp implements IUsuarioDetalleService, UserDetailsService {
+public class UsuarioDetalleServiceImp implements IUsuarioDetalleService {
 
 	@Autowired
 	private IUsuarioDetalleRepository repo;
@@ -106,20 +106,4 @@ public class UsuarioDetalleServiceImp implements IUsuarioDetalleService, UserDet
 				.toString();
 	}
 
-	@Override
-	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException, LockedException {
-		var usuario = repo.buscarPorEmail(email)
-				.orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
-
-		if(usuario.getEstado() != null && usuario.getEstado()){
-			return new User(usuario.getUsername(), usuario.getPassword(), getAuthorities(usuario));
-		}
-		throw new LockedException("Usuario actualmente deshabilitado");
-	}
-
-	private Collection<? extends GrantedAuthority> getAuthorities(Usuariodetalle usuario) {
-		return usuario.getAuthorities().stream()
-				.map(role -> new SimpleGrantedAuthority(role.getAuthority()))
-				.collect(Collectors.toList());
-	}
 }

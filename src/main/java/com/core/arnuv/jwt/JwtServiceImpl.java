@@ -1,6 +1,7 @@
 package com.core.arnuv.jwt;
 
 import com.core.arnuv.service.IUsuarioDetalleService;
+import com.core.arnuv.services.imp.UserServicesAuth;
 import com.core.arnuv.services.imp.UsuarioDetalleServiceImp;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -31,6 +32,9 @@ public class JwtServiceImpl implements IJwtService {
 
     @Autowired
     private UsuarioDetalleServiceImp serviceUsuarioDetalle;
+
+    @Autowired
+    private UserServicesAuth userServicesAuth;
 
     @Override
     public String extractUserName(String token) {
@@ -112,6 +116,6 @@ public class JwtServiceImpl implements IJwtService {
     }
 
     public UserDetails loadUserByUsername(String email) {
-        return serviceUsuarioDetalle.loadUserByUsername(extractUserName(email));
+        return userServicesAuth.loadUserByUsername(extractUserName(email));
     }
 }

@@ -43,6 +43,6 @@ public class UsuarioController {
         } catch (DataIntegrityViolationException e) {
             throw new ArnuvNotFoundException("Error al guardar datos: {0}", e.getMessage().split("Detail:")[1].split("]")[0]);
         }
-        return "redirect:/role/nuevo/".concat(entity.getIdusuario().toString());
+        return "redirect:/role/anclar-rol/".concat(entity.getIdusuario().toString());
     }
 }
