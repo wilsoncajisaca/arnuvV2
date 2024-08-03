@@ -28,7 +28,7 @@ public class UsuarioController {
         UsuarioDetalleRequest requestUser = new UsuarioDetalleRequest();
         requestUser.setIdpersona(personaId);
         model.addAttribute("nuevo", requestUser);
-        return "/content/usuario-crear";
+        return "/content-page/usuario-crear";
     }
 
     @PostMapping("create-access")

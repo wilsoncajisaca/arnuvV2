@@ -8,4 +8,16 @@ public class Constants {
     public static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);
 
     public static final int EARTH_RADIUS = 6371;
+
+    public static String[] getPermittedRoutes() {
+        //TODO: REMOVE IMG FROM ROUTES
+        return new String[]{
+                "/content/**",
+                "/img/**",
+                "/landing/**",
+                "/auth/**",
+                "/index",
+                "/"
+        };
+    }
 }

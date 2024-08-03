@@ -1,5 +1,6 @@
 package com.core.arnuv.controller;
 
+import com.core.arnuv.model.Personadetalle;
 import com.core.arnuv.model.Usuariodetalle;
 import com.core.arnuv.service.IUsuarioDetalleService;
 import jakarta.servlet.http.Cookie;
@@ -32,23 +33,17 @@ public class AuthController {
         if (userDetails != null) {
             return "redirect:/auth/default";
         }
-        HttpSession session = request.getSession(false);
-        String errorMessage = Strings.EMPTY;
 
+        HttpSession session = request.getSession(false);
         if (session != null) {
             AuthenticationException exception = (AuthenticationException) session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
             if (exception != null) {
-                errorMessage = exception.getMessage();
+                model.addAttribute("errorMessage", exception.getMessage());
                 // Limpia la excepción después de manejarla
                 session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
             }
         }
-
-        if (!errorMessage.isEmpty()) {
-            model.addAttribute("errorMessage", errorMessage);
-        }
-
-        return "login";
+        return "/landing/login";
     }
 
     @GetMapping("/logout")
@@ -65,18 +60,18 @@ public class AuthController {
     public String defaultAfterLogin(HttpServletRequest request) {
         this.setUserInSession(request);
         if (request.isUserInRole("ADMIN")) {
-            return "redirect:/content/welcome";
+            return "redirect:/home";
         }
-        return "redirect:/content/welcome";
+        return "redirect:/home";
     }
 
     private void setUserInSession(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        Usuariodetalle user = (Usuariodetalle) session.getAttribute("loggedInUser");
+        HttpSession session = request.getSession(false);
+        Personadetalle user = (Personadetalle) session.getAttribute("loggedInUser");
         if(user == null) {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            user = userService.buscarPorEmailOrUserName(auth.getName());
-            session.setAttribute("loggedInUser", user.getIdpersona());
+            user = userService.buscarPorEmailOrUserName(auth.getName()).getIdpersona();
+            session.setAttribute("loggedInUser", user);
         }
     }
 }

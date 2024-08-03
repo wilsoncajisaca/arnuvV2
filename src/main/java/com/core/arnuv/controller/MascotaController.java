@@ -38,14 +38,14 @@ public class MascotaController {
 	/*
 	@GetMapping("/listar")
 	public String login() {
-		return "/content/mascotas";
+		return "/content-page/mascotas";
 	}
 */
 	@GetMapping("/listar")
 	public String listarColores(Model model) {
 		List<MascotaDetalle> listaMascotas = mscotaDetalleService.listarMascotasDetalle();
 		model.addAttribute("lista", listaMascotas);
-		return "/content/mascotas-listar";
+		return "/content-page/mascotas-listar";
 	}
 
 	@GetMapping("/nuevo")
@@ -53,7 +53,7 @@ public class MascotaController {
 		model.addAttribute("nuevo", new MascotaDetalle());	 
 		model.addAttribute("catalogo",catalogoDetalleService.listarCatalogoDetalle());
 		model.addAttribute("personas", personaDetalleService.listarTodosPersonaDetalle());
-		return "/content/mascotas-crear";
+		return "/content-page/mascotas-crear";
 	}
 
 	// guardar
@@ -66,7 +66,7 @@ public class MascotaController {
 			return "redirect:/mascota/listar";
         } catch (IOException e) {
 			redirectAttributes.addFlashAttribute("message", "La imagen no se pudo guardar");
-			return "/content/mascotas-crear";
+			return "/content-page/mascotas-crear";
         }
 	}
 
@@ -78,7 +78,7 @@ public class MascotaController {
 		model.addAttribute("nuevo", itemrecuperado);
 		model.addAttribute("catalogo", catalogoDetalleService.listarCatalogoDetalle());
 		model.addAttribute("personas", personaDetalleService.listarTodosPersonaDetalle());
-		return "/content/mascotas-crear";
+		return "/content-page/mascotas-crear";
 	}
 
 	// eliminar

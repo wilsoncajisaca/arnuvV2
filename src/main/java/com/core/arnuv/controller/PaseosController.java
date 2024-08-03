@@ -50,7 +50,7 @@ public class PaseosController {
 	public String listar(Model model) {
 		List<Paseo> listapaseos = paseoService.listarPaseos();
 		model.addAttribute("lista", listapaseos);
-		return "/content/prueba";
+		return "/content-page/prueba";
 	}
 
 	@GetMapping("/nuevo")
@@ -113,7 +113,7 @@ public class PaseosController {
 		model.addAttribute("mascota", mascotaDetalleService.listarMascotasDetalle());
 
 		//model.addAttribute("ubicacion", ubiPaseadores);
-		return "/content/paseo-crear";
+		return "/content-page/paseo-crear";
 	}
 
 	// guardar
@@ -131,7 +131,7 @@ public class PaseosController {
 		model.addAttribute("persona", personaDetalleService.listarTodosPersonaDetalle());
 		model.addAttribute("tarifario", ITarifarioService.listarTarifarios());
 		model.addAttribute("mascota", mascotaDetalleService.listarMascotasDetalle());
-		return "/content/paseo-crear";
+		return "/content-page/paseo-crear";
 	}
 
 	// eliminar

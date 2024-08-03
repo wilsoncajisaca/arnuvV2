@@ -728,7 +728,9 @@
                         </template>
                     </li>
                 </ul>
-                <p th:text="'&nbsp;&nbsp;' + ${session.loggedInUser.nombres} + ' ' + ${session.loggedInUser.apellidos}"></p>
+                <p th:if="${session.loggedInUser != null}"
+                   th:text="'&nbsp;&nbsp;' + ${session.loggedInUser.nombres} + ' ' + ${session.loggedInUser.apellidos}">
+                </p>
             </div>
         </header>
         <main class="h-full pb-16 overflow-y-auto">

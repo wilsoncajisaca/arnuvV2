@@ -4,11 +4,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@Controller
-@RequestMapping("/content")
 public class BlankController {
-    @GetMapping("/welcome")
+    @GetMapping("/home")
     public String index() {
-        return "content/blank";
+        return "/content-page/blank";
     }
 }

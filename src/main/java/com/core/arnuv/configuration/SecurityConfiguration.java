@@ -1,5 +1,6 @@
 package com.core.arnuv.configuration;
 
+import com.core.arnuv.constants.Constants;
 import com.core.arnuv.services.imp.UserServicesAuth;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.thymeleaf.extras.springsecurity6.dialect.SpringSecurityDialect;
 
 import java.util.Arrays;
@@ -28,7 +28,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
-public class SecurityConfiguration implements WebMvcConfigurer {
+public class SecurityConfiguration {
     @Autowired
     private final UserServicesAuth userService;
     @Bean
@@ -36,7 +36,7 @@ public class SecurityConfiguration implements WebMvcConfigurer {
         http.cors(withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers(getPermittedRoutes()).permitAll()
+                        .requestMatchers(Constants.getPermittedRoutes()).permitAll()
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/auth/login")
@@ -75,15 +75,5 @@ public class SecurityConfiguration implements WebMvcConfigurer {
     @Bean
     public SpringSecurityDialect springSecurityDialect() {
         return new SpringSecurityDialect();
-    }
-
-    private String[] getPermittedRoutes() {
-        return new String[]{
-                "/landing/**",
-                "/content/**",
-                "/templates/**",
-                "/auth/**",
-                "/index"
-        };
     }
 }

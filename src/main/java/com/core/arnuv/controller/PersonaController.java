@@ -30,7 +30,7 @@ public class PersonaController {
 	@GetMapping("crear")
 	public String personCreate(Model model) {
 		model.addAttribute("nuevo", new PersonaDetalleRequest());
-		return "/content/persona-crear";
+		return "/content-page/persona-crear";
 	}
 
 	@PostMapping("create-access")

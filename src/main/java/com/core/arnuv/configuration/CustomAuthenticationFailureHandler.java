@@ -15,15 +15,6 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
                                         AuthenticationException exception) throws IOException, ServletException {
         request.getSession().setAttribute(WebAttributes.AUTHENTICATION_EXCEPTION, exception);
-        response.sendRedirect("/auth/login?error=true");
-        /*String errorMessage;
-        if (exception.getClass().isAssignableFrom(LockedException.class)) {
-            errorMessage = "Usuario actualmente deshabilitado";
-        } else {
-            errorMessage = "Usuario o contraseña incorrecta";
-        }
-
-        String encodedErrorMessage = URLEncoder.encode(errorMessage, StandardCharsets.UTF_8);
-        response.sendRedirect("/auth/login?error=" + encodedErrorMessage);*/
+        response.sendRedirect("/auth/login");
     }
 }
