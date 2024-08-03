@@ -1,33 +1,19 @@
 package com.core.arnuv.services.imp;
 
-import com.core.arnuv.model.Personadetalle;
 import com.core.arnuv.model.Usuariodetalle;
 import com.core.arnuv.repository.IUsuarioDetalleRepository;
 import com.core.arnuv.service.IUsuarioDetalleService;
 import com.google.common.hash.Hashing;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.LockedException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.util.Collection;
 import java.util.List;
 import java.util.Random;
-import java.util.regex.Matcher;
-import java.util.stream.Collectors;
-
-import static com.core.arnuv.constants.Constants.EMAIL_PATTERN;
 
 @Service
-@Component
 public class UsuarioDetalleServiceImp implements IUsuarioDetalleService {
 
 	@Autowired
@@ -66,8 +52,8 @@ public class UsuarioDetalleServiceImp implements IUsuarioDetalleService {
 	}
 
 	@Override
-	public Usuariodetalle buscarPorEmail(String email) {
-		return repo.buscarPorEmail(email).get();
+	public Usuariodetalle buscarPorEmailOrUserName(String email) {
+		return repo.buscarPorEmailOrUsername(email).get();
 	}
 
 	@Override

@@ -14,6 +14,8 @@ import com.core.arnuv.model.CatalogoDetalle;
 import com.core.arnuv.model.MascotaDetalle;
 import com.core.arnuv.service.ICatalogoDetalleService;
 import com.core.arnuv.service.IMascotaDetalleService;
+import com.core.arnuv.service.IPersonaDetalleService;
+
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -28,25 +30,30 @@ public class MascotaController {
 	
 	@Autowired
 	public ICatalogoDetalleService catalogoDetalleService;
+	
+	@Autowired
+	public IPersonaDetalleService personaDetalleService;
+	
 
 	/*
 	@GetMapping("/listar")
 	public String login() {
-		return "/admin/mascotas";
+		return "/content/mascotas";
 	}
 */
 	@GetMapping("/listar")
 	public String listarColores(Model model) {
 		List<MascotaDetalle> listaMascotas = mscotaDetalleService.listarMascotasDetalle();
 		model.addAttribute("lista", listaMascotas);
-		return "/admin/mascotas-listar";
+		return "/content/mascotas-listar";
 	}
 
 	@GetMapping("/nuevo")
 	public String crear(Model model) {
 		model.addAttribute("nuevo", new MascotaDetalle());	 
 		model.addAttribute("catalogo",catalogoDetalleService.listarCatalogoDetalle());
-		return "/admin/mascotas-crear";
+		model.addAttribute("personas", personaDetalleService.listarTodosPersonaDetalle());
+		return "/content/mascotas-crear";
 	}
 
 	// guardar
@@ -59,7 +66,7 @@ public class MascotaController {
 			return "redirect:/mascota/listar";
         } catch (IOException e) {
 			redirectAttributes.addFlashAttribute("message", "La imagen no se pudo guardar");
-			return "/admin/mascotas-crear";
+			return "/content/mascotas-crear";
         }
 	}
 
@@ -69,8 +76,9 @@ public class MascotaController {
 	public String editarCurso(@PathVariable(value = "idmascota") int codigo, Model model) {
 		MascotaDetalle itemrecuperado = mscotaDetalleService.buscarMascotaID(codigo);
 		model.addAttribute("nuevo", itemrecuperado);
-		model.addAttribute("catalogos", catalogoDetalleService.listarCatalogoDetalle());
-		return "/admin/mascotas";
+		model.addAttribute("catalogo", catalogoDetalleService.listarCatalogoDetalle());
+		model.addAttribute("personas", personaDetalleService.listarTodosPersonaDetalle());
+		return "/content/mascotas-crear";
 	}
 
 	// eliminar

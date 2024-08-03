@@ -1,23 +1,16 @@
-document.addEventListener("DOMContentLoaded", function() {
-    var select = document.getElementById("browserSelect");
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Geolocalización con Google Maps</title>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDOTcLb_EU2ud-xK2_Rormqf4lm5xH_S5w"></script>
+</head>
+<body>
+   <h1>Geolocalización</h1>
+    <div id="map" style="height: 500px; width: 100%;"></div>
+    <script>
+        let currentMarker = null;
 
-    for (var i = 0; i < select.options.length; i++) {
-        var option = select.options[i];
-        var thumbnail = option.getAttribute("data-thumbnail");
-        
-        if (thumbnail) {
-            var img = document.createElement("img");
-            img.src = thumbnail;
-            img.alt = "";
-            img.classList.add("thumbnail-option");
-            option.innerText = ""; // Limpiar el texto actual
-            option.appendChild(img);
-            option.appendChild(document.createTextNode(option.text));
-        }
-    }
-});
-
- function initMap() {
+        function initMap() {
             var map = new google.maps.Map(document.getElementById('map'), {
                 zoom: 15,
                 center: {lat: -34.397, lng: 150.644}
@@ -70,3 +63,9 @@ document.addEventListener("DOMContentLoaded", function() {
             });
             infoWindow.open(map);
         }
+
+        // Initialize the map
+        window.onload = initMap;
+    </script>
+</body>
+</html>

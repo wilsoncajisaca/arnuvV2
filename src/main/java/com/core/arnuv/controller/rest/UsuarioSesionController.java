@@ -22,7 +22,7 @@ public class UsuarioSesionController {
 	@Autowired
 	private IUsuarioDetalleService servicioUsuarioDetalle;
 
-	@Autowired
+	//@Autowired
 	private JwtServiceImpl serviceJwt;
 
 	@GetMapping("/listar")

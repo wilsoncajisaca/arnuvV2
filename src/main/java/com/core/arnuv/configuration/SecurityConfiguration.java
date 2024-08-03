@@ -1,31 +1,24 @@
 package com.core.arnuv.configuration;
 
-import com.core.arnuv.jwt.JwtAuthenticationFilter;
-import com.core.arnuv.service.IUsuarioDetalleService;
 import com.core.arnuv.services.imp.UserServicesAuth;
-import com.core.arnuv.services.imp.UsuarioDetalleServiceImp;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.thymeleaf.extras.springsecurity6.dialect.SpringSecurityDialect;
 
 import java.util.Arrays;
 
@@ -35,41 +28,23 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
-public class SecurityConfiguration {
+public class SecurityConfiguration implements WebMvcConfigurer {
     @Autowired
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    @Autowired
-    private final IUsuarioDetalleService userService;
-    @Autowired
-    private UsuarioDetalleServiceImp usuarioDetalleServiceImp;
-
+    private final UserServicesAuth userService;
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.cors(withDefaults()).csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(request ->
-                        request.requestMatchers("/api/autenticacion/**").permitAll()
-                                .requestMatchers("/resources/**").permitAll()
-                                .requestMatchers("/index").permitAll()
-                                .requestMatchers("/login").permitAll()
-                                .requestMatchers("/register").permitAll()
-                                .requestMatchers("/templates/**").permitAll()
-                                .requestMatchers("/admin/**").permitAll()
-                                .requestMatchers("/auth/**").permitAll()
-                                .requestMatchers("/persona/**").permitAll()
-                                .requestMatchers("/usuario/**").permitAll()
-                                .requestMatchers("/mascota/**").permitAll()
-                                .requestMatchers("/catalogo/**").permitAll()
-                                .requestMatchers("/tarifario/**").permitAll()
-                                .requestMatchers("/paseo/**").permitAll()
-                                .requestMatchers("/role/**").permitAll()
-                                .anyRequest()
-                                .authenticated())
-                .formLogin((form) -> form
-                        .loginPage("/login")
-                        .defaultSuccessUrl("/default", true)
+        http.cors(withDefaults())
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(request -> request
+                        .requestMatchers(getPermittedRoutes()).permitAll()
+                        .anyRequest().authenticated())
+                .formLogin(form -> form
+                        .loginPage("/auth/login")
+                        .failureHandler(new CustomAuthenticationFailureHandler())
+                        .defaultSuccessUrl("/auth/default", true)
                         .permitAll())
                 .logout(logout -> logout
-                        .logoutUrl("/logout")
+                        .logoutUrl("/auth/logout")
                         .permitAll());
         return http.build();
     }
@@ -80,14 +55,9 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public UserDetailsService userDetailsService() {
-        return new UserServicesAuth();
-    }
-
-    @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
         AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder());
+        authenticationManagerBuilder.userDetailsService(userService).passwordEncoder(passwordEncoder());
         return authenticationManagerBuilder.build();
     }
 
@@ -102,4 +72,18 @@ public class SecurityConfiguration {
         return source;
     }
 
+    @Bean
+    public SpringSecurityDialect springSecurityDialect() {
+        return new SpringSecurityDialect();
+    }
+
+    private String[] getPermittedRoutes() {
+        return new String[]{
+                "/landing/**",
+                "/content/**",
+                "/templates/**",
+                "/auth/**",
+                "/index"
+        };
+    }
 }

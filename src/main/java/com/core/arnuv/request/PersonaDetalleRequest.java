@@ -49,6 +49,12 @@ public class PersonaDetalleRequest extends RequestComun<Personadetalle> {
 
     @Comment("Correo electronico")
     private String email;
+    
+    @Comment("latitud")
+	private String latitud;
+	
+	@Comment("longitud")
+	private String longitud;
 
 
 }

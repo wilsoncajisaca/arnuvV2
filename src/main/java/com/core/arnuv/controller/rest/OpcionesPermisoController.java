@@ -28,7 +28,7 @@ public class OpcionesPermisoController {
 	@Autowired
 	private IOpcionesPermisoService servicioOpcionPermiso;
 
-	@Autowired
+	//@Autowired
 	private JwtServiceImpl serviceJwt;
 
 	@GetMapping("/listar")

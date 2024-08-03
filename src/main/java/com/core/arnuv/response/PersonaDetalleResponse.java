@@ -47,6 +47,8 @@ public class PersonaDetalleResponse extends RespuestaComun<PersonaDetalleRespons
 
 		@Comment("Correo electronico")
 		private String email;
+		
+		
 
 	}
 

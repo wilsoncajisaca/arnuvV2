@@ -28,7 +28,7 @@ public class UsuarioRolController {
 	@Autowired
 	private IUsuarioRolService servicioUsuarioRol;
 
-	@Autowired
+	//@Autowired
 	private JwtServiceImpl serviceJwt;
 
 	@GetMapping("/listar")

@@ -38,7 +38,7 @@ public class AutenticacionRestController {
     @Autowired
     private IOpcionesPermisoService servicioOpciones;
 
-    @Autowired
+    //@Autowired
     private JwtServiceImpl serviceJwt;
 
     @Autowired
@@ -46,7 +46,7 @@ public class AutenticacionRestController {
 
     @PostMapping("/login")
     public ResponseEntity<RespuestaComun> validarLogin(HttpServletRequest request, @RequestBody LoginRequest login) throws Exception {
-        var entity = serviceUsuarioDetalle.buscarPorEmail(login.getEmail());
+        var entity = serviceUsuarioDetalle.buscarPorEmailOrUserName(login.getEmail());
         LoginResponse resp = new LoginResponse();
         if (entity == null) {
             throw new ArnuvNotFoundException("El usuario {0} no existe", login.getEmail());
@@ -113,7 +113,7 @@ public class AutenticacionRestController {
 
         var data = serviceJwt.extraerTokenData();
         String email = (String) data.get("email");
-        var entity = serviceUsuarioDetalle.buscarPorEmail(email);
+        var entity = serviceUsuarioDetalle.buscarPorEmailOrUserName(email);
 
         int idrol = Integer.parseInt(data.get("idrol").toString());
         var lresultados = servicioOpciones.buscarTitulosMenu(idrol);
@@ -150,7 +150,7 @@ public class AutenticacionRestController {
     public ResponseEntity<RespuestaComun> confirmacionPassword(HttpServletRequest request, @RequestBody ConfirmacionPasswordRequest login) throws Exception {
         var data = serviceJwt.extraerTokenData();
         String email = (String) data.get("email");
-        var entity = serviceUsuarioDetalle.buscarPorEmail(email);
+        var entity = serviceUsuarioDetalle.buscarPorEmailOrUserName(email);
 
         LoginResponse resp = new LoginResponse();
         if (entity == null) {
@@ -215,7 +215,7 @@ public class AutenticacionRestController {
 
     @PostMapping("/recuperarcontrasenia/{email}")
     public ResponseEntity<RespuestaComun> buscarPorEmail(@PathVariable String email) throws Exception {
-        var entity = serviceUsuarioDetalle.buscarPorEmail(email);
+        var entity = serviceUsuarioDetalle.buscarPorEmailOrUserName(email);
 
         if (entity == null) {
             throw new ArnuvNotFoundException("El email {0} no existe", email);

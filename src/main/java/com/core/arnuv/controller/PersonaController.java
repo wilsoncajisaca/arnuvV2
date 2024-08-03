@@ -1,9 +1,11 @@
 package com.core.arnuv.controller;
 
 import com.core.arnuv.model.Personadetalle;
+import com.core.arnuv.model.Ubicacion;
 import com.core.arnuv.request.PersonaDetalleRequest;
 import com.core.arnuv.service.ICatalogoDetalleService;
 import com.core.arnuv.service.IPersonaDetalleService;
+import com.core.arnuv.service.IUbicacionService;
 import com.core.arnuv.utils.ArnuvNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -22,10 +24,13 @@ public class PersonaController {
 	@Autowired
 	private IPersonaDetalleService servicioPersonaDetalle;
 	
+	@Autowired
+	private IUbicacionService  ubicacionService;
+	
 	@GetMapping("crear")
 	public String personCreate(Model model) {
 		model.addAttribute("nuevo", new PersonaDetalleRequest());
-		return "/admin/persona-crear";
+		return "/content/persona-crear";
 	}
 
 	@PostMapping("create-access")
@@ -36,6 +41,11 @@ public class PersonaController {
 		Personadetalle personaEntity;
 		try {
 			personaEntity = servicioPersonaDetalle.insertarPersonaDetalle(personadetalle);
+			var ubicacion = new Ubicacion();
+			ubicacion.setLatitud(persona.getLatitud());
+			ubicacion.setLongitud(persona.getLongitud());
+			ubicacion.setIdpersona(personaEntity);
+			ubicacionService.insertarUbicacion(ubicacion);
 		} catch (DataIntegrityViolationException e) {
 			throw new ArnuvNotFoundException("Error al guardar datos: {0}", e.getMessage().split("Detail:")[1].split("]")[0]);
 		}

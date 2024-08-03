@@ -25,7 +25,7 @@ public class RoleController {
     @GetMapping("/listar")
     public String getRoles(Model model) {
         model.addAttribute("roles", servicioRol.listarTodosRoles());
-        return "/admin/roles";
+        return "/content/roles";
     }
 
     @GetMapping("/anclar-rol/{userId}")
@@ -35,7 +35,7 @@ public class RoleController {
         nuevo.setIdusuario(userId);
         nuevo.setUsername(servicioUsuarioDetalle.buscarPorId(userId).getUsername());
         model.addAttribute("nuevo", nuevo);
-        return "/admin/rol-crear";
+        return "/content/rol-crear";
     }
 
     @PostMapping("/insertar")
@@ -52,6 +52,6 @@ public class RoleController {
         usuariorolentity.setId(usuariorolId);
 
         servicioUsuarioRol.insertarUsuarioRol(usuariorolentity);
-        return "redirect:/admin/welcome";
+        return "redirect:/content/welcome";
     }
 }

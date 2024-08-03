@@ -25,7 +25,7 @@ public class PersonaDetalleController {
 	@Autowired
 	private IPersonaDetalleService servicioPersonaDetalle;
 
-	@Autowired
+	//@Autowired
 	private JwtServiceImpl serviceJwt;
 
 	@GetMapping("/listar")

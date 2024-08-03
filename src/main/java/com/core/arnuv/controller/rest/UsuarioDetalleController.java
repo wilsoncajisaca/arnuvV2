@@ -5,22 +5,16 @@ import com.core.arnuv.model.Personadetalle;
 import com.core.arnuv.model.Usuariodetalle;
 import com.core.arnuv.model.Usuariorol;
 import com.core.arnuv.request.UsuarioDetalleRequest;
-import com.core.arnuv.request.UsuarioUnificadoRequest;
-import com.core.arnuv.response.BaseResponse;
 import com.core.arnuv.response.UsuarioDetalleResponse;
 import com.core.arnuv.service.*;
 import com.core.arnuv.services.imp.EnvioEmail;
 import com.core.arnuv.utils.ArnuvNotFoundException;
 import com.core.arnuv.utils.RespuestaComun;
-import com.core.arnuv.utils.helper.UsuarioUnificadoHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -44,7 +38,7 @@ public class UsuarioDetalleController {
 	@Autowired
 	private IUsuarioRolService servicioUsuarioRol;
 
-	@Autowired
+	//@Autowired
 	private JwtServiceImpl serviceJwt;
 	
 	@GetMapping("/listar")
@@ -97,7 +91,7 @@ public class UsuarioDetalleController {
 
 	@GetMapping("/validar/{username}")
 	public ResponseEntity<RespuestaComun> buscarPorUserName(@PathVariable String username) throws Exception {
-		var entity = servicioUsuarioDetalle.buscarPorEmail(username);
+		var entity = servicioUsuarioDetalle.buscarPorEmailOrUserName(username);
 		if (entity == null) {
 			throw new ArnuvNotFoundException("El usuario {0} no existe", username);
 		}

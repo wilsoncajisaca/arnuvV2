@@ -15,7 +15,7 @@ public interface IUsuarioDetalleService {
 
 	public Usuariodetalle buscarPorId(int id);
 
-	public Usuariodetalle buscarPorEmail(String email);
+	public Usuariodetalle buscarPorEmailOrUserName(String email);
 
 	UserDetailsService userDetailsService();
 

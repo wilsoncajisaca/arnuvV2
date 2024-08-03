@@ -34,7 +34,7 @@ public class MascotaDetalleController {
 	@Autowired
 	private IMascotaDetalleService servicioMascota;
 
-	@Autowired
+	//@Autowired
 	private JwtServiceImpl serviceJwt;
 
 	@GetMapping("/listar")

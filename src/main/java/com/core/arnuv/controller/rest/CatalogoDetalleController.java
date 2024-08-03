@@ -21,7 +21,7 @@ public class CatalogoDetalleController {
 	@Autowired
 	private ICatalogoDetalleService servicioCatalogoDetalle;
 
-	@Autowired
+	//@Autowired
 	private JwtServiceImpl serviceJwt;
 
 	/*

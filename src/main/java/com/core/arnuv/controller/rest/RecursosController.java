@@ -24,7 +24,7 @@ public class RecursosController {
 	@Autowired
 	private IModuloService servicioModulo;
 
-	@Autowired
+	//@Autowired
 	private JwtServiceImpl serviceJwt;
 
 	@GetMapping("/listar")

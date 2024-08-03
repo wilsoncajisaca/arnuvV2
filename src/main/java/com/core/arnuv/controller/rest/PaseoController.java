@@ -28,7 +28,7 @@ public class PaseoController {
 	@Autowired
 	private IPaseoService servicioPase;
 
-	@Autowired
+	//@Autowired
 	private JwtServiceImpl serviceJwt;
 
 	@GetMapping("/listar")

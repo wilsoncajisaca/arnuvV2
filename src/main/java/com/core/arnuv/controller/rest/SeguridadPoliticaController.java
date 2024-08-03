@@ -19,7 +19,7 @@ public class SeguridadPoliticaController {
 	@Autowired
 	private ISeguridadPoliticaService servicioSeguridadPolitica;
 
-	@Autowired
+	//@Autowired
 	private JwtServiceImpl serviceJwt;
 
 	@GetMapping("/listar")

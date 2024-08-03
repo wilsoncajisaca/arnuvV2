@@ -25,7 +25,7 @@ public class RolController {
 	@Autowired
 	private ISeguridadPoliticaService servicioSeguridadPolitica;
 
-	@Autowired
+	//@Autowired
 	private JwtServiceImpl serviceJwt;
 
 	@GetMapping("/listar")

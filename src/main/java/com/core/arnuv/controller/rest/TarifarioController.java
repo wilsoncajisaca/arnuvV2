@@ -28,7 +28,7 @@ public class TarifarioController {
 	@Autowired
 	private ITarifarioService servicioTarifario;
 
-	@Autowired
+	//@Autowired
 	private JwtServiceImpl serviceJwt;
 
 	@GetMapping("/listar")
