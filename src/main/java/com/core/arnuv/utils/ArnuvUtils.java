@@ -3,7 +3,14 @@ package com.core.arnuv.utils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.config.Configuration;
 import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+
+import com.core.arnuv.model.Personadetalle;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -55,6 +62,12 @@ public class ArnuvUtils {
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
         return EARTH_RADIUS * c;
+    }
+    
+    public static Personadetalle getUserInSession(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        Personadetalle user = (Personadetalle) session.getAttribute("loggedInUser");
+        return user;
     }
 
 }

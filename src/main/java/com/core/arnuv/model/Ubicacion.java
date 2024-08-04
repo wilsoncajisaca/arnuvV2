@@ -14,9 +14,10 @@ public class Ubicacion implements Serializable {
 @Id
 @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idUbicacion;
-    private String latitud;
-    private String longitud;
+    private float latitud;
+    private float longitud;
     private String descripcion;
+    private Integer isDefault;
 
     @ManyToOne()
     @Comment("Codigo de personaDetalle")

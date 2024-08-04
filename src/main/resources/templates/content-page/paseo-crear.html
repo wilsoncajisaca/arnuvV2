@@ -4,7 +4,14 @@
 	layout:decorate="~{content-page/plantilla}">
 <head>
 
-
+<script
+	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDOTcLb_EU2ud-xK2_Rormqf4lm5xH_S5w"></script>
+<style>
+#map1 {
+	height: 400px;
+	width: 100%;
+}
+</style>
 
 </head>
 <body>
@@ -17,6 +24,8 @@
 					Paseo</h2>
 				<div
 					class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
+					
+					<div id="map1"></div>
 
 					<form th:action="@{/paseo/insertar}" th:object="${nuevo}"
 						class="form-material" method="post">
@@ -58,7 +67,7 @@
 			                  class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
 			                  
 			                >
-			                <option value="0" disabled selected>Seleccione una persona</option>
+			                <option value="0"  selected>Seleccione una persona</option>
 			                  <option th:each="persona : ${persona}" th:text="${persona.nombres}"
 									th:value="${persona.id}"></option>
 			                  
@@ -122,9 +131,114 @@
 						</div>
 						
 						<input type="hidden" th:field="*{id}">
-					
+						
+					 <!-- <input type="hidden" id="ubicacionesTexto" name="ubicacionesTexto" th:value="${ubicaciones}"/> -->
 
 					</form>
+					
+					
+					 <script  th:inline="javascript">
+					
+					function initMap12() {
+			           var map = new google.maps.Map(document.getElementById('map1'), {
+			                zoom: 17,
+			                center: { lat: -2.898974, lng: -79.042480 } // Centrar el mapa en una ubicación predeterminada
+			            });
+			           
+			         
+
+			           
+			            
+			         /*
+			            var ubicacionIdField = document.getElementById('ubicacionesTexto');			            
+			            var data = "'"+ubicacionIdField.value+"'";			            
+	
+			            data = data.replace(/Ubicacion/g, '')
+			            			.replace(/\(/g, '{').replace(/\)/g, '}')
+			            			.replace(/=/g, ":") 
+			            			.replace(/id/g, '"id"')
+						            .replace(/latitud/g, '"latitud"')
+						            .replace(/longitud/g, '"longitud"')
+						            .replace(/descripcion/g, '"descripcion"')
+						            .replace(/=/g, '":"') ;
+			            
+			            console.log('javie 2',data);
+			            
+			            var textoSinComillas = data.replace(/^'(.*)'$/, '$1');
+			            const textoJSON = JSON.parse(textoSinComillas);
+			            
+			            console.log('javie 2',textoJSON);
+			            */
+			            var textoJSON =[{"id":4, "latitud":-2.8989499, "longitud":-79.0425023, "descripcion":null, "persona":12}, {"id":5, "latitud":-2.8967211557160097, "longitud":-79.03432692692259, "descripcion":null,"persona":11}];
+			            
+			            console.log("aqui javi -----------",textoJSON);
+			            
+			            const infowindow = new google.maps.InfoWindow({
+		                    content: `<div><img src="/static/admin/assets/img/perrro.jpg" alt="Image" style="max-width: 200px;"></div>`
+		                });
+
+			            
+			            textoJSON.forEach(point => {
+			                const marker = new google.maps.Marker({
+			                    position: { lat: point.latitud, lng: point.longitud },
+			                    map: map,
+			                    title: 'Persona ID: 12',
+			                    icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
+			                });
+
+			                // Maneja el clic en el marcador
+			                marker.addListener("click", () => {
+			                    // Actualiza el combo box
+			                    
+			                    	marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png');
+			                    // Icono seleccionado
+			                    marker.
+			                    
+			                    selectedMarker = marker;
+			                    
+			                    console.log("aqui javi -----------",point.persona);
+			                    const selectElement = document.getElementById('personaSelect');
+			                    selectElement.value = point.persona;
+			                    // Dispara un evento de cambio si es necesario
+			                    selectElement.dispatchEvent(new Event('change'));
+			                    infowindow.open(map, marker);
+			                });
+			            });
+			            
+			            /*
+			            textoJSON.forEach(function(puntos) {
+			                console.log(puntos.longitud);
+			                console.log('aqui javi ',puntos.Idpersona);
+			                if (puntos.latitud && puntos.longitud) {
+			                    var position = {
+			                        lat: parseFloat(puntos.latitud),
+			                        lng: parseFloat(puntos.longitud)
+			                    };
+
+			                    new google.maps.Marker({
+			                        position: position,
+			                        map: map,
+			                        title: puntos.id
+			                    });
+			                }
+			            });*/
+			            
+			        
+			         // Obtener ubicaciones desde el atributo de datos del div
+			            //var ubicaciones = document.getElementById('ubicaciones-data');
+			          // Obtener ubicaciones desde el div con JSON
+          
+			            
+			        }
+			    
+
+					
+			        
+
+			        // Inicializar el mapa cuando el DOM esté completamente cargado
+//			        window.onload = initMap12;
+			        google.maps.event.addDomListener(window, 'load', initMap12);
+					</script>					
 
 				</div>
 

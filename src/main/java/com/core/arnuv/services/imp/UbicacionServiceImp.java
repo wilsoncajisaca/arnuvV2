@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 @Service
 @Component
 public class UbicacionServiceImp implements IUbicacionService {
@@ -68,4 +69,24 @@ public class UbicacionServiceImp implements IUbicacionService {
             System.out.println("Error al eliminar Ubicacion: " + e.getMessage());
         }
     }
+
+	@Override
+	public Ubicacion ubicacionPaseadores() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Ubicacion ubicacionPersonaPorDefecto(int idpersona) {
+		
+		
+		try {
+            return repo.findByIsDefaultAndIdpersona(1, idpersona).orElseThrow();
+
+        } catch (Exception e) {
+            System.out.println("Error al Listar la Ubicacion");
+        }
+        return null;
+		
+	}
 }

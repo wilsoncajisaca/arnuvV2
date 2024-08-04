@@ -4,6 +4,7 @@ package com.core.arnuv.service;
 import com.core.arnuv.model.Ubicacion;
 
 import java.util.List;
+import java.util.Set;
 
 public interface IUbicacionService  {
     List<Ubicacion> listarUbicacion();
@@ -15,4 +16,11 @@ public interface IUbicacionService  {
     public Ubicacion buscarPorId(int idUbicacion);
 
     public void eliminarUbicacion(int idUbicacion);
+    
+    public Ubicacion ubicacionPaseadores();
+    
+    
+    Ubicacion ubicacionPersonaPorDefecto(int idpersona);
+
+
 }

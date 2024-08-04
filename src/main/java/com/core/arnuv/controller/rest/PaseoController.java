@@ -1,69 +1,79 @@
 package com.core.arnuv.controller.rest;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import com.core.arnuv.jwt.JwtServiceImpl;
-import com.core.arnuv.request.PaseoRequest;
-import com.core.arnuv.response.PaseoResponse;
-import com.core.arnuv.utils.ArnuvUtils;
-import com.core.arnuv.utils.RespuestaComun;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import com.core.arnuv.model.Paseo;
+import com.core.arnuv.model.Personadetalle;
+import com.core.arnuv.model.Ubicacion;
+import com.core.arnuv.response.UbicacionResponse;
+import com.core.arnuv.service.IMascotaDetalleService;
+import com.core.arnuv.service.IParametroService;
 import com.core.arnuv.service.IPaseoService;
+import com.core.arnuv.service.IPersonaDetalleService;
+import com.core.arnuv.service.ITarifarioService;
+import com.core.arnuv.service.IUbicacionService;
+import com.core.arnuv.utils.ArnuvUtils;
 
-import jakarta.persistence.TableGenerator;
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
-@Validated
 @RequestMapping("/paseos")
-@TableGenerator(name = "Paseo")
 public class PaseoController {
 
 	@Autowired
-	private IPaseoService servicioPase;
+	public IPaseoService paseoService;
 
-	//@Autowired
-	private JwtServiceImpl serviceJwt;
+	@Autowired
+	public IPersonaDetalleService personaDetalleService;
+
+	@Autowired
+	public ITarifarioService ITarifarioService;
+
+	@Autowired
+	public IMascotaDetalleService mascotaDetalleService;
+
+	@Autowired
+	public IUbicacionService ubicacionService;
+
+	@Autowired
+	public IParametroService parametroService;
 
 	@GetMapping("/listar")
-	public ResponseEntity<List<Paseo>> listar() throws Exception {
-		HttpHeaders responseHeaders = new HttpHeaders();
-		responseHeaders.set("token", "kldjsfdsfjlksdj");
-		var aux = this.servicioPase.listarPaseos();
-		return new ResponseEntity<>(aux, responseHeaders, HttpStatus.OK);
-	}
+	public ResponseEntity<?> listar(HttpServletRequest request) {
 
-	@PostMapping("/crear")
-	public ResponseEntity<?> crear(@RequestBody Paseo data) {
-		Object entity;
-		try {
-			entity = servicioPase.insertarPaseo(data);
-		} catch (Exception e) {
-			entity = e.getMessage();
+		var listaUbicaciones = ubicacionService.listarUbicacion();
+
+		Personadetalle personalogueada = personaDetalleService.buscarPorId(4);//ArnuvUtils.getUserInSession(request);
+		
+		var ubicacionPersonaLogueada = ubicacionService.ubicacionPersonaPorDefecto(personalogueada.getId());
+		var perLatitud = ubicacionPersonaLogueada.getLatitud();
+		var perLongitud =  ubicacionPersonaLogueada.getLongitud();
+		
+		
+		double radio = parametroService.getParametro("RADIO").getValorNumber();
+
+		List<UbicacionResponse> ubiPaseadores = new ArrayList<>();
+
+		for (Ubicacion ubicacion : listaUbicaciones) {
+			
+			double distancia = ArnuvUtils.distance(perLatitud,perLongitud, ubicacion.getLatitud(),
+					ubicacion.getLongitud());
+			if (distancia <= radio) {
+				UbicacionResponse ubicacionresponce= new UbicacionResponse();
+				ubicacionresponce.setIdpersona(ubicacion.getIdpersona().getId());
+				ubicacionresponce.setLatitud(ubicacion.getLatitud());
+				ubicacionresponce.setLongitud(ubicacion.getLongitud());
+				ubiPaseadores.add(ubicacionresponce);
+			}
 		}
-		return new ResponseEntity<>(entity, HttpStatus.OK);
+
+		return ResponseEntity.ok(ubiPaseadores);
 	}
 
-	@PutMapping("/actualizar")
-	public ResponseEntity<?> actualizar(@RequestBody PaseoRequest paseo) throws Exception {
-		var entity = servicioPase.actualizarPaseo(paseo.mapearDato(paseo, Paseo.class));
-		PaseoResponse resp = new PaseoResponse();
-		resp.mapearDato(entity, PaseoResponse.PaseoDto.class);
-		return new ResponseEntity<>(resp, HttpStatus.OK);
-	}
-/*
-	@GetMapping("/buscar/{id}")
-	public ResponseEntity<RespuestaComun> buscarPorId(@PathVariable String id) throws Exception {
-		var entity = servicioPase.buscarPorId(id);
-		PaseoResponse resp = new PaseoResponse();
-		resp.mapearDato(entity, PaseoResponse.PaseoDto.class);
-		return new ResponseEntity<>(resp, serviceJwt.regeneraToken(), HttpStatus.OK);
-	}
-	*/
 }

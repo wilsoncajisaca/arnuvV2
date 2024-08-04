@@ -50,13 +50,13 @@ public class PaseosController {
 	public String listar(Model model) {
 		List<Paseo> listapaseos = paseoService.listarPaseos();
 		model.addAttribute("lista", listapaseos);
-		return "/content-page/prueba";
+		return "/content-page/paseo-listar";
 	}
 
 	@GetMapping("/nuevo")
 	public String crear(Model model) {
 		
-		
+		/*
 		var listaUbi = ubicacionService.listarUbicacion();
 		for (Ubicacion punto : listaUbi) {
 			System.out.println("----------------");
@@ -79,7 +79,7 @@ public class PaseosController {
 			System.out.println("puntos ----------------");
 			System.out.println(punto.getLatitud());
 		}
-		
+		*/
 		// var personaUbi = ubicacionService.buscarPorId(2);
 /*
 		int idpersona = 9;
