@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import com.core.arnuv.model.Paseo;
 import com.core.arnuv.model.Personadetalle;
 import com.core.arnuv.model.Ubicacion;
-import com.core.arnuv.response.UbicacionResponse;
+import com.core.arnuv.response.UbicacionCabeceraResponse;
+import com.core.arnuv.response.UbicacionDetalleResponse;
 import com.core.arnuv.service.IMascotaDetalleService;
 import com.core.arnuv.service.IParametroService;
 import com.core.arnuv.service.IPaseoService;
@@ -49,23 +50,31 @@ public class PaseoController {
 
 		var listaUbicaciones = ubicacionService.listarUbicacion();
 
-		Personadetalle personalogueada = personaDetalleService.buscarPorId(4);//ArnuvUtils.getUserInSession(request);
+		Personadetalle personalogueada = personaDetalleService.buscarPorId(4);  ///ArnuvUtils.getUserInSession(request);
 		
 		var ubicacionPersonaLogueada = ubicacionService.ubicacionPersonaPorDefecto(personalogueada.getId());
 		var perLatitud = ubicacionPersonaLogueada.getLatitud();
 		var perLongitud =  ubicacionPersonaLogueada.getLongitud();
 		
+		UbicacionCabeceraResponse ubiCliente = new UbicacionCabeceraResponse();
+		ubiCliente.setIdpersona(ubicacionPersonaLogueada.getIdpersona().getId());
+		ubiCliente.setLatitud(ubicacionPersonaLogueada.getLatitud());
+		ubiCliente.setLongitud(ubicacionPersonaLogueada.getLongitud());
+		
+		
+		
+		
 		
 		double radio = parametroService.getParametro("RADIO").getValorNumber();
 
-		List<UbicacionResponse> ubiPaseadores = new ArrayList<>();
+		List<UbicacionDetalleResponse> ubiPaseadores = new ArrayList<>();
 
 		for (Ubicacion ubicacion : listaUbicaciones) {
 			
 			double distancia = ArnuvUtils.distance(perLatitud,perLongitud, ubicacion.getLatitud(),
 					ubicacion.getLongitud());
 			if (distancia <= radio) {
-				UbicacionResponse ubicacionresponce= new UbicacionResponse();
+				UbicacionDetalleResponse ubicacionresponce= new UbicacionDetalleResponse();
 				ubicacionresponce.setIdpersona(ubicacion.getIdpersona().getId());
 				ubicacionresponce.setLatitud(ubicacion.getLatitud());
 				ubicacionresponce.setLongitud(ubicacion.getLongitud());
@@ -73,7 +82,8 @@ public class PaseoController {
 			}
 		}
 
-		return ResponseEntity.ok(ubiPaseadores);
+		ubiCliente.setUbicacionDetalleResponse(ubiPaseadores);
+		return ResponseEntity.ok(ubiCliente);
 	}
 
 }

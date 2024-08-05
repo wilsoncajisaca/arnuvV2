@@ -166,79 +166,79 @@ function initMap1() {
 
 
 function initMap() {
-            var map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 15,
-                center: {lat: -34.397, lng: 150.644}
-            });
+	var map = new google.maps.Map(document.getElementById('map'), {
+		zoom: 15,
+		center: { lat: -34.397, lng: 150.644 }
+	});
 
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position) {
-                    var pos = {
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude
-                    };
+	if (navigator.geolocation) {
+		navigator.geolocation.getCurrentPosition(function(position) {
+			var pos = {
+				lat: position.coords.latitude,
+				lng: position.coords.longitude
+			};
 
-                    currentMarker = new google.maps.Marker({
-                        position: pos,
-                        map: map
-                    });
+			currentMarker = new google.maps.Marker({
+				position: pos,
+				map: map
+			});
 
-                    map.setCenter(pos);
-                    updateLatLongFields(pos.lat, pos.lng);       
-                                 
-           			 var latlng = { lat: pos.lat, lng: pos.lng };
-					// Geocoder
-					var geocoder = new google.maps.Geocoder();
-            		geocodeLatLng(geocoder, latlng);
-            
-                }, function() {
-                    handleLocationError(true, map.getCenter());
-                });
-            } else {
-                // Browser doesn't support Geolocation
-                handleLocationError(false, map.getCenter());
-            }
+			map.setCenter(pos);
+			updateLatLongFields(pos.lat, pos.lng);
+
+			var latlng = { lat: pos.lat, lng: pos.lng };
+			// Geocoder
+			var geocoder = new google.maps.Geocoder();
+			geocodeLatLng(geocoder, latlng);
+
+		}, function() {
+			handleLocationError(true, map.getCenter());
+		});
+	} else {
+		// Browser doesn't support Geolocation
+		handleLocationError(false, map.getCenter());
+	}
 	debugger;
-            // Add click event listener to the map
-            map.addListener('click', function(event) {
-                placeMarker(event.latLng, map);
-            });
-           
-        }
+	// Add click event listener to the map
+	map.addListener('click', function(event) {
+		placeMarker(event.latLng, map);
+	});
 
-        function placeMarker(location, map) {
-            if (currentMarker) {
-                currentMarker.setMap(null); // Remove the previous marker
-            }
-            currentMarker = new google.maps.Marker({
-                position: location,
-                map: map
-            });
-            map.panTo(location);
-            updateLatLongFields(location.lat(), location.lng());
-            var latlng = { lat: location.lat(), lng: location.lng() };
-					// Geocoder
-					var geocoder = new google.maps.Geocoder();
-            		geocodeLatLng(geocoder, latlng);
-        }
+}
 
-        function updateLatLongFields(lat, lng) {
-            document.getElementById('latitud').value = lat;
-            document.getElementById('longitud').value = lng;
-        }
+function placeMarker(location, map) {
+	if (currentMarker) {
+		currentMarker.setMap(null); // Remove the previous marker
+	}
+	currentMarker = new google.maps.Marker({
+		position: location,
+		map: map
+	});
+	map.panTo(location);
+	updateLatLongFields(location.lat(), location.lng());
+	var latlng = { lat: location.lat(), lng: location.lng() };
+	// Geocoder
+	var geocoder = new google.maps.Geocoder();
+	geocodeLatLng(geocoder, latlng);
+}
 
-        function handleLocationError(browserHasGeolocation, pos) {
-            var infoWindow = new google.maps.InfoWindow({
-                position: pos,
-                content: browserHasGeolocation ?
-                    'Error: The Geolocation service failed.' :
-                    'Error: Your browser doesn\'t support geolocation.'
-            });
-            infoWindow.open(map);
-        }
-  ////////////----------------------------------------------------------------------------
-   
- function handleLocationError(browserHasGeolocation, pos) {
+function updateLatLongFields(lat, lng) {
+	document.getElementById('latitud').value = lat;
+	document.getElementById('longitud').value = lng;
+}
+
+function handleLocationError(browserHasGeolocation, pos) {
+	var infoWindow = new google.maps.InfoWindow({
+		position: pos,
+		content: browserHasGeolocation ?
+			'Error: The Geolocation service failed.' :
+			'Error: Your browser doesn\'t support geolocation.'
+	});
+	infoWindow.open(map);
+}
+////////////----------------------------------------------------------------------------
+
+function handleLocationError(browserHasGeolocation, pos) {
 	var infoWindow = new google.maps.InfoWindow({
 		map: map
 	});
@@ -290,3 +290,53 @@ function geocodeLatLng(geocoder, latlng) {
 		}
 	});
 }
+
+
+ async function initMap12() {
+							
+							 const apiURL = 'http://127.0.0.1:8087/paseos/listar';
+
+							 try {
+								 // Hacer una petición GET al API
+								 const response = await fetch(apiURL);
+								 if (!response.ok) {
+									 throw new Error('Error en la respuesta de la red');
+								 }
+								 const textoJSON = await response.json();
+								 
+								 var map = new google.maps.Map(document.getElementById('map'), {
+								 zoom: 14,
+								 center: { lat: textoJSON.latitud, lng: textoJSON.longitud } // Centrar el mapa en una ubicación predeterminada
+							 });
+							
+
+								
+
+								 const listaUbicacionesDetalle =textoJSON.ubicacionDetalleResponse;
+
+								 listaUbicacionesDetalle.forEach(point => {
+									console.log("aqui javi -----------", point.latitud);
+									 const marker = new google.maps.Marker({
+										 position: { lat: point.latitud, lng: point.longitud },
+										 map: map,
+										 title: point.idpersona,
+										 icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
+									 });
+
+									 // Maneja el clic en el marcador
+									 marker.addListener("click", () => {
+										 // Actualiza el combo box
+										 marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png'); // Icono seleccionado
+										 console.log("aqui javi -----------", point.persona);
+										 const selectElement = document.getElementById('personaSelect');
+										 selectElement.value = point.idpersona;
+										 // Dispara un evento de cambio si es necesario
+										 selectElement.dispatchEvent(new Event('change'));
+										 infowindow.open(map, marker);
+									 });
+								 });
+							 } catch (error) {
+								 console.error('Hubo un problema con la operación de fetch:', error);
+							 }
+						 }
+

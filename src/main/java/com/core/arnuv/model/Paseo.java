@@ -88,5 +88,8 @@ public class Paseo {
     @Comment("Observacion del cliente sobre el paseador y su servicio")
     @Column(name = "observacionpaseador", length = 200)
     private String observacionpaseador;
+    
+    
+    private String estado;
 
 }
