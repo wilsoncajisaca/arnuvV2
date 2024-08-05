@@ -8,9 +8,17 @@
 	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDOTcLb_EU2ud-xK2_Rormqf4lm5xH_S5w"></script>
 <style>
 #map {
-	height: 400px;
+	height: 300px;
 	width: 100%;
 }
+</style>
+
+<style>
+  .readonly-select {
+    pointer-events: none; /* Evitar interacciones del usuario */
+    background-color: #e9ecef; /* Color de fondo para parecer deshabilitado */
+    color: #6c757d; /* Color de texto para parecer deshabilitado */
+  }
 </style>
 
 </head>
@@ -49,13 +57,7 @@
  -->
 
 
-							<h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
-							<label class="block text-sm"> <span
-								class="text-gray-700 dark:text-gray-400">Observacion del paseo</span> <input
-								class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-								placeholder="observacion paseo" th:field="*{observacionpaseo}" required />
-
-							</label>
+							
 							<h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
 
 							<label class="block mt-4 text-sm">
@@ -63,8 +65,8 @@
 			                  Persona Paseadora
 			                </span>
 
-			                <select id="personaSelect" th:field="*{idpersonapasedor.id}" required
-			                  class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+			                <select  id="personaSelect" th:field="*{idpersonapasedor.id}" required
+			                  class="readonly-select block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
 
 			                >
 			                <option value="0"  selected>Seleccione una persona</option>
@@ -97,7 +99,7 @@
 
 							<label class="block mt-4 text-sm">
 			                <span class="text-gray-700 dark:text-gray-400">
-			                  Tarifas por hora
+			                  Tiempo a pasear
 			                </span>
 
 			                <select th:field="*{idtarifario.id}" required
@@ -105,19 +107,27 @@
 
 			                >
 			                <option value="0"  selected>Seleccione una tarifa</option>
-			                  <option th:each="tarifario : ${tarifario}" th:text="${tarifario.nombre}"
+			                  <option th:each="tarifario : ${tarifario}" th:text="${tarifario.nombre}+ '  valor : $'+${tarifario.precio}"
 									th:value="${tarifario.id}"></option>
 
 			                </select>
 			              </label>
+			              
+			              <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
+							<label class="block text-sm"> <span
+								class="text-gray-700 dark:text-gray-400">Observacion del paseo</span> <input
+								class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+								placeholder="observacion paseo" th:field="*{observacionpaseo}"  />
+
+							</label>
 							
 							<h2
 								class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
 
 							<label class="block mt-4 text-sm"> <span
 								class="text-gray-700 dark:text-gray-400">Estado </span> 
-								<select disabled th:field="*{estado}" required
-								class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
+								<select id="estadoSelect" th:field="*{estado}" required
+								class=" readonly-select block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
 									
 									<option th:text="PENDIENTE" th:value="PENDIENTE" ></option>
 									<option th:text="APROBADO" th:value="APROBADO"></option>
@@ -144,6 +154,18 @@
 					
 
 					</form>
+					
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+	DeshabilitarSelect('estadoSelect');
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+	DeshabilitarSelect('personaSelect');
+});
+
+</script>
 
 
  <script th:inline="javascript">

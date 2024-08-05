@@ -45,9 +45,14 @@ public class PaseosController {
 	
 	@Autowired
 	public IParametroService parametroService;
-
+	
+	@Autowired 
+	public ArnuvUtils arnuvUtils;
+	
 	@GetMapping("/listar")
 	public String listar(Model model) {
+		var idusuariologueado =arnuvUtils.getLoggedInUsername();
+	
 		List<Paseo> listapaseos = paseoService.listarPaseos();
 		model.addAttribute("lista", listapaseos);
 		return "/content-page/paseo-listar";

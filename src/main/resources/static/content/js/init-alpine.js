@@ -291,3 +291,22 @@ function geocodeLatLng(geocoder, latlng) {
 	});
 }
 
+
+function makeSelectReadonly(selectId) {
+            const selectElement = document.getElementById(selectId);
+
+            if (!selectElement) {
+                console.error(`Element with id ${selectId} not found.`);
+                return;
+            }
+
+            selectElement.classList.add('readonly-select');
+
+            selectElement.addEventListener('mousedown', function(e) {
+                e.preventDefault();
+            });
+
+            selectElement.addEventListener('keydown', function(e) {
+                e.preventDefault();
+            });
+}
