@@ -1,22 +1,22 @@
 package com.core.arnuv.controller.rest;
 
+import com.core.arnuv.model.Personadetalle;
+import com.core.arnuv.model.Ubicacion;
+import com.core.arnuv.response.UbicacionCabeceraResponse;
+import com.core.arnuv.response.UbicacionDetalleResponse;
+import com.core.arnuv.service.*;
+import com.core.arnuv.utils.ArnuvUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import com.core.arnuv.request.PersonaDetalleRequest;
-import com.core.arnuv.service.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-
-import com.core.arnuv.model.Paseo;
-import com.core.arnuv.model.Personadetalle;
-import com.core.arnuv.model.Ubicacion;
-import com.core.arnuv.response.UbicacionResponse;
-import com.core.arnuv.utils.ArnuvUtils;
-
-import jakarta.servlet.http.HttpServletRequest;
+import static com.core.arnuv.constants.Constants.KEY_RADIO;
 
 @RestController
 @RequestMapping("/paseos")
@@ -54,17 +54,21 @@ public class PaseoController {
 		var perLatitud = ubicacionPersonaLogueada.getLatitud();
 		var perLongitud =  ubicacionPersonaLogueada.getLongitud();
 		
-		
-		double radio = parametroService.getParametro("RADIO").getValorNumber();
+		UbicacionCabeceraResponse ubiCliente = new UbicacionCabeceraResponse();
+		ubiCliente.setIdpersona(ubicacionPersonaLogueada.getIdpersona().getId());
+		ubiCliente.setLatitud(ubicacionPersonaLogueada.getLatitud());
+		ubiCliente.setLongitud(ubicacionPersonaLogueada.getLongitud());
 
-		List<UbicacionResponse> ubiPaseadores = new ArrayList<>();
+		double radio = parametroService.getParametro(KEY_RADIO).getValorNumber();
+
+		List<UbicacionDetalleResponse> ubiPaseadores = new ArrayList<>();
 
 		for (Ubicacion ubicacion : listaUbicaciones) {
 			
 			double distancia = ArnuvUtils.distance(perLatitud,perLongitud, ubicacion.getLatitud(),
 					ubicacion.getLongitud());
 			if (distancia <= radio) {
-				UbicacionResponse ubicacionresponce= new UbicacionResponse();
+				UbicacionDetalleResponse ubicacionresponce= new UbicacionDetalleResponse();
 				ubicacionresponce.setIdpersona(ubicacion.getIdpersona().getId());
 				ubicacionresponce.setLatitud(ubicacion.getLatitud());
 				ubicacionresponce.setLongitud(ubicacion.getLongitud());
@@ -72,7 +76,8 @@ public class PaseoController {
 			}
 		}
 
-		return ResponseEntity.ok(ubiPaseadores);
+		ubiCliente.setUbicacionDetalleResponse(ubiPaseadores);
+		return ResponseEntity.ok(ubiCliente);
 	}
 
 }

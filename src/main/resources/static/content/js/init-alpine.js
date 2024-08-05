@@ -166,79 +166,79 @@ function initMap1() {
 
 
 function initMap() {
-            var map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 15,
-                center: {lat: -34.397, lng: 150.644}
-            });
+	var map = new google.maps.Map(document.getElementById('map'), {
+		zoom: 15,
+		center: { lat: -34.397, lng: 150.644 }
+	});
 
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position) {
-                    var pos = {
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude
-                    };
+	if (navigator.geolocation) {
+		navigator.geolocation.getCurrentPosition(function(position) {
+			var pos = {
+				lat: position.coords.latitude,
+				lng: position.coords.longitude
+			};
 
-                    currentMarker = new google.maps.Marker({
-                        position: pos,
-                        map: map
-                    });
+			currentMarker = new google.maps.Marker({
+				position: pos,
+				map: map
+			});
 
-                    map.setCenter(pos);
-                    updateLatLongFields(pos.lat, pos.lng);       
-                                 
-           			 var latlng = { lat: pos.lat, lng: pos.lng };
-					// Geocoder
-					var geocoder = new google.maps.Geocoder();
-            		geocodeLatLng(geocoder, latlng);
-            
-                }, function() {
-                    handleLocationError(true, map.getCenter());
-                });
-            } else {
-                // Browser doesn't support Geolocation
-                handleLocationError(false, map.getCenter());
-            }
+			map.setCenter(pos);
+			updateLatLongFields(pos.lat, pos.lng);
+
+			var latlng = { lat: pos.lat, lng: pos.lng };
+			// Geocoder
+			var geocoder = new google.maps.Geocoder();
+			geocodeLatLng(geocoder, latlng);
+
+		}, function() {
+			handleLocationError(true, map.getCenter());
+		});
+	} else {
+		// Browser doesn't support Geolocation
+		handleLocationError(false, map.getCenter());
+	}
 	debugger;
-            // Add click event listener to the map
-            map.addListener('click', function(event) {
-                placeMarker(event.latLng, map);
-            });
-           
-        }
+	// Add click event listener to the map
+	map.addListener('click', function(event) {
+		placeMarker(event.latLng, map);
+	});
 
-        function placeMarker(location, map) {
-            if (currentMarker) {
-                currentMarker.setMap(null); // Remove the previous marker
-            }
-            currentMarker = new google.maps.Marker({
-                position: location,
-                map: map
-            });
-            map.panTo(location);
-            updateLatLongFields(location.lat(), location.lng());
-            var latlng = { lat: location.lat(), lng: location.lng() };
-					// Geocoder
-					var geocoder = new google.maps.Geocoder();
-            		geocodeLatLng(geocoder, latlng);
-        }
+}
 
-        function updateLatLongFields(lat, lng) {
-            document.getElementById('latitud').value = lat;
-            document.getElementById('longitud').value = lng;
-        }
+function placeMarker(location, map) {
+	if (currentMarker) {
+		currentMarker.setMap(null); // Remove the previous marker
+	}
+	currentMarker = new google.maps.Marker({
+		position: location,
+		map: map
+	});
+	map.panTo(location);
+	updateLatLongFields(location.lat(), location.lng());
+	var latlng = { lat: location.lat(), lng: location.lng() };
+	// Geocoder
+	var geocoder = new google.maps.Geocoder();
+	geocodeLatLng(geocoder, latlng);
+}
 
-        function handleLocationError(browserHasGeolocation, pos) {
-            var infoWindow = new google.maps.InfoWindow({
-                position: pos,
-                content: browserHasGeolocation ?
-                    'Error: The Geolocation service failed.' :
-                    'Error: Your browser doesn\'t support geolocation.'
-            });
-            infoWindow.open(map);
-        }
-  ////////////----------------------------------------------------------------------------
-   
- function handleLocationError(browserHasGeolocation, pos) {
+function updateLatLongFields(lat, lng) {
+	document.getElementById('latitud').value = lat;
+	document.getElementById('longitud').value = lng;
+}
+
+function handleLocationError(browserHasGeolocation, pos) {
+	var infoWindow = new google.maps.InfoWindow({
+		position: pos,
+		content: browserHasGeolocation ?
+			'Error: The Geolocation service failed.' :
+			'Error: Your browser doesn\'t support geolocation.'
+	});
+	infoWindow.open(map);
+}
+////////////----------------------------------------------------------------------------
+
+function handleLocationError(browserHasGeolocation, pos) {
 	var infoWindow = new google.maps.InfoWindow({
 		map: map
 	});
