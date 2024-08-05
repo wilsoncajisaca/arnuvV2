@@ -138,46 +138,38 @@
 					
 					
 					 <script  th:inline="javascript">
-					
+
 					function initMap12() {
 			           var map = new google.maps.Map(document.getElementById('map1'), {
 			                zoom: 17,
 			                center: { lat: -2.898974, lng: -79.042480 } // Centrar el mapa en una ubicación predeterminada
 			            });
-			           
-			         
 
-			           
-			            
-			         /*
-			            var ubicacionIdField = document.getElementById('ubicacionesTexto');			            
-			            var data = "'"+ubicacionIdField.value+"'";			            
-	
-			            data = data.replace(/Ubicacion/g, '')
-			            			.replace(/\(/g, '{').replace(/\)/g, '}')
-			            			.replace(/=/g, ":") 
-			            			.replace(/id/g, '"id"')
-						            .replace(/latitud/g, '"latitud"')
-						            .replace(/longitud/g, '"longitud"')
-						            .replace(/descripcion/g, '"descripcion"')
-						            .replace(/=/g, '":"') ;
-			            
-			            console.log('javie 2',data);
-			            
-			            var textoSinComillas = data.replace(/^'(.*)'$/, '$1');
-			            const textoJSON = JSON.parse(textoSinComillas);
-			            
-			            console.log('javie 2',textoJSON);
-			            */
-			            var textoJSON =[{"id":4, "latitud":-2.8989499, "longitud":-79.0425023, "descripcion":null, "persona":12}, {"id":5, "latitud":-2.8967211557160097, "longitud":-79.03432692692259, "descripcion":null,"persona":11}];
-			            
+						const apiURL = 'https://api.example.com/data';
+
+						fetch(apiURL)
+							.then(response => {
+							if (!response.ok) {
+								throw new Error('Network response was not ok');
+							}
+							return response.json();
+						})
+							.then(data => {
+							// Assuming the fetched data is an array
+							const combinedData = textoJSON.concat(data);
+							console.log(combinedData); // Handle the combined data here
+						})
+							.catch(error => {
+							console.error('There has been a problem with your fetch operation:', error);
+						});
+
 			            console.log("aqui javi -----------",textoJSON);
-			            
+
 			            const infowindow = new google.maps.InfoWindow({
 		                    content: `<div><img src="/static/admin/assets/img/perrro.jpg" alt="Image" style="max-width: 200px;"></div>`
 		                });
 
-			            
+
 			            textoJSON.forEach(point => {
 			                const marker = new google.maps.Marker({
 			                    position: { lat: point.latitud, lng: point.longitud },
@@ -189,13 +181,13 @@
 			                // Maneja el clic en el marcador
 			                marker.addListener("click", () => {
 			                    // Actualiza el combo box
-			                    
+
 			                    	marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png');
 			                    // Icono seleccionado
 			                    marker.
-			                    
+
 			                    selectedMarker = marker;
-			                    
+
 			                    console.log("aqui javi -----------",point.persona);
 			                    const selectElement = document.getElementById('personaSelect');
 			                    selectElement.value = point.persona;
@@ -204,39 +196,7 @@
 			                    infowindow.open(map, marker);
 			                });
 			            });
-			            
-			            /*
-			            textoJSON.forEach(function(puntos) {
-			                console.log(puntos.longitud);
-			                console.log('aqui javi ',puntos.Idpersona);
-			                if (puntos.latitud && puntos.longitud) {
-			                    var position = {
-			                        lat: parseFloat(puntos.latitud),
-			                        lng: parseFloat(puntos.longitud)
-			                    };
-
-			                    new google.maps.Marker({
-			                        position: position,
-			                        map: map,
-			                        title: puntos.id
-			                    });
-			                }
-			            });*/
-			            
-			        
-			         // Obtener ubicaciones desde el atributo de datos del div
-			            //var ubicaciones = document.getElementById('ubicaciones-data');
-			          // Obtener ubicaciones desde el div con JSON
-          
-			            
 			        }
-			    
-
-					
-			        
-
-			        // Inicializar el mapa cuando el DOM esté completamente cargado
-//			        window.onload = initMap12;
 			        google.maps.event.addDomListener(window, 'load', initMap12);
 					</script>					
 

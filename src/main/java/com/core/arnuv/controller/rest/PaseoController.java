@@ -3,6 +3,8 @@ package com.core.arnuv.controller.rest;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.core.arnuv.request.PersonaDetalleRequest;
+import com.core.arnuv.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -12,12 +14,6 @@ import com.core.arnuv.model.Paseo;
 import com.core.arnuv.model.Personadetalle;
 import com.core.arnuv.model.Ubicacion;
 import com.core.arnuv.response.UbicacionResponse;
-import com.core.arnuv.service.IMascotaDetalleService;
-import com.core.arnuv.service.IParametroService;
-import com.core.arnuv.service.IPaseoService;
-import com.core.arnuv.service.IPersonaDetalleService;
-import com.core.arnuv.service.ITarifarioService;
-import com.core.arnuv.service.IUbicacionService;
 import com.core.arnuv.utils.ArnuvUtils;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -44,12 +40,15 @@ public class PaseoController {
 	@Autowired
 	public IParametroService parametroService;
 
-	@GetMapping("/listar")
-	public ResponseEntity<?> listar(HttpServletRequest request) {
+	@Autowired
+	private IUsuarioDetalleService userService;
+
+	@GetMapping("/listar/{idpersona}")
+	public ResponseEntity<?> listar(@PathVariable(value = "idpersona") Integer personId) {
 
 		var listaUbicaciones = ubicacionService.listarUbicacion();
 
-		Personadetalle personalogueada = personaDetalleService.buscarPorId(4);//ArnuvUtils.getUserInSession(request);
+		Personadetalle personalogueada = personaDetalleService.buscarPorId(personId);
 		
 		var ubicacionPersonaLogueada = ubicacionService.ubicacionPersonaPorDefecto(personalogueada.getId());
 		var perLatitud = ubicacionPersonaLogueada.getLatitud();
