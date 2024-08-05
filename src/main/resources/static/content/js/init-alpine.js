@@ -310,30 +310,33 @@ function geocodeLatLng(geocoder, latlng) {
 							 });
 							
 
-								
+								const markers = [];
 
 								 const listaUbicacionesDetalle =textoJSON.ubicacionDetalleResponse;
 
 								 listaUbicacionesDetalle.forEach(point => {
-									console.log("aqui javi -----------", point.latitud);
+									
 									 const marker = new google.maps.Marker({
 										 position: { lat: point.latitud, lng: point.longitud },
 										 map: map,
 										 title: point.idpersona,
-										 icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
+										 icon: '/content/img/ubi-r.png'
 									 });
 
-									 // Maneja el clic en el marcador
-									 marker.addListener("click", () => {
-										 // Actualiza el combo box
-										 marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png'); // Icono seleccionado
-										 console.log("aqui javi -----------", point.persona);
-										 const selectElement = document.getElementById('personaSelect');
-										 selectElement.value = point.idpersona;
-										 // Dispara un evento de cambio si es necesario
-										 selectElement.dispatchEvent(new Event('change'));
-										 infowindow.open(map, marker);
-									 });
+									 markers.push(marker); // Almacenar el marcador en el array
+
+	marker.addListener("click", () => {
+		// Cambiar el color de todos los marcadores a rojo
+		markers.forEach(m => m.setIcon('/content/img/ubi-r.png'));
+		
+		// Cambiar el color del marcador seleccionado a azul
+		marker.setIcon('/content/img/ubi-a.png');
+
+		const selectElement = document.getElementById('personaSelect');
+		selectElement.value = point.idpersona;
+		selectElement.dispatchEvent(new Event('change'));
+		infowindow.open(map, marker);
+	});
 								 });
 							 } catch (error) {
 								 console.error('Hubo un problema con la operación de fetch:', error);
