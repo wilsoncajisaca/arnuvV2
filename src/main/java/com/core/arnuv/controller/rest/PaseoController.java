@@ -1,27 +1,22 @@
 package com.core.arnuv.controller.rest;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-
-import com.core.arnuv.model.Paseo;
 import com.core.arnuv.model.Personadetalle;
 import com.core.arnuv.model.Ubicacion;
 import com.core.arnuv.response.UbicacionCabeceraResponse;
 import com.core.arnuv.response.UbicacionDetalleResponse;
-import com.core.arnuv.service.IMascotaDetalleService;
-import com.core.arnuv.service.IParametroService;
-import com.core.arnuv.service.IPaseoService;
-import com.core.arnuv.service.IPersonaDetalleService;
-import com.core.arnuv.service.ITarifarioService;
-import com.core.arnuv.service.IUbicacionService;
+import com.core.arnuv.service.*;
 import com.core.arnuv.utils.ArnuvUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.core.arnuv.constants.Constants.KEY_RADIO;
 
 @RestController
 @RequestMapping("/paseos")
@@ -45,12 +40,15 @@ public class PaseoController {
 	@Autowired
 	public IParametroService parametroService;
 
-	@GetMapping("/listar")
-	public ResponseEntity<?> listar(HttpServletRequest request) {
+	@Autowired
+	private IUsuarioDetalleService userService;
+
+	@GetMapping("/listar/{idpersona}")
+	public ResponseEntity<?> listar(@PathVariable(value = "idpersona") Integer personId) {
 
 		var listaUbicaciones = ubicacionService.listarUbicacion();
 
-		Personadetalle personalogueada = personaDetalleService.buscarPorId(4);  ///ArnuvUtils.getUserInSession(request);
+		Personadetalle personalogueada = personaDetalleService.buscarPorId(personId);
 		
 		var ubicacionPersonaLogueada = ubicacionService.ubicacionPersonaPorDefecto(personalogueada.getId());
 		var perLatitud = ubicacionPersonaLogueada.getLatitud();
@@ -60,12 +58,8 @@ public class PaseoController {
 		ubiCliente.setIdpersona(ubicacionPersonaLogueada.getIdpersona().getId());
 		ubiCliente.setLatitud(ubicacionPersonaLogueada.getLatitud());
 		ubiCliente.setLongitud(ubicacionPersonaLogueada.getLongitud());
-		
-		
-		
-		
-		
-		double radio = parametroService.getParametro("RADIO").getValorNumber();
+
+		double radio = parametroService.getParametro(KEY_RADIO).getValorNumber();
 
 		List<UbicacionDetalleResponse> ubiPaseadores = new ArrayList<>();
 

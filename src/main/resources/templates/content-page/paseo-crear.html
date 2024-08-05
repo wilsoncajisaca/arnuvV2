@@ -33,105 +33,94 @@
 						<div
 							class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
 
-							<div
-								class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
-								<label class="float-label">Fecha del paseo</label> <input
-									type="datetime-local" name="fecha"
-									class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
-									th:field="*{fecharealinicio}" required> <span
-									class="form-bar"></span>
-							</div>
-							<!-- 
+						<div class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
+							<label class="float-label">Fecha del paseo</label>
+							<input type="datetime-local" name="fecha" class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+								th:field="*{fecharealinicio}" required> <span
+								class="form-bar"></span>
+						</div>
+						<!--
 						<div class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
 							<label class="float-label">Fecha Fin</label>
-							<input type="datetime-local" name="fecha" class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"								
+							<input type="datetime-local" name="fecha" class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
 								th:field="*{fechafin}" required> <span
-								class="form-bar"></span> 
+								class="form-bar"></span>
 						</div>
  -->
 
 
-
-							<h2
-								class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
-
-							<label class="block mt-4 text-sm"> <span
-								class="text-gray-700 dark:text-gray-400"> Persona
-									Paseadora </span> <select disabled id="personaSelect"
-								th:field="*{idpersonapasedor.id}" required
-								class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
-									<option value="0" selected>Seleccione una persona</option>
-									<option th:each="persona : ${persona}"
-										th:text="${persona.nombres}" th:value="${persona.id}"></option>
-
-							</select>
-							</label>
-
-							<h2
-								class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
-
-							<label class="block mt-4 text-sm"> <span
-								class="text-gray-700 dark:text-gray-400"> Mascota </span> <select
-								th:field="*{idMascota.idmascota}" required
-								class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
-									<option value="0" selected>Seleccione una mascota</option>
-									<option th:each="mascota : ${mascota}"
-										th:text="${mascota.nombre}" th:value="${mascota.idmascota}"></option>
-
-							</select>
-							</label>
-
-
-							<h2
-								class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
-
-							<label class="block mt-4 text-sm"> <span
-								class="text-gray-700 dark:text-gray-400"> Selecciones el tiempo de paseo </span> 
-								<select th:field="*{idtarifario.id}" required
-								class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
-									<option value="0" selected>Seleccione una tarifa</option>
-									<option th:each="tarifario : ${tarifario}"
-										th:text="${tarifario.nombre} +' valor: '+${tarifario.precio}" th:value="${tarifario.id}"></option>
-
-							</select>
-
-
-
-							</label>
-
-
-
-							<h2
-								class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
-
-							<label class="block mt-4 text-sm"> <span
-								class="text-gray-700 dark:text-gray-400">Estado </span> 
-								<select disabled th:field="*{estado}" required
-								class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
-									
-									<option th:text="PENDIENTE" th:value="PENDIENTE" ></option>
-									<option th:text="APROBADO" th:value="APROBADO"></option>
-									<option th:text="FINALIZADO" th:value="FINALIZADO"></option>
-
-							</select>
-
-
-
-							</label>
-
-							<h2
-								class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
+							<h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
 							<label class="block text-sm"> <span
-								class="text-gray-700 dark:text-gray-400">Observacion del
-									paseo</span> <input
+								class="text-gray-700 dark:text-gray-400">Observacion del paseo</span> <input
 								class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-								placeholder="observacion paseo" th:field="*{observacionpaseo}"
-								required />
+								placeholder="observacion paseo" th:field="*{observacionpaseo}" required />
 
 							</label>
+							<h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
 
-							<h2
-								class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
+							<label class="block mt-4 text-sm">
+			                <span class="text-gray-700 dark:text-gray-400">
+			                  Persona Paseadora
+			                </span>
+
+			                <select th:field="*{idpersonapasedor.id}" required
+			                  class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+
+			                >
+			                <option value="0"  selected>Seleccione una persona</option>
+			                  <option th:each="persona : ${persona}" th:text="${persona.nombres}"
+									th:value="${persona.id}"></option>
+
+			                </select>
+			              </label>
+
+			              <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
+
+							<label class="block mt-4 text-sm">
+			                <span class="text-gray-700 dark:text-gray-400">
+			                  Mascota
+			                </span>
+
+			                <select th:field="*{idMascota.idmascota}" required
+			                  class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+
+			                >
+			                <option value="0" disabled selected>Seleccione una mascota</option>
+			                  <option th:each="mascota : ${mascota}" th:text="${mascota.nombre}"
+									th:value="${mascota.idmascota}"></option>
+
+			                </select>
+			              </label>
+
+
+							<h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
+
+							<label class="block mt-4 text-sm">
+			                <span class="text-gray-700 dark:text-gray-400">
+			                  Tarifas por hora
+			                </span>
+
+			                <select th:field="*{idtarifario.id}" required
+			                  class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+
+			                >
+			                <option value="0" disabled selected>Seleccione una tarifa</option>
+			                  <option th:each="tarifario : ${tarifario}" th:text="${tarifario.nombre}"
+									th:value="${tarifario.id}"></option>
+
+			                </select>
+			              </label>
+							<!--
+							<label class="block text-sm"> <span
+								class="text-gray-700 dark:text-gray-400">Edad</span> <input
+								class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+								placeholder="edad" th:field="*{edad}" required />
+							</label>
+
+
+
+							 -->
+							<h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
 
 							<div>
 								<button type="submit"
@@ -143,21 +132,60 @@
 
 						<input type="hidden" th:field="*{id}">
 
-
+					 <!-- <input type="hidden" id="ubicacionesTexto" name="ubicacionesTexto" th:value="${ubicaciones}"/> -->
 
 					</form>
 
 
-					<script th:inline="javascript">
-						google.maps.event.addDomListener(window, 'load',
-								initMap12);
-					</script>
+ <script th:inline="javascript">
+
+	async function initMap12() {
+		var personId = '[[${session.loggedInUser.id}]]';
+		const apiURL = 'http://127.0.0.1:8087/paseos/listar/'+personId.trim();
+		try {
+			// Hacer una petición GET al API
+			const response = await fetch(apiURL);
+			if (!response.ok) {
+				throw new Error('Error en la respuesta de la red');
+			}
+			const textoJSON = await response.json();
+
+			var map = new google.maps.Map(document.getElementById('map'), {
+				zoom: 14,
+				center: { lat: textoJSON.latitud, lng: textoJSON.longitud } // Centrar el mapa en una ubicación predeterminada
+			});
+			const listaUbicacionesDetalle =textoJSON.ubicacionDetalleResponse;
+			console.log('.............',listaUbicacionesDetalle);
+			listaUbicacionesDetalle.forEach(point => {
+				console.log("aqui javi -----------", point.latitud);
+				const marker = new google.maps.Marker({
+					position: { lat: point.latitud, lng: point.longitud },
+					map: map,
+					title: point.idpersona,
+					icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
+				});
+
+				// Maneja el clic en el marcador
+				marker.addListener("click", () => {
+					// Actualiza el combo box
+					marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png'); // Icono seleccionado
+					console.log("aqui javi -----------", point.persona);
+					const selectElement = document.getElementById('personaSelect');
+					selectElement.value = point.idpersona;
+					// Dispara un evento de cambio si es necesario
+					selectElement.dispatchEvent(new Event('change'));
+					infowindow.open(map, marker);
+				});
+			});
+		} catch (error) {
+			console.error('Hubo un problema con la operación de fetch:', error);
+		}
+	}
+
+	google.maps.event.addDomListener(window, 'load', initMap12);
+</script>
 
 				</div>
-
-
-
-
 			</div>
 		</main>
 	</div>
