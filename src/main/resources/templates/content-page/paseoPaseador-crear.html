@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html x-data="data()" xmlns:th="https://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{content-page/plantilla}">
+<head>
+
+
+<style>
+  .readonly-select {
+    pointer-events: none; /* Evitar interacciones del usuario */
+    background-color: #e9ecef; /* Color de fondo para parecer deshabilitado */
+    color: #6c757d; /* Color de texto para parecer deshabilitado */
+  }
+</style>
+</head>
+<body>
+
+	<div layout:fragment="espaciocontenidohtml">
+		<main class="h-full overflow-y-auto">
+			<div class="container px-6 mx-auto grid comic-font">
+				<h2
+					class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
+					Paseo</h2>
+				<div
+					class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
+
+				
+
+					<form th:action="@{/paseo/insertar}" th:object="${nuevo}"
+						class="form-material" method="post">
+
+						<div
+							class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
+
+						<div class="readonly-select block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
+							<label class="float-label">Fecha del paseo</label>
+							<input type="datetime-local" name="fecha" class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+								th:field="*{fecharealinicio}" required> <span
+								class="form-bar"></span>
+						</div>
+						<!--
+						<div class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
+							<label class="float-label">Fecha Fin</label>
+							<input type="datetime-local" name="fecha" class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+								th:field="*{fechafin}" required> <span
+								class="form-bar"></span>
+						</div>
+ -->
+
+							<label  class="block mt-4 text-sm">
+			                <span class="text-gray-700 dark:text-gray-400">
+			                  Datos del Paseador
+			                </span>
+
+			                <select  id="personaSelect" th:field="*{idpersonapasedor.id}" required
+			                  class="readonly-select block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+
+			                >
+			                <option value="0"  selected>Seleccione una persona</option>
+			                  <option th:each="persona : ${persona}" th:text="${persona.nombres}+' '+${persona.apellidos}"
+									th:value="${persona.id}"></option>
+
+			                </select>
+			              </label>
+
+
+							
+							<h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
+
+							<label class="block mt-4 text-sm">
+			                <span class="text-gray-700 dark:text-gray-400">
+			                  Dueño de la Mascota
+			                </span>
+
+			                <select  id="personaSelect" th:field="*{idpersonacliente.id}" required
+			                  class="readonly-select block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+
+			                >
+			                <option value="0"  selected>Seleccione una persona</option>
+			                  <option th:each="persona : ${persona}" th:text="${persona.nombres}+' '+${persona.apellidos}"
+									th:value="${persona.id}"></option>
+
+			                </select>
+			              </label>
+			              
+			              <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
+			              
+			              <div th:each="mascota : ${mascota}" th:if="${mascota.urlPhotoPet}">
+									<img height="100px" width="75px" th:each="mascota : ${mascota}" th:src="${mascota.urlPhotoPet}" alt="Descripción de la imagen">
+								</div>
+								
+								 
+
+			              <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
+
+							<label class="block mt-4 text-sm">
+			                <span class="text-gray-700 dark:text-gray-400">
+			                  Mascota
+			                </span>
+
+			                <select th:field="*{idMascota.idmascota}" required
+			                  class=" readonly-select block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+
+			                >
+			                <option value="0"  selected>Seleccione una mascota</option>
+			                  <option th:each="mascota : ${mascota}" th:text="${mascota.nombre}"
+									th:value="${mascota.idmascota}"></option>
+
+			                </select>
+			              </label>
+
+
+							<h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
+
+							<label class="block mt-4 text-sm">
+			                <span class="text-gray-700 dark:text-gray-400">
+			                  Tiempo a pasear
+			                </span>
+
+			                <select th:field="*{idtarifario.id}" required
+			                  class="readonly-select block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+
+			                >
+			                <option value="0"  selected>Seleccione una tarifa</option>
+			                  <option th:each="tarifario : ${tarifario}" th:text="${tarifario.nombre}+ '  valor : $'+${tarifario.precio}"
+									th:value="${tarifario.id}"></option>
+
+			                </select>
+			              </label>
+			              
+			              <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
+							<label class="block text-sm"> <span
+								class="text-gray-700 dark:text-gray-400">Observacion del paseo</span> <input
+								class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+								placeholder="observacion paseo"  th:field="*{observacionpaseo}" />
+
+							</label>
+							
+							<h2
+								class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
+
+							<label class="block mt-4 text-sm"> <span
+								class="text-gray-700 dark:text-gray-400">Estado </span> 
+								<select id="estadoSelect" th:field="*{estado}" required
+								class=" readonly-select block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
+									
+									<option th:text="PENDIENTE" th:value="PENDIENTE" ></option>
+									<option th:text="APROBADO" th:value="APROBADO"></option>
+									<option th:text="FINALIZADO" th:value="FINALIZADO"></option>
+
+							</select>
+
+
+
+							</label>
+							
+							<h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
+
+							<div>
+								<button type="submit"
+									class="bg-cream px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+									Guardar</button>
+							</div>
+
+						</div>
+
+						<input type="hidden" th:field="*{id}">
+
+					
+
+					</form>
+					
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+	DeshabilitarSelect('estadoSelect');
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+	DeshabilitarSelect('personaSelect');
+});
+
+</script>
+
+
+				</div>
+			</div>
+		</main>
+	</div>
+</body>
+</html>
