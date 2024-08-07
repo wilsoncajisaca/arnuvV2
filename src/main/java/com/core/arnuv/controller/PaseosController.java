@@ -45,74 +45,26 @@ public class PaseosController {
 	
 	@Autowired
 	public IParametroService parametroService;
-
+	
+	@Autowired 
+	public ArnuvUtils arnuvUtils;
+	
 	@GetMapping("/listar")
 	public String listar(Model model) {
+		var idusuariologueado =arnuvUtils.getLoggedInUsername();
+	
 		List<Paseo> listapaseos = paseoService.listarPaseos();
 		model.addAttribute("lista", listapaseos);
-		return "/content-page/prueba";
+		return "/content-page/paseo-listar";
 	}
 
 	@GetMapping("/nuevo")
 	public String crear(Model model) {
 		
-		
-		var listaUbi = ubicacionService.listarUbicacion();
-		for (Ubicacion punto : listaUbi) {
-			System.out.println("----------------");
-			System.out.println(punto.getLatitud());
-		}
-		double miLatitud = -34.6037; // Tu latitud
-		double miLongitud = -58.3816; // Tu longitud
-		double radio = parametroService.getParametro("RADIO").getValorNumber();
-		
-		List<Ubicacion> ubiPaseadores = new ArrayList<>();
-		
-		for (Ubicacion usuario : ubiPaseadores) {
-			double distancia = ArnuvUtils.distance(miLatitud, miLongitud, Double.parseDouble(usuario.getLatitud()), Double.parseDouble(usuario.getLongitud()));
-			if (distancia <= radio) {
-				ubiPaseadores.add(usuario);
-			}
-		}
-		
-		for (Ubicacion punto : ubiPaseadores) {
-			System.out.println("puntos ----------------");
-			System.out.println(punto.getLatitud());
-		}
-		
-		// var personaUbi = ubicacionService.buscarPorId(2);
-/*
-		int idpersona = 9;
-		Ubicacion UbiPersona = listaUbi.stream()
-				.filter(p -> p.getIdpersona().equals(idpersona))
-				.findFirst().get();
-		
-		var perLatitud = Double.parseDouble( UbiPersona.getLatitud());
-		var perLongitud =  Double.parseDouble(UbiPersona.getLongitud());
-		
-		double radio = parametroService.getParametro("RADIO").getValorNumber();
-		List<Ubicacion> ubiPaseadores = new ArrayList<>(); 
-		for (Ubicacion punto : listaUbi) {
-			var latitud =  Double.parseDouble(punto.getLatitud());
-			var longitud =Double.parseDouble(punto.getLongitud());
-			double distancia = ArnuvUtils.distance(perLatitud ,perLongitud , latitud, longitud);
-			//double distancia = ArnuvUtils.distance(miLatitud, miLongitud, usuario.getLatitud(), usuario.getLongitud());
-			if (distancia <= radio) {
-				ubiPaseadores.add(punto);
-			}
-		}
-		//ArnuvUtils.distance(UbiPersona.getLatitud(), UbiPersona.getLongitud(), latitud, 0);
-		for (Ubicacion punto : ubiPaseadores) {
-			System.out.println("----------------");
-			System.out.println(punto.getLatitud());
-		}
-		*/
 		model.addAttribute("nuevo", new Paseo());
 		model.addAttribute("persona", personaDetalleService.listarTodosPersonaDetalle());
 		model.addAttribute("tarifario", ITarifarioService.listarTarifarios());
 		model.addAttribute("mascota", mascotaDetalleService.listarMascotasDetalle());
-
-		//model.addAttribute("ubicacion", ubiPaseadores);
 		return "/content-page/paseo-crear";
 	}
 
