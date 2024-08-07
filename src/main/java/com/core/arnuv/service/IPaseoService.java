@@ -15,4 +15,7 @@ public interface IPaseoService {
 	public Paseo buscarPorId(int idPaseo);
 	
 	public void eliminarPaseo(int idPaseo);
+	
+	List<Paseo> buscarpersonacliente(int idcliente);
+	List<Paseo> buscaridpersonapasedor(int idpersonapasedor);
 }
