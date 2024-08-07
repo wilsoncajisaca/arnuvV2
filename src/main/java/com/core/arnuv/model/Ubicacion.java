@@ -11,8 +11,8 @@ import java.io.Serializable;
 @Table(name = "ubicacion")
 public class Ubicacion implements Serializable {
     private static final long serialVersionUID = 1L;
-@Id
-@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idUbicacion;
     private float latitud;
     private float longitud;

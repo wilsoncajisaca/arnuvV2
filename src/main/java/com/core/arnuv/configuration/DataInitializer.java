@@ -11,7 +11,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import com.core.arnuv.model.*;
+import com.core.arnuv.repository.IPersonaDetalleRepository;
+import com.core.arnuv.repository.IRolRepository;
+import com.core.arnuv.repository.IUsuarioDetalleRepository;
+import com.core.arnuv.repository.IUsuarioRolRepository;
+import com.core.arnuv.service.IUsuarioDetalleService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -55,7 +65,7 @@ public class DataInitializer {
 
             log.info("Datos iniciales insertados correctamente.");
         } catch (Exception e) {
-            System.err.println("Error al insertar datos iniciales: " + e.getMessage());
+            log.error("Error al insertar datos iniciales: {}", e.getMessage());
         }
     }
 }

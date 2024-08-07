@@ -15,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("usuario-rol")
 public class UsuarioRolController {
@@ -70,7 +72,8 @@ public class UsuarioRolController {
 	public ResponseEntity<RespuestaComun> buscarUsuarioRol(@PathVariable int idrol) throws Exception {
 		var entity = servicioUsuarioRol.buscarPorRol(idrol);
 		UsuarioRolResponse resp = new UsuarioRolResponse();
-		resp.setListaDto(entity, UsuarioRolResponse.UsuarioRolDto.class,  "idrol","idusuario");
+		List<Usuariorol> list = (List<Usuariorol>) entity;
+		resp.setListaDto(list, UsuarioRolResponse.UsuarioRolDto.class,  "idrol","idusuario");
 		return new ResponseEntity<>(resp, serviceJwt.regeneraToken(), HttpStatus.OK);
 	}
 }

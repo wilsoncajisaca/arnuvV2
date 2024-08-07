@@ -45,28 +45,19 @@ public class PaseoController {
 
 	@GetMapping("/listar/{idpersona}")
 	public ResponseEntity<?> listar(@PathVariable(value = "idpersona") Integer personId) {
-
-		var listaUbicaciones = ubicacionService.listarUbicacion();
-
 		Personadetalle personalogueada = personaDetalleService.buscarPorId(personId);
-		
 		var ubicacionPersonaLogueada = ubicacionService.ubicacionPersonaPorDefecto(personalogueada.getId());
-		var perLatitud = ubicacionPersonaLogueada.getLatitud();
-		var perLongitud =  ubicacionPersonaLogueada.getLongitud();
 		
 		UbicacionCabeceraResponse ubiCliente = new UbicacionCabeceraResponse();
 		ubiCliente.setIdpersona(ubicacionPersonaLogueada.getIdpersona().getId());
 		ubiCliente.setLatitud(ubicacionPersonaLogueada.getLatitud());
 		ubiCliente.setLongitud(ubicacionPersonaLogueada.getLongitud());
-
 		double radio = parametroService.getParametro(KEY_RADIO).getValorNumber();
-
 		List<UbicacionDetalleResponse> ubiPaseadores = new ArrayList<>();
-
+		var listaUbicaciones = ubicacionService.ubicacionPaseadores();
 		for (Ubicacion ubicacion : listaUbicaciones) {
-			
-			double distancia = ArnuvUtils.distance(perLatitud,perLongitud, ubicacion.getLatitud(),
-					ubicacion.getLongitud());
+			double distancia = ArnuvUtils.distance(ubicacionPersonaLogueada.getLatitud(), ubicacionPersonaLogueada.getLongitud(),
+					ubicacion.getLatitud(), ubicacion.getLongitud());
 			if (distancia <= radio) {
 				UbicacionDetalleResponse ubicacionresponce= new UbicacionDetalleResponse();
 				ubicacionresponce.setIdpersona(ubicacion.getIdpersona().getId());
@@ -75,9 +66,7 @@ public class PaseoController {
 				ubiPaseadores.add(ubicacionresponce);
 			}
 		}
-
 		ubiCliente.setUbicacionDetalleResponse(ubiPaseadores);
 		return ResponseEntity.ok(ubiCliente);
 	}
-
 }
