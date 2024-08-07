@@ -2,6 +2,7 @@ package com.core.arnuv.controller;
 
 import com.core.arnuv.model.Personadetalle;
 import com.core.arnuv.model.Usuariodetalle;
+import com.core.arnuv.request.PersonaDetalleRequest;
 import com.core.arnuv.service.IUsuarioDetalleService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -67,11 +68,18 @@ public class AuthController {
 
     private void setUserInSession(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        Personadetalle user = (Personadetalle) session.getAttribute("loggedInUser");
-        if(user == null) {
+        PersonaDetalleRequest persona = (PersonaDetalleRequest) session.getAttribute("loggedInUser");
+        if(persona == null) {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            user = userService.buscarPorEmailOrUserName(auth.getName()).getIdpersona();
-            session.setAttribute("loggedInUser", user);
+            Personadetalle user = userService.buscarPorEmailOrUserName(auth.getName()).getIdpersona();
+            PersonaDetalleRequest authUser = new PersonaDetalleRequest();
+            authUser.setId(user.getId());
+            authUser.setNombres(user.getNombres());
+            authUser.setApellidos(user.getApellidos());
+            authUser.setIdentificacion(user.getIdentificacion());
+            authUser.setCelular(user.getCelular());
+            authUser.setEmail(user.getEmail());
+            session.setAttribute("loggedInUser", authUser);
         }
     }
 }

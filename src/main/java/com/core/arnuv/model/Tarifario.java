@@ -21,6 +21,7 @@ public class Tarifario {
 
     @Comment("Nombre del tarifario")
     @Column(name = "nombre", length = 120)
+
     private String nombre;
 
     @Comment("tiempo del paseo maximo en minutos")

@@ -1,9 +1,20 @@
 package com.core.arnuv.utils;
 
+import com.core.arnuv.request.PersonaDetalleRequest;
+import com.core.arnuv.service.IUsuarioDetalleService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.config.Configuration;
 import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+
+import com.core.arnuv.model.Personadetalle;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -13,6 +24,8 @@ import static com.core.arnuv.constants.Constants.EARTH_RADIUS;
 
 @Component
 public class ArnuvUtils {
+    @Autowired
+    private IUsuarioDetalleService userService;
 
     public static <T> Collection convertirLista(List lsource, Class<T> destinationType, String... excludedProperties) {
 
@@ -55,6 +68,28 @@ public class ArnuvUtils {
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
         return EARTH_RADIUS * c;
+    }
+    
+    public static PersonaDetalleRequest getUserInSession(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        PersonaDetalleRequest user = (PersonaDetalleRequest) session.getAttribute("loggedInUser");
+        return user;
+    }
+
+    public PersonaDetalleRequest getLoggedInUsername() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        PersonaDetalleRequest authUser = null;
+        if (auth != null && auth.getPrincipal() instanceof UserDetails) {
+            Personadetalle user = userService.buscarPorEmailOrUserName(auth.getName()).getIdpersona();
+            authUser = new PersonaDetalleRequest();
+            authUser.setId(user.getId());
+            authUser.setNombres(user.getNombres());
+            authUser.setApellidos(user.getApellidos());
+            authUser.setIdentificacion(user.getIdentificacion());
+            authUser.setCelular(user.getCelular());
+            authUser.setEmail(user.getEmail());
+        }
+        return authUser;
     }
 
 }
