@@ -3,7 +3,10 @@ package com.core.arnuv.controller;
 import java.io.IOException;
 import java.util.List;
 
+import com.core.arnuv.request.PersonaDetalleRequest;
 import io.jsonwebtoken.lang.Strings;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,14 +36,7 @@ public class MascotaController {
 	
 	@Autowired
 	public IPersonaDetalleService personaDetalleService;
-	
 
-	/*
-	@GetMapping("/listar")
-	public String login() {
-		return "/content-page/mascotas";
-	}
-*/
 	@GetMapping("/listar")
 	public String listarColores(Model model) {
 		List<MascotaDetalle> listaMascotas = mscotaDetalleService.listarMascotasDetalle();
@@ -52,15 +48,19 @@ public class MascotaController {
 	public String crear(Model model) {
 		model.addAttribute("nuevo", new MascotaDetalle());	 
 		model.addAttribute("catalogo",catalogoDetalleService.listarCatalogoDetalle());
-		model.addAttribute("personas", personaDetalleService.listarTodosPersonaDetalle());
+		//model.addAttribute("personas", personaDetalleService.listarTodosPersonaDetalle());
 		return "/content-page/mascotas-crear";
 	}
 
 	// guardar
 	@PostMapping("/insertar")
-	public String guardar(@ModelAttribute("nuevo") MascotaDetalle nuevo, @RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
+	public String guardar(@ModelAttribute("nuevo") MascotaDetalle nuevo, @RequestParam("file") MultipartFile file,
+						  RedirectAttributes redirectAttributes, HttpServletRequest request) {
         try {
+			HttpSession session = request.getSession(false);
+			PersonaDetalleRequest persona = (PersonaDetalleRequest) session.getAttribute("loggedInUser");
 			MascotaDetalle mascota = nuevo;
+			mascota.setIdpersona(personaDetalleService.buscarPorId(persona.getId()));
 			mascota.setPhotoPet(file);
             mscotaDetalleService.insertarMascotaDetalle(nuevo);
 			return "redirect:/mascota/listar";
