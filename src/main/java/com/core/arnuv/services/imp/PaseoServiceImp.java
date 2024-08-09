@@ -58,4 +58,28 @@ public class PaseoServiceImp implements IPaseoService {
 		}
 	}
 	
+	@Override
+	public List<Paseo> buscarpersonacliente(int idcliente) {
+		try {
+			return repo.buscarpersonacliente( idcliente);
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.print(e);
+			return null;
+		}
+	}
+
+	@Override
+	public List<Paseo> buscaridpersonapasedor(int idpersonapasedor) {
+		try {
+			return repo.buscaridpersonapasedor( idpersonapasedor);
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.print(e);
+			return null;
+		}
+	}
+	
 }

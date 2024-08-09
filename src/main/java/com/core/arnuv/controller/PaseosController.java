@@ -24,6 +24,8 @@ import com.core.arnuv.service.ITarifarioService;
 import com.core.arnuv.service.IUbicacionService;
 import com.core.arnuv.utils.ArnuvUtils;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 @Controller
 @RequestMapping("/paseo")
 public class PaseosController {
@@ -50,12 +52,29 @@ public class PaseosController {
 	public ArnuvUtils arnuvUtils;
 	
 	@GetMapping("/listar")
-	public String listar(Model model) {
+	public String listar(Model model, HttpServletRequest request) {
 		var idusuariologueado =arnuvUtils.getLoggedInUsername();
+		
+		if (request.isUserInRole("ADMIN")) {
+			List<Paseo> listapaseos = paseoService.listarPaseos();		
+			model.addAttribute("lista", listapaseos);
+			return "/content-page/paseo-listar";
+		}
+        if (request.isUserInRole("CLIENTE")) {
+        	List<Paseo> listapaseos = paseoService.buscarpersonacliente(idusuariologueado.getId());
+    		model.addAttribute("lista", listapaseos);
+    		return "/content-page/paseo-listar";
+        }
+
+        if (request.isUserInRole("PASEADOR")) {
+        	List<Paseo> listapaseos = paseoService.buscaridpersonapasedor(idusuariologueado.getId());
+    		model.addAttribute("lista", listapaseos);
+    		return "/content-page/paseoPaseador-listar";
+        }
+
+        return "redirect:/home";
 	
-		List<Paseo> listapaseos = paseoService.listarPaseos();
-		model.addAttribute("lista", listapaseos);
-		return "/content-page/paseo-listar";
+		
 	}
 
 	@GetMapping("/nuevo")
@@ -84,6 +103,16 @@ public class PaseosController {
 		model.addAttribute("tarifario", ITarifarioService.listarTarifarios());
 		model.addAttribute("mascota", mascotaDetalleService.listarMascotasDetalle());
 		return "/content-page/paseo-crear";
+	}
+	
+	@GetMapping("/editarPaseador/{idpaseo}")
+	public String editarPaseador(@PathVariable(value = "idpaseo") int codigo, Model model) {
+		Paseo itemrecuperado = paseoService.buscarPorId(codigo);
+		model.addAttribute("nuevo", itemrecuperado);
+		model.addAttribute("persona", personaDetalleService.listarTodosPersonaDetalle());
+		model.addAttribute("tarifario", ITarifarioService.listarTarifarios());
+		model.addAttribute("mascota", mascotaDetalleService.listarMascotasDetalle());
+		return "/content-page/paseoPaseador-crear";
 	}
 
 	// eliminar
