@@ -25,6 +25,8 @@ import com.core.arnuv.service.ITarifarioService;
 import com.core.arnuv.service.IUbicacionService;
 import com.core.arnuv.utils.ArnuvUtils;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 @Controller
 @RequestMapping("/paseo")
 public class PaseosController {
@@ -51,19 +53,31 @@ public class PaseosController {
 	public ArnuvUtils arnuvUtils;
 	
 	@GetMapping("/listar")
-	public String listar(Model model) {
+	public String listar(Model model, HttpServletRequest request) {
 		var idusuariologueado =arnuvUtils.getLoggedInUsername();
-		//List<Paseo> listapaseos1 = paseoService.buscarpersonacliente(4);
+
 		
-		/*
-		List<Paseo> listapaseos = paseoService.buscarpersonacliente(idusuariologueado.getId());
-		model.addAttribute("lista", listapaseos);
-		return "/content-page/paseo-listar";
-		*/
+		if (request.isUserInRole("ADMIN")) {
+			List<Paseo> listapaseos = paseoService.listarPaseos();		
+			model.addAttribute("lista", listapaseos);
+			return "/content-page/paseo-listar";
+		}
+        if (request.isUserInRole("CLIENTE")) {
+        	List<Paseo> listapaseos = paseoService.buscarpersonacliente(idusuariologueado.getId());
+    		model.addAttribute("lista", listapaseos);
+    		return "/content-page/paseo-listar";
+        }
+
+        if (request.isUserInRole("PASEADOR")) {
+        	List<Paseo> listapaseos = paseoService.buscaridpersonapasedor(idusuariologueado.getId());
+    		model.addAttribute("lista", listapaseos);
+    		return "/content-page/paseoPaseador-listar";
+        }
+
+        return "redirect:/home";
 	
-		List<Paseo> listapaseos = paseoService.buscaridpersonapasedor(idusuariologueado.getId());
-		model.addAttribute("lista", listapaseos);
-		return "/content-page/paseoPaseador-listar";
+		
+
 	}
 
 	@GetMapping("/nuevo")
