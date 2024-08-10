@@ -4,6 +4,8 @@ import com.core.arnuv.model.Usuariosession;
 import com.core.arnuv.repository.IUsuarioSesionRepository;
 import com.core.arnuv.service.IUsuarioSesionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -55,4 +57,5 @@ public class UsuarioSesionServiceImp implements IUsuarioSesionService {
 	public Usuariosession buscarPorId(int id) {
 		return repo.findById(id).orElse(null);
 	}
+
 }

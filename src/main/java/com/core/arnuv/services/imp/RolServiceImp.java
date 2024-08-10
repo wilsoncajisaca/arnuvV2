@@ -1,6 +1,7 @@
 package com.core.arnuv.services.imp;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -50,7 +51,7 @@ public class RolServiceImp implements IRolService {
 		existeRol.setActivo(data.getActivo());
 		Boolean continueUpdating = true;
 		if (!data.getActivo()) {
-			List<Usuariorol> listaReferencias = repoUsuarioRol.buscarPorRol(data.getId());
+			Set<Usuariorol> listaReferencias = repoUsuarioRol.buscarPorRol(data.getId());
 			if (!listaReferencias.isEmpty()) {
 				continueUpdating = false;
 			}

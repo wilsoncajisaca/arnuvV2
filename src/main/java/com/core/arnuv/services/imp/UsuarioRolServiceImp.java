@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Component
@@ -32,7 +33,7 @@ public class UsuarioRolServiceImp implements IUsuarioRolService {
 	}
 
 	@Override
-	public List<Usuariorol>  buscarPorRol(int idrol) {
+	public Set<Usuariorol> buscarPorRol(int idrol) {
 		return repo.buscarPorRol(idrol);
 	}
 
@@ -40,5 +41,10 @@ public class UsuarioRolServiceImp implements IUsuarioRolService {
 	public boolean eliminar(Usuariorol data) {
 		repo.delete(data);
 		return true;
+	}
+
+	@Override
+	public Set<Usuariorol> buscarPorRolName(String rolName) {
+		return this.buscarPorRolName(rolName);
 	}
 }

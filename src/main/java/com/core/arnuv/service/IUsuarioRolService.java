@@ -1,9 +1,9 @@
 package com.core.arnuv.service;
 
-import com.core.arnuv.model.Usuariodetalle;
 import com.core.arnuv.model.Usuariorol;
 
 import java.util.List;
+import java.util.Set;
 
 public interface IUsuarioRolService {
 
@@ -13,7 +13,9 @@ public interface IUsuarioRolService {
 
 	public Usuariorol buscarPorId(int idrol, int idusuario);
 
-	List<Usuariorol>  buscarPorRol(int idrol);
+	Set<Usuariorol> buscarPorRol(int idrol);
 
 	public boolean eliminar(Usuariorol data);
+
+	Set<Usuariorol> buscarPorRolName(String rolName);
 }
