@@ -143,7 +143,7 @@
 
 							<div>
 								<button type="submit"
-									class="bg-cream px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+									class="bg-cream px-4 py-2 text-sm font-medium leading-5 text-black transition-colors duration-150 bg-black-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-black-700 focus:outline-none focus:shadow-outline-black">
 									Guardar</button>
 							</div>
 
@@ -189,14 +189,14 @@ document.addEventListener('DOMContentLoaded', function() {
 					position: { lat: point.latitud, lng: point.longitud },
 					map: map,
 					title: point.idpersona,
-					icon: '/content/img/ubi-r.png'
+					icon: '/content/img/pet-r.png'
 				});
 				markers.push(marker);
 				marker.addListener("click", () => {
 					markers.forEach(m => {
-						m.setIcon('/content/img/ubi-r.png'); 
+						m.setIcon('/content/img/pet-r.png'); 
 					});
-					marker.setIcon('/content/img/ubi-a.png');
+					marker.setIcon('/content/img/pet-a.png');
 					const selectElement = document.getElementById('personaSelect');
 					selectElement.value = point.idpersona;
 					
