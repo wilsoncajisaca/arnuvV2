@@ -45,16 +45,17 @@ public class PaseoController {
 
 	@GetMapping("/listar/{idpersona}")
 	public ResponseEntity<?> listar(@PathVariable(value = "idpersona") Integer personId) {
-		Personadetalle personalogueada = personaDetalleService.buscarPorId(personId);
-		var ubicacionPersonaLogueada = ubicacionService.ubicacionPersonaPorDefecto(personalogueada.getId());
-		
+		Personadetalle personalogueada = personaDetalleService.buscarPorId(personId);		
+		var ubicacionPersonaLogueada = ubicacionService.ubicacionPersonaPorDefecto(personalogueada.getId());		
 		UbicacionCabeceraResponse ubiCliente = new UbicacionCabeceraResponse();
 		ubiCliente.setIdpersona(ubicacionPersonaLogueada.getIdpersona().getId());
 		ubiCliente.setLatitud(ubicacionPersonaLogueada.getLatitud());
 		ubiCliente.setLongitud(ubicacionPersonaLogueada.getLongitud());
 		double radio = parametroService.getParametro(KEY_RADIO).getValorNumber();
 		List<UbicacionDetalleResponse> ubiPaseadores = new ArrayList<>();
+		
 		var listaUbicaciones = ubicacionService.ubicacionPaseadores();
+		
 		for (Ubicacion ubicacion : listaUbicaciones) {
 			double distancia = ArnuvUtils.distance(ubicacionPersonaLogueada.getLatitud(), ubicacionPersonaLogueada.getLongitud(),
 					ubicacion.getLatitud(), ubicacion.getLongitud());

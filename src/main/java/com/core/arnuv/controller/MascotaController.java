@@ -18,6 +18,7 @@ import com.core.arnuv.model.MascotaDetalle;
 import com.core.arnuv.service.ICatalogoDetalleService;
 import com.core.arnuv.service.IMascotaDetalleService;
 import com.core.arnuv.service.IPersonaDetalleService;
+import com.core.arnuv.utils.ArnuvUtils;
 
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -36,10 +37,15 @@ public class MascotaController {
 	
 	@Autowired
 	public IPersonaDetalleService personaDetalleService;
+	
+	@Autowired 
+	public ArnuvUtils arnuvUtils;
 
 	@GetMapping("/listar")
-	public String listarColores(Model model) {
-		List<MascotaDetalle> listaMascotas = mscotaDetalleService.listarMascotasDetalle();
+	public String listarColores(Model model, HttpServletRequest request) {
+		var idusuariologueado =arnuvUtils.getLoggedInUsername();
+		
+		List<MascotaDetalle> listaMascotas = mscotaDetalleService.findByIdpersonaId(idusuariologueado.getId());
 		model.addAttribute("lista", listaMascotas);
 		return "/content-page/mascotas-listar";
 	}

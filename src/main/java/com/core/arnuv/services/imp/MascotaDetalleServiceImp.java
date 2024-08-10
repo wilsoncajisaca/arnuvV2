@@ -63,4 +63,10 @@ public class MascotaDetalleServiceImp implements IMascotaDetalleService {
 	public MascotaDetalle buscarMascotaID(int codigo) {
 		return repo.findById(codigo).get();
 	}
+
+	@Override
+	public List<MascotaDetalle> findByIdpersonaId(int idpersona) {
+		
+		return repo.findByIdpersonaId(idpersona);
+	}
 }

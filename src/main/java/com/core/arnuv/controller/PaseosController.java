@@ -13,10 +13,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-
+import com.core.arnuv.model.MascotaDetalle;
 import com.core.arnuv.model.Paseo;
 import com.core.arnuv.model.Personadetalle;
 import com.core.arnuv.model.Ubicacion;
+import com.core.arnuv.response.UbicacionDetalleResponse;
 import com.core.arnuv.service.IMascotaDetalleService;
 import com.core.arnuv.service.IParametroService;
 import com.core.arnuv.service.IPaseoService;
@@ -81,24 +82,29 @@ public class PaseosController {
 	}
 
 	@GetMapping("/nuevo")
-	public String crear(Model model) {
-		
+	public String crear(Model model) {		
+
+		var idusuariologueado =arnuvUtils.getLoggedInUsername();
 		model.addAttribute("nuevo", new Paseo());
 		model.addAttribute("persona", personaDetalleService.listarTodosPersonaDetalle());
 		model.addAttribute("tarifario", ITarifarioService.listarTarifarios());
-		model.addAttribute("mascota", mascotaDetalleService.listarMascotasDetalle());
+		model.addAttribute("mascota", mascotaDetalleService.findByIdpersonaId(idusuariologueado.getId()));
+		model.addAttribute("ubicaciones",ubicacionService.listarUbicacion());
 		return "/content-page/paseo-crear";
 	}
 
 	// guardar
 	@PostMapping("/insertar")
-	public String guardar(@ModelAttribute("nuevo") Paseo nuevo) {
+	public String guardar(@ModelAttribute("nuevo") Paseo nuevo, HttpServletRequest request) {
 		
-		Personadetalle personaCLiente = new Personadetalle();
-		
-		var idusuariologueado =arnuvUtils.getLoggedInUsername().getId();
-		personaCLiente.setId(idusuariologueado);
-		nuevo.setIdpersonacliente(personaCLiente);
+		if (request.isUserInRole("CLIENTE")) {
+			Personadetalle personaCLiente = new Personadetalle();
+			
+			var idusuariologueado =arnuvUtils.getLoggedInUsername().getId();
+			personaCLiente.setId(idusuariologueado);
+			nuevo.setIdpersonacliente(personaCLiente);
+			
+        }
 		paseoService.insertarPaseo(nuevo);
 		return "redirect:/paseo/listar";
 
@@ -122,6 +128,16 @@ public class PaseosController {
 		model.addAttribute("tarifario", ITarifarioService.listarTarifarios());
 		model.addAttribute("mascota", mascotaDetalleService.listarMascotasDetalle());
 		return "/content-page/paseoPaseador-crear";
+	}
+	
+	@GetMapping("/editarCliente/{idpaseo}")
+	public String editarCliente(@PathVariable(value = "idpaseo") int codigo, Model model) {
+		Paseo itemrecuperado = paseoService.buscarPorId(codigo);
+		model.addAttribute("nuevo", itemrecuperado);
+		model.addAttribute("persona", personaDetalleService.listarTodosPersonaDetalle());
+		model.addAttribute("tarifario", ITarifarioService.listarTarifarios());
+		model.addAttribute("mascota", mascotaDetalleService.listarMascotasDetalle());
+		return "/content-page/paseoCliente-ver";
 	}
 
 	// eliminar
