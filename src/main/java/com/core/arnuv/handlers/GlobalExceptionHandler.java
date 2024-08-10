@@ -1,4 +1,4 @@
-package com.core.arnuv.configuration;
+package com.core.arnuv.handlers;
 
 import com.core.arnuv.response.RestErrorResponse;
 import com.core.arnuv.utils.ArnuvNotFoundException;
@@ -21,4 +21,5 @@ public class GlobalExceptionHandler {
     RestErrorResponse handleException(Exception ex) {
         return new RestErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
     }
+
 }

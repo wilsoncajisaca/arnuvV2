@@ -93,8 +93,8 @@ public class AuthController {
             Personadetalle user = userService.buscarPorEmailOrUserName(auth.getName()).getIdpersona();
             PersonaDetalleRequest authUser = new PersonaDetalleRequest();
             authUser.setId(user.getId());
-            authUser.setNombres(user.getNombres());
-            authUser.setApellidos(user.getApellidos());
+            authUser.setNombres(user.getNombres().toUpperCase());
+            authUser.setApellidos(user.getApellidos().toUpperCase());
             authUser.setIdentificacion(user.getIdentificacion());
             authUser.setCelular(user.getCelular());
             authUser.setEmail(user.getEmail());

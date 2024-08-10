@@ -3,7 +3,9 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{content-page/plantilla}">
 <head>
-<script 	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDOTcLb_EU2ud-xK2_Rormqf4lm5xH_S5w"></script>
+<script
+	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDOTcLb_EU2ud-xK2_Rormqf4lm5xH_S5w"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
 #map {
 	height: 400px;
@@ -11,6 +13,7 @@
 }
 </style>
     <script th:src="@{/content/js/validaciones.js}"defer></script>
+
 </head>
 <body>
 <div layout:fragment="espaciocontenidohtml">
@@ -67,7 +70,7 @@
                                    oninput="validaNumeroCelular(this)"
                                    required
                             />
-                            <div id="mensaje-error" style="color: red;"></div>
+                            <!--<div id="mensaje-error" style="color: red;"></div>-->
 
                         </label>
 
@@ -95,9 +98,28 @@
                             </button>
                         </div>
                     </div>
+                    <div th:if="${error != null}">
+                        <p  id="error-text" th:text="${error}"style="color: red;"></p>
+                    </div>
                 </form>
                 <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                       //const errorElement = document.querySelector('div[th\\:if="${error != null}"]');
+                       const errorElement = document.querySelector('p[id="error-text"]');
+                       if (errorElement) {
+                           Swal.fire({
+                               icon: 'error',
+                               title: 'Error',
+                               text: errorElement.textContent.trim()
+                           });
+                       }
+                   });
+                </script>
+
+
+                <script>
                 let currentMarker = null;
+                // Initialize the map
                 window.onload = initMap;
                 </script>
                 

@@ -4,16 +4,16 @@ import java.io.IOException;
 import java.util.List;
 
 import com.core.arnuv.request.PersonaDetalleRequest;
-import io.jsonwebtoken.lang.Strings;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import com.core.arnuv.model.CatalogoDetalle;
 import com.core.arnuv.model.MascotaDetalle;
 import com.core.arnuv.service.ICatalogoDetalleService;
 import com.core.arnuv.service.IMascotaDetalleService;
@@ -26,40 +26,34 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @RequestMapping("/mascota")
 @Slf4j
+@RequiredArgsConstructor
 public class MascotaController {
 
-	
-	@Autowired
-	public IMascotaDetalleService mscotaDetalleService;
-	
-	@Autowired
-	public ICatalogoDetalleService catalogoDetalleService;
-	
-	@Autowired
-	public IPersonaDetalleService personaDetalleService;
-	
-	@Autowired 
-	public ArnuvUtils arnuvUtils;
+	public final IMascotaDetalleService mscotaDetalleService;
+	public final ICatalogoDetalleService catalogoDetalleService;
+	public final IPersonaDetalleService personaDetalleService;
+	public final ArnuvUtils arnuvUtils;
 
 	@GetMapping("/listar")
-	public String listarColores(Model model, HttpServletRequest request) {
-		var idusuariologueado =arnuvUtils.getLoggedInUsername();
-		
+	@PreAuthorize("hasRole('ADMIN') or hasRole('CLIENTE')")
+	public String listar(Model model ) {
+		var idusuariologueado =arnuvUtils.getLoggedInUsername();		
 		List<MascotaDetalle> listaMascotas = mscotaDetalleService.findByIdpersonaId(idusuariologueado.getId());
 		model.addAttribute("lista", listaMascotas);
 		return "/content-page/mascotas-listar";
 	}
 
 	@GetMapping("/nuevo")
+	@PreAuthorize("hasRole('ADMIN') or hasRole('CLIENTE')")
 	public String crear(Model model) {
 		model.addAttribute("nuevo", new MascotaDetalle());	 
 		model.addAttribute("catalogo",catalogoDetalleService.listarCatalogoDetalle());
-		//model.addAttribute("personas", personaDetalleService.listarTodosPersonaDetalle());
 		return "/content-page/mascotas-crear";
 	}
 
 	// guardar
 	@PostMapping("/insertar")
+	@PreAuthorize("hasRole('ADMIN') or hasRole('CLIENTE')")
 	public String guardar(@ModelAttribute("nuevo") MascotaDetalle nuevo, @RequestParam("file") MultipartFile file,
 						  RedirectAttributes redirectAttributes, HttpServletRequest request) {
         try {
@@ -79,7 +73,8 @@ public class MascotaController {
 	// editar
 	
 	@GetMapping("/editar/{idmascota}")
-	public String editarCurso(@PathVariable(value = "idmascota") int codigo, Model model) {
+	@PreAuthorize("hasRole('ADMIN') or hasRole('CLIENTE')")
+	public String editar(@PathVariable(value = "idmascota") int codigo, Model model) {
 		MascotaDetalle itemrecuperado = mscotaDetalleService.buscarMascotaID(codigo);
 		model.addAttribute("nuevo", itemrecuperado);
 		model.addAttribute("catalogo", catalogoDetalleService.listarCatalogoDetalle());
@@ -89,7 +84,8 @@ public class MascotaController {
 
 	// eliminar
 	@GetMapping("/eliminar/{codigo}")
-	public String eliminarColor(@PathVariable(value = "codigo") int codigo, Model model) {
+	@PreAuthorize("hasRole('ADMIN') or hasRole('CLIENTE')")
+	public String eliminar(@PathVariable(value = "codigo") int codigo, Model model) {
 		mscotaDetalleService.EliminarMascotaDetalle(codigo);
 		return "redirect:/mascota/listar";
 	}
