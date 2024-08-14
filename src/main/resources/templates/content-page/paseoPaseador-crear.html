@@ -17,12 +17,23 @@
 }
 
 .disabled-link {
-    pointer-events: none;  /* Desactiva los clics */
-    color: gray;           /* Cambia el color del texto para que parezca deshabilitado */
-    cursor: not-allowed;   /* Cambia el cursor al pasar sobre el enlace */
-    text-decoration: none; /* Remueve el subrayado del enlace */
+	pointer-events: none; /* Desactiva los clics */
+	color: gray;
+	/* Cambia el color del texto para que parezca deshabilitado */
+	cursor: not-allowed; /* Cambia el cursor al pasar sobre el enlace */
+	text-decoration: none; /* Remueve el subrayado del enlace */
+}
+
+.bg-yellow {
+	background-color: yellow;
+}
+#map {
+	height: 250px;
+	width: 100%;
 }
 </style>
+
+<script	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDOTcLb_EU2ud-xK2_Rormqf4lm5xH_S5w"></script>
 
 </head>
 <body>
@@ -35,15 +46,17 @@
 					Paseo</h2>
 				<div
 					class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
+					
+					<div id="map"></div>
 
 
 
 					<form th:action="@{/paseo/insertar}" th:object="${nuevo}"
-						class="form-material" method="post" >
+						class="form-material" method="post">
 
 
 						<div
-							class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
+							class="px-4 py-3 mb-1 bg-white rounded-lg shadow-md dark:bg-gray-800">
 
 							<div
 								class="readonly-select block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
@@ -53,73 +66,119 @@
 									th:field="*{fecharealinicio}" required> <span
 									class="form-bar"></span>
 							</div>
-							<!--
-						<div class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
-							<label class="float-label">Fecha Fin</label>
-							<input type="datetime-local" name="fecha" class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
-								th:field="*{fechafin}" required> <span
-								class="form-bar"></span>
-						</div>
- -->
-
-							<label class="block mt-4 text-sm"> <span
-								class="text-gray-700 dark:text-gray-400"> Datos del
-									Paseador </span> <select id="personaSelect"
-								th:field="*{idpersonapasedor.id}" required
-								class="readonly-select block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
-									<option value="0" selected>Seleccione una persona</option>
-									<option th:each="persona : ${persona}"
-										th:text="${persona.nombres}+' '+${persona.apellidos}"
-										th:value="${persona.id}"></option>
-
-							</select>
-							</label>
-
-
-
-							<h2
-								class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
-
-							<label class="block mt-4 text-sm"> <span
-								class="text-gray-700 dark:text-gray-400"> Dueño de la
-									Mascota </span> <select id="personaSelect"
-								th:field="*{idpersonacliente.id}" required
-								class="readonly-select block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
-									<option value="0" selected>Seleccione una persona</option>
-									<option th:each="persona : ${persona}"
-										th:text="${persona.nombres}+' '+${persona.apellidos}"
-										th:value="${persona.id}"></option>
-
-							</select>
-							</label>
-
-							<h2
-								class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
 
 							
-								    <img height="100px" width="200px" th:src="*{idMascota.urlPhotoPet}" alt="Descripción de la imagen"/>
-								
+							<h2	class="flex flex-col items-center justify-center"> Datos del Paseador </h2>		
+							<div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-2 w-full"> 
+							    <div class="block mt-1 text-sm">
+							    	
+							    	<label class="block mt-1 text-sm">  
+										<select id="personaSelect" th:field="*{idpersonapasedor.id}" required 
+										class="readonly-select block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
+											<option value="0" selected>Seleccione una persona</option>
+											<option th:each="persona : ${persona}"
+													th:text="'Nombres y Apellidos: '+ ${persona.nombres}+' '+${persona.apellidos}"
+													th:value="${persona.id}">
+											</option>
+		
+									</select>
+									</label>
+									<label th:text="'Identificación: '+*{idpersonapasedor.identificacion}"
+							            class="readonly-select block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
+							        </label>
+							    	
+							        
+							    </div>
+							    <div class="block text-sm">
+							    
+							    	<label th:text="'Celular: '+*{idpersonapasedor.celular}"
+							            class="readonly-select block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
+							        </label>
+							        <label th:text="'Email: '+*{idpersonapasedor.email}"
+							            class="readonly-select block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
+							        </label>
+							    	
+							       
+							    </div>
+							</div>
+							
+							
+							
+							<h2	class="flex flex-col items-center justify-center"></h2>			
+							<h2	class="flex flex-col items-center justify-center"> Dueño de la Mascota </h2>							
+						
+							
+							<div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-2 w-full"> 
+							    <div class="block mt-1 text-sm">
+							        <label class="block w-full">  
+							            <select id="personaSelect"
+							                th:field="*{idpersonacliente.id}" required
+							                class="readonly-select block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
+							                <option value="0" selected>Seleccione una persona</option>
+							                <option th:each="persona : ${persona}"
+							                    th:text="'Nombres y Apellidos: '+${persona.nombres}+' '+${persona.apellidos}"
+							                     th:data-nombres="'NombresApellidos: '+${persona.nombres}+' '+${persona.apellidos}" 
+							                    th:value="${persona.id}"></option>
+							            </select>
+							        </label>
+							        <label th:text="'Identificación: '+*{idpersonacliente.identificacion}"
+							            class="readonly-select block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
+							        </label>							        
+							        
+							        <label th:each="ubicacion : ${ubicacion}"
+							                    th:text="'Latitud: '+${ubicacion.latitud}"
+							            class="readonly-select block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
+							        </label>
+							    </div>
+							    <div class="block mt-1 text-sm">
+							        <label th:text="'Celular: '+*{idpersonacliente.celular}"
+							            class="readonly-select block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
+							        </label>
+							        <label th:text="'Email: '+*{idpersonacliente.email}"
+							            class="readonly-select block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
+							        </label>
+							        <label id="ubicacion" th:each="ubicacion : ${ubicacion}"
+							        			th:text="'Longitud: '+${ubicacion.longitud}"
+							                    th:data-latitud="${ubicacion.latitud}" 
+       											th:data-longitud="${ubicacion.longitud}" 
+							            class="readonly-select block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
+							        </label>
+							    </div>
+							</div>
+							<h2	class="flex flex-col items-center justify-center"> Datos de la mascota </h2>							
+							
+							<div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-2 w-full"> 
+							    <div class="block mt-1 text-sm">
+							    	<label class="block mt-1 text-sm">
+							    		<select th:field="*{idMascota.idmascota}" required
+											class=" readonly-select block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
+												<option value="0" selected>Seleccione una mascota</option>
+												<option th:each="mascota : ${mascota}"
+														th:text="'Nombre: '+${mascota.nombre}" 
+														th:value="${mascota.idmascota}">
+												</option>
+			
+										</select>
+										</label>
+										<label th:text="'Edad: '+*{idMascota.edad}"
+								            class="readonly-select block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
+								        </label>
+								        <label th:text="'Observación: '+*{idMascota.observacion}"
+								            class="readonly-select block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
+								        </label>
+							        
+							    </div>
+							    <div class="block mt-1 text-sm">
+							    	<img height="100px" width="200px" th:src="*{idMascota.urlPhotoPet}" alt="Descripción de la imagen" />
+							       
+							    </div>
+							</div>
 
-
+							
 							<h2
 								class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
 
-							<label class="block mt-4 text-sm"> <span
-								class="text-gray-700 dark:text-gray-400"> Mascota </span> <select
-								th:field="*{idMascota.idmascota}" required
-								class=" readonly-select block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
-									<option value="0" selected>Seleccione una mascota</option>
-									<option th:each="mascota : ${mascota}"
-										th:text="${mascota.nombre}" th:value="${mascota.idmascota}"></option>
-
-							</select>
-							</label>
-
-
-							<h2
-								class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
-
-							<label class="block mt-4 text-sm"> <span
+							<label class="block mt-1 text-sm"> <span
 								class="text-gray-700 dark:text-gray-400"> Tiempo a pasear
 							</span> <select th:field="*{idtarifario.id}" required
 								class="readonly-select block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
@@ -144,7 +203,7 @@
 							<h2
 								class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
 
-							<label class="block mt-4 text-sm"> <span
+							<label class="block mt-1 text-sm"> <span
 								class="text-gray-700 dark:text-gray-400">Estado </span> <select
 								id="estadoSelect" th:field="*{estado}" required
 								class=" readonly-select block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
@@ -165,7 +224,8 @@
 
 							<div class="flex space-x-4">
 								<div>
-									<button id="aprobarBoton" onclick="cambiarEstadoAprobado()" type="submit"
+									<button id="aprobarBoton" onclick="cambiarEstadoAprobado()"
+										type="submit"
 										class="bg-cream flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-black-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray">
 										<svg class="w-5 h-5 mr-2" aria-hidden="true"
 											fill="currentColor" viewBox="0 0 20 20">
@@ -178,7 +238,8 @@
 								</div>
 
 								<div>
-									<button id="rechazarBoton" onclick="cambiarEstadoRechazado()" type="submit"
+									<button id="rechazarBoton" onclick="cambiarEstadoRechazado()"
+										type="submit"
 										class="bg-cream flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-black-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray">
 										<i> <svg class="w-5 h-5" aria-hidden="true"
 												fill="currentColor" viewBox="0 0 20 20">
@@ -214,45 +275,56 @@
 								});
 					</script>
 					<script>
-						
 						function cambiarEstadoAprobado() {
 							document.getElementById('estadoSelect').value = 'APROBADO';
 						}
-						
+
 						function cambiarEstadoRechazado() {
-						    document.getElementById('estadoSelect').value = 'RECHAZADO';
+							document.getElementById('estadoSelect').value = 'RECHAZADO';
 						}
-						
+
 						window.onload = function() {
-						    var estado = document.getElementById('estadoSelect').value;  // Thymeleaf asigna el valor del estado
-						    
-						    console.log('aqui javi',estado);
-						    var aprobarBoton = document.getElementById('aprobarBoton');
-						    var rechazarBoton = document.getElementById('rechazarBoton');
-						    
+							var estado = document
+									.getElementById('estadoSelect').value;
+							var aprobarBoton = document
+									.getElementById('aprobarBoton');
+							var rechazarBoton = document
+									.getElementById('rechazarBoton');
 
-						    if (estado === 'APROBADO' || estado === 'RECHAZADO') {
-						    	aprobarBoton.onclick = function(event) {
-						            event.preventDefault();  // Evita la navegación
-						        };
-						        aprobarBoton.classList.add('disabled-link');
-						        aprobarBoton// Añade una clase para cambiar el estilo
-						        
-						        
-						        rechazarBoton.onclick = function(event) {
-						            event.preventDefault();  // Evita la navegación
-						        };
-						        rechazarBoton.classList.add('disabled-link');
-						        rechazarBoton// Añade una clase para cambiar el estilo
-						    }
+							if (estado === 'APROBADO' || estado === 'RECHAZADO') {
+								aprobarBoton.onclick = function(event) {
+									event.preventDefault(); // Evita la navegación
+								};
+								aprobarBoton.classList.add('disabled-link');
+								aprobarBoton// Añade una clase para cambiar el estilo
+
+								rechazarBoton.onclick = function(event) {
+									event.preventDefault(); // Evita la navegación
+								};
+								rechazarBoton.classList.add('disabled-link');
+								rechazarBoton// Añade una clase para cambiar el estilo
+							}
 						};
-						
-						
-						
 					</script>
-
-
-				</div>
+					<script th:inline="javascript">
+						async function initMap() {							
+							var label = document.getElementById('ubicacion');
+						    var lat = parseFloat(label.getAttribute('data-latitud'));
+						    var lng = parseFloat(label.getAttribute('data-longitud'));
+						    
+							var map = new google.maps.Map(document.getElementById('map'), {
+								zoom: 14,
+								center: { lat: lat, lng: lng } 
+							});
+							var marker = new google.maps.Marker({
+						        position: { lat: lat, lng: lng }, 
+						        map: map,
+						        title: 'Ubicacion del cliente'
+						    });
+						}
+						google.maps.event.addDomListener(window, 'load', initMap);
+					</script>
+					</div>
 			</div>
 		</main>
 	</div>

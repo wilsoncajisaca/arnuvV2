@@ -21,8 +21,9 @@ public class Tarifario {
 
     @Comment("Nombre del tarifario")
     @Column(name = "nombre", length = 120)
-
     private String nombre;
+    
+    private String observacion;
 
     @Comment("tiempo del paseo maximo en minutos")
     @Column(name = "tiempo", precision = 10)

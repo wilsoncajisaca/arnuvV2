@@ -22,7 +22,7 @@
 
             <h2
                     class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
-                NUEVA PERSONA</h2>
+                NUEVA USUARIO</h2>
                 
             <div
                     class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
@@ -34,7 +34,7 @@
                                    placeholder="Sector"/>
                         </label>
 
-                <form th:action="@{/persona/create-access}" th:object="${nuevo}" class="form-material" method="post" enctype="multipart/form-data">
+                <form th:action="@{/auth/create-access}" th:object="${nuevo}" class="form-material" method="post" enctype="multipart/form-data">
                     <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
                         <label class="block text-sm">
                             <span class="text-gray-700 dark:text-gray-400">Nombres</span>

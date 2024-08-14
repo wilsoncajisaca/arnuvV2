@@ -50,6 +50,7 @@ public class PaseosController {
 	@Autowired
 	public IParametroService parametroService;
 	
+
 	@Autowired 
 	public ArnuvUtils arnuvUtils;
 	
@@ -123,10 +124,18 @@ public class PaseosController {
 	@GetMapping("/editarPaseador/{idpaseo}")
 	public String editarPaseador(@PathVariable(value = "idpaseo") int codigo, Model model) {
 		Paseo itemrecuperado = paseoService.buscarPorId(codigo);
+		
+		Ubicacion ubicacionCliente = ubicacionService.ubicacionPersonaPorDefecto(itemrecuperado.getIdpersonacliente().getId());
+		List <Ubicacion> listUbicacionCliente = new ArrayList<>();;		
+		listUbicacionCliente.add(ubicacionCliente);
+		
+		
+		
 		model.addAttribute("nuevo", itemrecuperado);
 		model.addAttribute("persona", personaDetalleService.listarTodosPersonaDetalle());
 		model.addAttribute("tarifario", ITarifarioService.listarTarifarios());
 		model.addAttribute("mascota", mascotaDetalleService.listarMascotasDetalle());
+		model.addAttribute("ubicacion", listUbicacionCliente);
 		return "/content-page/paseoPaseador-crear";
 	}
 	
