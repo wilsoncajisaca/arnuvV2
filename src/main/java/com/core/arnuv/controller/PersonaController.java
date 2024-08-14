@@ -45,6 +45,7 @@ public class PersonaController {
 			var ubicacion = new Ubicacion();
 			ubicacion.setLatitud(persona.getLatitud());
 			ubicacion.setLongitud(persona.getLongitud());
+			ubicacion.setIsDefault(1);
 			ubicacion.setIdpersona(personaEntity);
 			ubicacionService.insertarUbicacion(ubicacion);
 			return "redirect:/usuario/crear/".concat(personaEntity.getId().toString());

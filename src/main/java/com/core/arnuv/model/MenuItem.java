@@ -14,10 +14,18 @@ public class MenuItem {
     private String nombre;
     private String url;
     private String orden;
+    private String icono;
 
     @ManyToMany
     @JoinTable(name = "menu_item_role",
             joinColumns = @JoinColumn(name = "menu_item_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Rol> roles;
+
+    @OneToMany(mappedBy = "parentMenuItem", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<MenuItem> subMenuItems;
+
+    @ManyToOne
+    @JoinColumn(name = "parent_menu_item_id")
+    private MenuItem parentMenuItem;
 }

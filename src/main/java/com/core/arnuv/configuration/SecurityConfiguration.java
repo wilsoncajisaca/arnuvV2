@@ -40,7 +40,7 @@ public class SecurityConfiguration {
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/auth/login")
-                        .failureHandler(new CustomAuthenticationFailureHandler())
+                        .failureHandler(new AuthFailureHandler())
                         .defaultSuccessUrl("/auth/default", true)
                         .permitAll())
                 .logout(logout -> logout

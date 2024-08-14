@@ -212,7 +212,4 @@ public class AuthController {
         return passwordEncoder.encode(contrasena);
         //passwordEncoder.encode(contrasena)
     }
-
-
-
 }

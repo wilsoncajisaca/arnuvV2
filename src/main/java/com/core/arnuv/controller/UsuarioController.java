@@ -37,6 +37,7 @@ public class UsuarioController {
         Usuariodetalle usuariodetalle = usuario.mapearDato(usuario, Usuariodetalle.class);
         usuariodetalle.setPassword(passwordEncoder.encode(usuario.getPassword()));
         usuariodetalle.setIdpersona(personaentity);
+        usuariodetalle.setEstado(true);
         Usuariodetalle entity = null;
         try {
             entity = usuarioDetalleService.insertarUsuarioDetalle(usuariodetalle);

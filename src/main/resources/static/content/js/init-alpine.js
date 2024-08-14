@@ -198,7 +198,7 @@ function initMap() {
 		// Browser doesn't support Geolocation
 		handleLocationError(false, map.getCenter());
 	}
-	debugger;
+	//debugger;
 	// Add click event listener to the map
 	map.addListener('click', function(event) {
 		placeMarker(event.latLng, map);

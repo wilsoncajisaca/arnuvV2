@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-
+import com.core.arnuv.model.MascotaDetalle;
 import com.core.arnuv.model.Paseo;
+import com.core.arnuv.model.Personadetalle;
 import com.core.arnuv.model.Ubicacion;
+import com.core.arnuv.response.UbicacionDetalleResponse;
 import com.core.arnuv.service.IMascotaDetalleService;
 import com.core.arnuv.service.IParametroService;
 import com.core.arnuv.service.IPaseoService;
@@ -23,6 +25,8 @@ import com.core.arnuv.service.IPersonaDetalleService;
 import com.core.arnuv.service.ITarifarioService;
 import com.core.arnuv.service.IUbicacionService;
 import com.core.arnuv.utils.ArnuvUtils;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping("/paseo")
@@ -50,27 +54,57 @@ public class PaseosController {
 	public ArnuvUtils arnuvUtils;
 	
 	@GetMapping("/listar")
-	public String listar(Model model) {
+	public String listar(Model model, HttpServletRequest request) {
 		var idusuariologueado =arnuvUtils.getLoggedInUsername();
+
+		
+		if (request.isUserInRole("ADMIN")) {
+			List<Paseo> listapaseos = paseoService.listarPaseos();		
+			model.addAttribute("lista", listapaseos);
+			return "/content-page/paseo-listar";
+		}
+        if (request.isUserInRole("CLIENTE")) {
+        	List<Paseo> listapaseos = paseoService.buscarpersonacliente(idusuariologueado.getId());
+    		model.addAttribute("lista", listapaseos);
+    		return "/content-page/paseo-listar";
+        }
+
+        if (request.isUserInRole("PASEADOR")) {
+        	List<Paseo> listapaseos = paseoService.buscaridpersonapasedor(idusuariologueado.getId());
+    		model.addAttribute("lista", listapaseos);
+    		return "/content-page/paseoPaseador-listar";
+        }
+
+        return "redirect:/home";
 	
-		List<Paseo> listapaseos = paseoService.listarPaseos();
-		model.addAttribute("lista", listapaseos);
-		return "/content-page/paseo-listar";
+		
+
 	}
 
 	@GetMapping("/nuevo")
-	public String crear(Model model) {
-		
+	public String crear(Model model) {		
+
+		var idusuariologueado =arnuvUtils.getLoggedInUsername();
 		model.addAttribute("nuevo", new Paseo());
 		model.addAttribute("persona", personaDetalleService.listarTodosPersonaDetalle());
 		model.addAttribute("tarifario", ITarifarioService.listarTarifarios());
-		model.addAttribute("mascota", mascotaDetalleService.listarMascotasDetalle());
+		model.addAttribute("mascota", mascotaDetalleService.findByIdpersonaId(idusuariologueado.getId()));
+		model.addAttribute("ubicaciones",ubicacionService.listarUbicacion());
 		return "/content-page/paseo-crear";
 	}
 
 	// guardar
 	@PostMapping("/insertar")
-	public String guardar(@ModelAttribute("nuevo") Paseo nuevo) {
+	public String guardar(@ModelAttribute("nuevo") Paseo nuevo, HttpServletRequest request) {
+		
+		if (request.isUserInRole("CLIENTE")) {
+			Personadetalle personaCLiente = new Personadetalle();
+			
+			var idusuariologueado =arnuvUtils.getLoggedInUsername().getId();
+			personaCLiente.setId(idusuariologueado);
+			nuevo.setIdpersonacliente(personaCLiente);
+			
+        }
 		paseoService.insertarPaseo(nuevo);
 		return "redirect:/paseo/listar";
 
@@ -84,6 +118,26 @@ public class PaseosController {
 		model.addAttribute("tarifario", ITarifarioService.listarTarifarios());
 		model.addAttribute("mascota", mascotaDetalleService.listarMascotasDetalle());
 		return "/content-page/paseo-crear";
+	}
+	
+	@GetMapping("/editarPaseador/{idpaseo}")
+	public String editarPaseador(@PathVariable(value = "idpaseo") int codigo, Model model) {
+		Paseo itemrecuperado = paseoService.buscarPorId(codigo);
+		model.addAttribute("nuevo", itemrecuperado);
+		model.addAttribute("persona", personaDetalleService.listarTodosPersonaDetalle());
+		model.addAttribute("tarifario", ITarifarioService.listarTarifarios());
+		model.addAttribute("mascota", mascotaDetalleService.listarMascotasDetalle());
+		return "/content-page/paseoPaseador-crear";
+	}
+	
+	@GetMapping("/editarCliente/{idpaseo}")
+	public String editarCliente(@PathVariable(value = "idpaseo") int codigo, Model model) {
+		Paseo itemrecuperado = paseoService.buscarPorId(codigo);
+		model.addAttribute("nuevo", itemrecuperado);
+		model.addAttribute("persona", personaDetalleService.listarTodosPersonaDetalle());
+		model.addAttribute("tarifario", ITarifarioService.listarTarifarios());
+		model.addAttribute("mascota", mascotaDetalleService.listarMascotasDetalle());
+		return "/content-page/paseoCliente-ver";
 	}
 
 	// eliminar
