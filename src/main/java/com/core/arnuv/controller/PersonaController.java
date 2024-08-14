@@ -33,6 +33,7 @@ public class PersonaController {
 		model.addAttribute("nuevo", new PersonaDetalleRequest());
 		return "/content-page/persona-crear";
 	}
+	
 
 	@PostMapping("create-access")
 	private String personCreateAccess(@ModelAttribute("nuevo") PersonaDetalleRequest persona, Model model) {
@@ -50,25 +51,7 @@ public class PersonaController {
 			ubicacionService.insertarUbicacion(ubicacion);
 			return "redirect:/usuario/crear/".concat(personaEntity.getId().toString());
 		} catch (DataIntegrityViolationException e) {
-			//throw new ArnuvNotFoundException("Error al guardar datos: {0}", e.getMessage().split("Detail:")[1].split("]")[0]);
-
-			//String errorMessage = "Error al guardar datos: Ya existe la llave (celular)=" + persona.getCelular();
-			//System.out.println("llega este error: " + errorMessage);
-			//model.addAttribute("error", errorMessage);
 			String errorMessage;
-			// Detectar el campo específico en el mensaje de error
-			/*if (e.getMessage().contains("uk_eqrqigy92n8fi43p0e9pmf9aw")) { // Email
-				errorMessage = "Error al guardar datos: Ya existe el email registrado=" + persona.getEmail();
-			} else if (e.getMessage().contains("uk_q5r1m95xoe8hnuv378tdsymul")) { // Celular
-				errorMessage = "Error al guardar datos: Ya existe el celular registrado=" + persona.getCelular();
-			} else if (e.getMessage().contains("uk_xxxxxxx")) { // Identificación (ajustar según el índice)
-				errorMessage = "Error al guardar datos: Ya existe la identificacion registrada=" + persona.getIdentificacion();
-			} else {
-				errorMessage = "Error al guardar datos:" + e.getMessage();
-			}
-			model.addAttribute("error", errorMessage);
-			model.addAttribute("nuevo", persona); */// Para mantener los datos del formulario
-
 			if (e.getMessage().contains("uk_eqrqigy92n8fi43p0e9pmf9aw")) { // Email
 				errorMessage = "Error al guardar datos: Ya existe el email registrado=" + persona.getEmail();
 			} else if (e.getMessage().contains("uk_q5r1m95xoe8hnuv378tdsymul")) { // Celular
@@ -80,14 +63,14 @@ public class PersonaController {
 				errorMessage = "Error al guardar datos: Se ha detectado un problema con los datos ingresados.";
 			}
 
-// Agregar mensaje de error al modelo
+
 			model.addAttribute("error", errorMessage);
 			model.addAttribute("nuevo", persona);
 
-			return "/content-page/persona-crear"; // La misma página del formulario
+			return "/content-page/persona-crear";
 
 
 		}
-		//return "redirect:/usuario/crear/".concat(personaEntity.getId().toString());
+		
 	}
 }

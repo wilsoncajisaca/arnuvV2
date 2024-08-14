@@ -2,10 +2,16 @@ package com.core.arnuv.controller;
 
 import com.core.arnuv.model.MenuItem;
 import com.core.arnuv.model.Personadetalle;
+import com.core.arnuv.model.Ubicacion;
 import com.core.arnuv.model.Usuariodetalle;
 import com.core.arnuv.request.PersonaDetalleRequest;
+import com.core.arnuv.request.UsuarioDetalleRequest;
 import com.core.arnuv.service.IMenuService;
+import com.core.arnuv.service.IPersonaDetalleService;
+import com.core.arnuv.service.IUbicacionService;
 import com.core.arnuv.service.IUsuarioDetalleService;
+import com.core.arnuv.utils.ArnuvNotFoundException;
+
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -36,6 +43,9 @@ public class AuthController {
 
     private final IUsuarioDetalleService userService;
     private final IMenuService menuService;
+    
+	private final IPersonaDetalleService servicioPersonaDetalle;
+	private final IUbicacionService  ubicacionService;
 
     @GetMapping("/login")
     public String login(Model model, HttpServletRequest request,
@@ -55,6 +65,64 @@ public class AuthController {
         }
         return "/landing/login";
     }
+    
+    /*-----------------------CREAR NUEVO CLIENTE ------------------------*/
+    @GetMapping("/crearCliente")
+	public String personCliente(Model model) {
+		model.addAttribute("nuevo", new PersonaDetalleRequest());
+		return "/landing/persona-crearCliente";
+	}
+    
+    @PostMapping("/create-access")
+	private String personCreateAccess(@ModelAttribute("nuevo") PersonaDetalleRequest persona, Model model) {
+		//var catDetEntity = servicioCatalogoDetalle.buscarPorId(persona.getIdcatalogoidentificacion(), persona.getIddetalleidentificacion());
+		Personadetalle personadetalle = persona.mapearDato(persona, Personadetalle.class, "idcatalogoidentificacion", "iddetalleidentificacion");
+		//personadetalle.setCatalogodetalle(catDetEntity);
+		Personadetalle personaEntity;
+		try {
+			personaEntity = servicioPersonaDetalle.insertarPersonaDetalle(personadetalle);
+			var ubicacion = new Ubicacion();
+			ubicacion.setLatitud(persona.getLatitud());
+			ubicacion.setLongitud(persona.getLongitud());
+			ubicacion.setIsDefault(1);
+			ubicacion.setIdpersona(personaEntity);
+			ubicacionService.insertarUbicacion(ubicacion);
+			return "redirect:/auth/crearUsuarioCliente/".concat(personaEntity.getId().toString());
+		} catch (DataIntegrityViolationException e) {
+			String errorMessage;
+			if (e.getMessage().contains("uk_eqrqigy92n8fi43p0e9pmf9aw")) { // Email
+				errorMessage = "Error al guardar datos: Ya existe el email registrado=" + persona.getEmail();
+			} else if (e.getMessage().contains("uk_q5r1m95xoe8hnuv378tdsymul")) { // Celular
+				errorMessage = "Error al guardar datos: Ya existe el celular registrado=" + persona.getCelular();
+			} else if (e.getMessage().contains("uk_jmjk4q6y2fnm48qlml12e5cl9")) { // Identificación
+				errorMessage = "Error al guardar datos: Ya existe la identificacion registrada=" + persona.getIdentificacion();
+			} else {
+				// Mensaje genérico si no se detecta un campo específico
+				errorMessage = "Error al guardar datos: Se ha detectado un problema con los datos ingresados.";
+			}
+
+
+			model.addAttribute("error", errorMessage);
+			model.addAttribute("nuevo", persona);
+
+			return "/landing/persona-crearCliente";
+
+
+		}
+		
+	}
+    
+    @GetMapping("/crearUsuarioCliente/{personaId}")
+    public String personCreate(Model model, @PathVariable("personaId") Integer personaId) {
+        UsuarioDetalleRequest requestUser = new UsuarioDetalleRequest();
+        requestUser.setIdpersona(personaId);
+        model.addAttribute("nuevo", requestUser);
+        return "/landing/usuario-crearCliente";
+    }
+
+    
+    
+    /*-----------------------CREAR NUEVO CLIENTE ------------------------*/
 
     @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
