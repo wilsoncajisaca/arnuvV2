@@ -2,14 +2,20 @@ package com.core.arnuv.controller;
 
 import com.core.arnuv.model.MenuItem;
 import com.core.arnuv.model.Personadetalle;
+import com.core.arnuv.model.Rol;
 import com.core.arnuv.model.Ubicacion;
 import com.core.arnuv.model.Usuariodetalle;
+import com.core.arnuv.model.Usuariorol;
+import com.core.arnuv.model.UsuariorolId;
 import com.core.arnuv.request.PersonaDetalleRequest;
 import com.core.arnuv.request.UsuarioDetalleRequest;
+import com.core.arnuv.request.UsuarioRolRequest;
 import com.core.arnuv.service.IMenuService;
 import com.core.arnuv.service.IPersonaDetalleService;
+import com.core.arnuv.service.IRolService;
 import com.core.arnuv.service.IUbicacionService;
 import com.core.arnuv.service.IUsuarioDetalleService;
+import com.core.arnuv.service.IUsuarioRolService;
 import com.core.arnuv.utils.ArnuvNotFoundException;
 
 import jakarta.servlet.http.Cookie;
@@ -26,6 +32,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -46,6 +53,11 @@ public class AuthController {
     
 	private final IPersonaDetalleService servicioPersonaDetalle;
 	private final IUbicacionService  ubicacionService;
+    private final PasswordEncoder passwordEncoder;	
+    private final IUsuarioDetalleService usuarioDetalleService;    
+    private final IRolService servicioRol;
+    private final IUsuarioRolService servicioUsuarioRol;
+    private final IUsuarioDetalleService servicioUsuarioDetalle;
 
     @GetMapping("/login")
     public String login(Model model, HttpServletRequest request,
@@ -119,8 +131,43 @@ public class AuthController {
         model.addAttribute("nuevo", requestUser);
         return "/landing/usuario-crearCliente";
     }
-
-    
+    @PostMapping("/create-accessUsuarioCliente")
+    private String personCreateAccess(@ModelAttribute("nuevo") UsuarioDetalleRequest usuario) {
+        var personaentity = servicioPersonaDetalle.buscarPorId(usuario.getIdpersona());
+        Usuariodetalle usuariodetalle = usuario.mapearDato(usuario, Usuariodetalle.class);
+        usuariodetalle.setPassword(passwordEncoder.encode(usuario.getPassword()));
+        usuariodetalle.setIdpersona(personaentity);
+        usuariodetalle.setEstado(true);
+        Usuariodetalle entity = null;
+        try {
+            entity = usuarioDetalleService.insertarUsuarioDetalle(usuariodetalle);
+            
+            ///////////////////////////////////////////////
+            var rolCliente = servicioRol.findByNombre("ROLE_CLIENTE");            
+            var rolentity = servicioRol.buscarPorId(rolCliente.getId());            
+            
+            
+            UsuariorolId usuariorolId = new UsuariorolId();
+            UsuarioRolRequest nuevo1 = new UsuarioRolRequest();
+            
+            usuariorolId.setIdusuario(entity.getIdusuario());
+            usuariorolId.setIdrol(rolCliente.getId());
+            
+            
+            var usuariorolentity = nuevo1.mapearDato(nuevo1, Usuariorol.class, "idrol","idusuario");
+            usuariorolentity.setIdusuario(entity);
+            usuariorolentity.setIdrol(rolentity);
+            usuariorolentity.setId(usuariorolId);
+            
+            servicioUsuarioRol.insertarUsuarioRol(usuariorolentity);
+            
+            
+        } catch (DataIntegrityViolationException e) {
+            throw new ArnuvNotFoundException("Error al guardar datos: {0}", e.getMessage().split("Detail:")[1].split("]")[0]);
+        }
+        
+        return "redirect:/index";
+    }   
     
     /*-----------------------CREAR NUEVO CLIENTE ------------------------*/
 

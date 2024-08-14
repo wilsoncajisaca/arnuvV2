@@ -17,5 +17,8 @@ public interface IMascotaDetalleService {
 	
 	public  void EliminarMascotaDetalle(int codigo);
 
-	List<MascotaDetalle>findByIdpersonaId(int idpersona); 
+	List<MascotaDetalle>findByIdpersonaId(int idpersona);
+	
+	
+	public MascotaDetalle findByIdmascota(int idmascota); 
 }

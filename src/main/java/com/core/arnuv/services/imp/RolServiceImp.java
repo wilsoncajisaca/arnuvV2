@@ -67,4 +67,12 @@ public class RolServiceImp implements IRolService {
 	public Rol buscarPorId(int id) {
 		return repo.findById(id).orElse(null);
 	}
+
+	@Override
+	public Rol findByNombre(String nombre) {
+		// TODO Auto-generated method stub
+		return repo.findByNombre(nombre);
+	}
+
+	
 }

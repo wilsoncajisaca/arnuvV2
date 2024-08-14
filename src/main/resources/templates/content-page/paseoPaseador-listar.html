@@ -3,7 +3,7 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{content-page/plantilla}">
 <head>
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
 
@@ -13,15 +13,23 @@
 				<h2
 					class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
 					Mis paseos  de mascotas</h2>
-
-
+				
+				<div>
+				<a id="visualizarBoton" th:href="@{/paseo/buscarPorFecha}"
+				   class="bg-cream px-4 py-2 text-sm font-medium leading-5 text-black transition-colors duration-150 bg-black-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-black-700 focus:outline-none focus:shadow-outline-black">
+				   
+				   <i class="fas fa-search mr-2"> Buscar</i>
+				</a>
+				</div>
+				<h2 	class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
+				
 				
 
 				<table id="dataTable" class="w-full whitespace-no-wrap">
 					<thead>
 						<tr
 							class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
-							<th scope="col" class="text-primary">ID</th>
+							<th scope="col" class="text-primary">Fecha</th>
 							<th scope="col" class="text-primary">FechaPaseo</th>
 							<th scope="col" class="text-primary">PersonaPaseadora</th>
 							<th scope="col" class="text-primary">Mascota</th>
@@ -35,7 +43,7 @@
 						class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
 						<tr th:each="datos: ${lista}"
 							class="text-gray-700 dark:text-gray-400">
-							<td th:text="${datos.id}"></td>
+							<td th:text="${datos.fecha}"></td>
 							<td th:text="${datos.fecharealinicio}"></td>
 							<td th:text="${datos.idpersonapasedor.nombres}+' '+${datos.idpersonapasedor.apellidos}"></td>
 							<td th:text="${datos.idMascota.nombre}"></td>
