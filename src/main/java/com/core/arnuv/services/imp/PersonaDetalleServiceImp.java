@@ -56,4 +56,13 @@ public class PersonaDetalleServiceImp implements IPersonaDetalleService {
 		repo.delete(data);
 		return true;
 	}
+
+	@Override
+	public Personadetalle buscarEmail(String email) {
+		return repo.buscarEmail(email);
+	}
+
+
+
+
 }

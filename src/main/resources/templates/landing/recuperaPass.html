@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html x-data="data()" xmlns:th="https://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <title>forgotPassword</title>
+</head>
+<body>
+<!-- password-recovery.html -->
+<h2>Recuperar Contraseña</h2>
+<form th:action="@{/forgot/recuperapass}" method="post">
+    <label for="email">Ingrese su correo electrónico:</label>
+    <input type="email" id="email" name="email" required />
+    <button type="submit">Enviar</button>
+</form>
+<p th:if="${error}" th:text="${error}"></p>
+</form>
+</body>
+</html>

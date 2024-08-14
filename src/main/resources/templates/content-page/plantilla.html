@@ -20,38 +20,8 @@
     ></script>
     <script th:src="@{/content/js/init-alpine.js}"></script>
     <link rel="stylesheet" href="../../content-page/animacion.css">
-    <style>
-        #uniqueRelative {
-          position: relative;
-          width: 100%;
-          height: 100vh;
-          overflow: hidden;
-      }
-
-      #runningDog, #waggingDog {
-          position: absolute;
-          top: calc(50% - 25px);
-          width: 50px;
-          height: auto;
-      }
-
-      #runningDog {
-          right: 0;
-          animation: moveLeft 5s linear infinite;
-      }
-
-      @keyframes moveLeft {
-          0% {
-              right: -50px;
-              opacity: 1;
-          }
-          100% {
-              right: 100%;
-              opacity: 0;
-          }
-      }
-    </style>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.0/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/landing/css/animacionFiru.css">
 </head>
 <body>
 <div
@@ -157,17 +127,8 @@
                                     fill="currentColor"
                                     viewBox="0 0 20 20"
                             >
-
                             </svg>
                         </div>
-
-                      <!---  <input
-                                class="w-full pl-8 pr-2 text-sm text-gray-700 placeholder-gray-600 bg-gray-100 border-0 rounded-md dark:placeholder-gray-500 dark:focus:shadow-outline-gray dark:focus:placeholder-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:placeholder-gray-500 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple form-input"
-                                type="text"
-                                placeholder="Search for projects"
-                                aria-label="Search"
-                        />-->
-
                         <div class="relative">
                             <img th:src="@{/landing/images/firuRun.gif}" id="runningDog" class="object-cover w-80 h-8 rounded-full"
                                  style="width: 50px; height: auto;"
@@ -245,34 +206,7 @@
         </main>
     </div>
 </div>
-
-
 </div>
-
-<script>
-    let isRunning = true;  // Estado inicial: el perro está corriendo
-
-    document.getElementById('runningDog').addEventListener('click', function() {
-        if (isRunning) {
-            // Pausa la animación del perro corriendo y muestra el perro moviendo la cola
-            this.style.animationPlayState = 'paused';
-            this.style.display = 'none';
-            document.getElementById('waggingDog').style.display = 'block';
-        } else {
-            // Reanuda la animación del perro corriendo y oculta el perro moviendo la cola
-            this.style.animationPlayState = 'running';
-            this.style.display = 'block';
-            document.getElementById('waggingDog').style.display = 'none';
-        }
-        isRunning = !isRunning;  // Cambia el estado
-    });
-
-    document.getElementById('waggingDog').addEventListener('click', function() {
-        // Vuelve a mostrar el perro corriendo y oculta el perro moviendo la cola
-        document.getElementById('runningDog').style.display = 'block';
-        this.style.display = 'none';
-        isRunning = true;  // Resetea el estado a corriendo
-    });
-</script>
+<script src="/landing/js/animacionFiru.js"></script>
 </body>
 </html>

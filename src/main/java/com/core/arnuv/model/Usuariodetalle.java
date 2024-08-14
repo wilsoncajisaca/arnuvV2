@@ -91,6 +91,8 @@ public class Usuariodetalle implements Serializable, UserDetails {
 	@OneToOne(mappedBy = "usuarioDetalle")
 	@ToString.Exclude
 	private Usuariosession usuariosession;
+	// almacena los token de recuperacion de claves
+	private String token;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -116,4 +118,5 @@ public class Usuariodetalle implements Serializable, UserDetails {
 	public boolean isEnabled() {
 		return false;
 	}
+
 }

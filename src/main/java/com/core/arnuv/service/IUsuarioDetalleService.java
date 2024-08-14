@@ -24,5 +24,5 @@ public interface IUsuarioDetalleService {
 	public String generarRandomPassword(int length);
 
 	public String encriptarPassword(String password) throws Exception;
-
+	public Usuariodetalle buscarToken(String token);
 }
