@@ -20,8 +20,10 @@
     <main class="h-full overflow-y-auto ">
         <div class="container px-6 mx-auto grid comic-font">
 
-            <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
-                NUEVA PERSONA</h2>
+            <h2
+                    class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
+                NUEVA USUARIO</h2>
+                
             <div
                     class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
                     <div id="map"></div>
@@ -32,7 +34,7 @@
                                    placeholder="Sector"/>
                         </label>
 
-                <form th:action="@{/persona/create-access}" th:object="${nuevo}" class="form-material" method="post" enctype="multipart/form-data">
+                <form th:action="@{/auth/create-access}" th:object="${nuevo}" class="form-material" method="post" enctype="multipart/form-data">
                     <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
                         <label class="block text-sm">
                             <span class="text-gray-700 dark:text-gray-400">Nombres</span>
@@ -75,7 +77,7 @@
                         <label class="block text-sm">
                             <span class="text-gray-700 dark:text-gray-400">Correo Electronico</span>
                             <input th:field="*{email}" class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-                                   placeholder="Correo"
+                                   placeholder="Correo"                                  
                                    required
                             />
                         </label>
@@ -112,12 +114,21 @@
                        }
                    });
                 </script>
+
+
                 <script>
                 let currentMarker = null;
                 // Initialize the map
                 window.onload = initMap;
                 </script>
+                
+              
+
             </div>
+
+
+
+
         </div>
     </main>
 </div>

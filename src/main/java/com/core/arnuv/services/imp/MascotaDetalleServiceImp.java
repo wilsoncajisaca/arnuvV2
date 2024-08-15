@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.core.arnuv.model.MascotaDetalle;
+import com.core.arnuv.model.Paseo;
 import com.core.arnuv.repository.IMascotaDetalleRepository;
 import com.core.arnuv.service.IMascotaDetalleService;
 
@@ -30,24 +31,45 @@ public class MascotaDetalleServiceImp implements IMascotaDetalleService {
 
 	@Override
 	public MascotaDetalle insertarMascotaDetalle(MascotaDetalle data) throws IOException {
-		log.info("Service for create the sinister");
-		String fileUrl = Strings.EMPTY;
-		if (data.getPhotoPet() != null && !data.getPhotoPet().isEmpty()) {
-			fileUrl = firebaseFileService.saveFile(data.getPhotoPet());
-			log.info("File url: " + fileUrl);
-			data.setUrlPhotoPet(fileUrl);
+		
+		System.out.println(data.getPhotoPet().isEmpty());
+		if (data.getIdmascota()!= null){
+			MascotaDetalle existeMascota = repo.findByIdmascota(data.getIdmascota());
+			if (existeMascota != null) {
+				
+				log.info("Service for create the sinister");
+				String fileUrl = Strings.EMPTY;
+				if (data.getPhotoPet() != null && !data.getPhotoPet().isEmpty()) {
+					fileUrl = firebaseFileService.saveFile(data.getPhotoPet());
+					log.info("File url: " + fileUrl);
+					data.setUrlPhotoPet(fileUrl);
+				}
+				else {
+					data.setUrlPhotoPet(existeMascota.getUrlPhotoPet());
+					
+				}
+			}
+		}else {
+			log.info("Service for create the sinister");
+			String fileUrl = Strings.EMPTY;
+			if (data.getPhotoPet() != null && !data.getPhotoPet().isEmpty()) {
+				fileUrl = firebaseFileService.saveFile(data.getPhotoPet());
+				log.info("File url: " + fileUrl);
+				data.setUrlPhotoPet(fileUrl);
+			}
 		}
+
 		return repo.save(data);
 	}
 
 	@Override
 	public MascotaDetalle actualizarMascotaDetalle(MascotaDetalle data) {
-		//MascotaDetalle existeMascota = repo.findById(data.getId()).orElse(null);
-		//existeMascota.setNombre(data.getNombre());
-		//existeMascota.setEdad(data.getEdad());
+		// MascotaDetalle existeMascota = repo.findById(data.getId()).orElse(null);
+		// existeMascota.setNombre(data.getNombre());
+		// existeMascota.setEdad(data.getEdad());
 		return repo.save(data);
 	}
-	
+
 	@Override
 	public void EliminarMascotaDetalle(int codigo) {
 		// TODO Auto-generated method stub
@@ -66,7 +88,14 @@ public class MascotaDetalleServiceImp implements IMascotaDetalleService {
 
 	@Override
 	public List<MascotaDetalle> findByIdpersonaId(int idpersona) {
-		
+
 		return repo.findByIdpersonaId(idpersona);
 	}
+
+	@Override
+	public MascotaDetalle findByIdmascota(int idmascota) {
+		// TODO Auto-generated method stub
+		return repo.findByIdmascota(idmascota);
+	}
+
 }

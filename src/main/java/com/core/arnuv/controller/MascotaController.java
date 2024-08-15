@@ -62,7 +62,13 @@ public class MascotaController {
 			MascotaDetalle mascota = nuevo;
 			mascota.setIdpersona(personaDetalleService.buscarPorId(persona.getId()));
 			mascota.setPhotoPet(file);
+			if (nuevo.getObservacion().length()==0) {
+				nuevo.setObservacion("");
+				
+			}
+			
             mscotaDetalleService.insertarMascotaDetalle(nuevo);
+            
 			return "redirect:/mascota/listar";
         } catch (IOException e) {
 			redirectAttributes.addFlashAttribute("message", "La imagen no se pudo guardar");

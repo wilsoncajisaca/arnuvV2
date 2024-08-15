@@ -1,15 +1,13 @@
 package com.core.arnuv.controller;
 
-import com.core.arnuv.model.MenuItem;
-import com.core.arnuv.model.Personadetalle;
-import com.core.arnuv.model.Token;
-import com.core.arnuv.model.Usuariodetalle;
+import com.core.arnuv.model.*;
 import com.core.arnuv.request.ChangePasswordRequest;
 import com.core.arnuv.request.PersonaDetalleRequest;
-import com.core.arnuv.service.IMenuService;
-import com.core.arnuv.service.IPersonaDetalleService;
-import com.core.arnuv.service.IUsuarioDetalleService;
+import com.core.arnuv.request.UsuarioDetalleRequest;
+import com.core.arnuv.request.UsuarioRolRequest;
+import com.core.arnuv.service.*;
 import com.core.arnuv.services.imp.EmailSender;
+import com.core.arnuv.utils.ArnuvNotFoundException;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,16 +15,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.util.Strings;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Controller;
@@ -35,9 +29,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -53,6 +44,9 @@ public class AuthController {
     private final IPersonaDetalleService servicioPersonaDetalle;
     private final PasswordEncoder passwordEncoder;
     private final EmailSender emailSender;
+	private final IUbicacionService  ubicacionService;
+    private final IRolService servicioRol;
+    private final IUsuarioRolService servicioUsuarioRol;
 
     @GetMapping("/login")
 
@@ -73,6 +67,94 @@ public class AuthController {
         }
         return "/landing/login";
     }
+    
+    /*-----------------------CREAR NUEVO CLIENTE ------------------------*/
+    @GetMapping("/crearCliente")
+	public String personCliente(Model model) {
+		model.addAttribute("nuevo", new PersonaDetalleRequest());
+		return "/landing/persona-crearCliente";
+	}
+    
+    @PostMapping("/create-access")
+	private String personCreateAccess(@ModelAttribute("nuevo") PersonaDetalleRequest persona, Model model) {
+		//var catDetEntity = servicioCatalogoDetalle.buscarPorId(persona.getIdcatalogoidentificacion(), persona.getIddetalleidentificacion());
+		Personadetalle personadetalle = persona.mapearDato(persona, Personadetalle.class, "idcatalogoidentificacion", "iddetalleidentificacion");
+		//personadetalle.setCatalogodetalle(catDetEntity);
+		Personadetalle personaEntity;
+		try {
+			personaEntity = servicioPersonaDetalle.insertarPersonaDetalle(personadetalle);
+			var ubicacion = new Ubicacion();
+			ubicacion.setLatitud(persona.getLatitud());
+			ubicacion.setLongitud(persona.getLongitud());
+			ubicacion.setIsDefault(1);
+			ubicacion.setIdpersona(personaEntity);
+			ubicacionService.insertarUbicacion(ubicacion);
+			return "redirect:/auth/crearUsuarioCliente/".concat(personaEntity.getId().toString());
+		} catch (DataIntegrityViolationException e) {
+			String errorMessage;
+			if (e.getMessage().contains("uk_eqrqigy92n8fi43p0e9pmf9aw")) { // Email
+				errorMessage = "Error al guardar datos: Ya existe el email registrado=" + persona.getEmail();
+			} else if (e.getMessage().contains("uk_q5r1m95xoe8hnuv378tdsymul")) { // Celular
+				errorMessage = "Error al guardar datos: Ya existe el celular registrado=" + persona.getCelular();
+			} else if (e.getMessage().contains("uk_jmjk4q6y2fnm48qlml12e5cl9")) { // Identificación
+				errorMessage = "Error al guardar datos: Ya existe la identificacion registrada=" + persona.getIdentificacion();
+			} else {
+				// Mensaje genérico si no se detecta un campo específico
+				errorMessage = "Error al guardar datos: Se ha detectado un problema con los datos ingresados.";
+			}
+			model.addAttribute("error", errorMessage);
+			model.addAttribute("nuevo", persona);
+
+			return "/landing/persona-crearCliente";
+		}
+	}
+    
+    @GetMapping("/crearUsuarioCliente/{personaId}")
+    public String personCreate(Model model, @PathVariable("personaId") Integer personaId) {
+        UsuarioDetalleRequest requestUser = new UsuarioDetalleRequest();
+        requestUser.setIdpersona(personaId);
+        model.addAttribute("nuevo", requestUser);
+        return "/landing/usuario-crearCliente";
+    }
+    @PostMapping("/create-accessUsuarioCliente")
+    private String personCreateAccess(@ModelAttribute("nuevo") UsuarioDetalleRequest usuario) {
+        var personaentity = servicioPersonaDetalle.buscarPorId(usuario.getIdpersona());
+        Usuariodetalle usuariodetalle = usuario.mapearDato(usuario, Usuariodetalle.class);
+        usuariodetalle.setPassword(passwordEncoder.encode(usuario.getPassword()));
+        usuariodetalle.setIdpersona(personaentity);
+        usuariodetalle.setEstado(true);
+        Usuariodetalle entity = null;
+        try {
+            entity = userService.insertarUsuarioDetalle(usuariodetalle);
+            
+            ///////////////////////////////////////////////
+            var rolCliente = servicioRol.findByNombre("ROLE_CLIENTE");            
+            var rolentity = servicioRol.buscarPorId(rolCliente.getId());            
+            
+            
+            UsuariorolId usuariorolId = new UsuariorolId();
+            UsuarioRolRequest nuevo1 = new UsuarioRolRequest();
+            
+            usuariorolId.setIdusuario(entity.getIdusuario());
+            usuariorolId.setIdrol(rolCliente.getId());
+            
+            
+            var usuariorolentity = nuevo1.mapearDato(nuevo1, Usuariorol.class, "idrol","idusuario");
+            usuariorolentity.setIdusuario(entity);
+            usuariorolentity.setIdrol(rolentity);
+            usuariorolentity.setId(usuariorolId);
+            
+            servicioUsuarioRol.insertarUsuarioRol(usuariorolentity);
+            
+            
+        } catch (DataIntegrityViolationException e) {
+            throw new ArnuvNotFoundException("Error al guardar datos: {0}", e.getMessage().split("Detail:")[1].split("]")[0]);
+        }
+        
+        return "redirect:/index";
+    }   
+    
+    /*-----------------------CREAR NUEVO CLIENTE ------------------------*/
 
     @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {

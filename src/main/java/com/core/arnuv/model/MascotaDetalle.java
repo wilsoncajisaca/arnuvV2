@@ -57,5 +57,7 @@ public class MascotaDetalle  {
     @Comment("Foto de la mascota")
     @Transient
     private MultipartFile photoPet;
+    
+    private String observacion;
 
 }
