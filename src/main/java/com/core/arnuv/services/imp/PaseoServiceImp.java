@@ -1,5 +1,6 @@
 package com.core.arnuv.services.imp;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,13 +25,18 @@ public class PaseoServiceImp implements IPaseoService {
 
 	@Override
 	public Paseo insertarPaseo(Paseo data) {
+		/*System.out.println(data.getId());
+		if (data.getId() != 0){
+			Paseo existePaseo = repo.findById(data.getId()).orElse(null);		
+			data.setFecha(existePaseo.getFecha());
+		}*/
 		return repo.save(data);
 	}
 
 	@Override
 	public Paseo actualizarPaseo(Paseo data) {
-		/*Paseo existePaseo = repo.findById(data.getIdpaseo()).orElse(null);
-		existePaseo.setFecharealinicio(data.getFecharealinicio());
+		/*Paseo existePaseo = repo.findById(data.getId()).orElse(null);
+		existePaseo.setFecha(data.getFecha());
 		existePaseo.setFecharealfin(data.getFecharealfin());
 		existePaseo.setFechainicio(data.getFechainicio());
 		existePaseo.setFechafin(data.getFechafin());
@@ -74,6 +80,30 @@ public class PaseoServiceImp implements IPaseoService {
 	public List<Paseo> buscaridpersonapasedor(int idpersonapasedor) {
 		try {
 			return repo.buscaridpersonapasedor( idpersonapasedor);
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.print(e);
+			return null;
+		}
+	}
+
+	@Override
+	public List<Paseo> buscarRangoFechasPaseador(Date fechaIni, Date fechaFin, int idpersonapasedor) {
+		try {
+			return repo.buscarRangoFechasPaseador( fechaIni,fechaFin,idpersonapasedor);
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.print(e);
+			return null;
+		}
+	}
+	
+	@Override
+	public List<Paseo> buscarRangoFechasCliente(Date fechaIni, Date fechaFin, int idpersonacliente) {
+		try {
+			return repo.buscarRangoFechasCliente( fechaIni,fechaFin,idpersonacliente);
 			
 		} catch (Exception e) {
 			// TODO: handle exception

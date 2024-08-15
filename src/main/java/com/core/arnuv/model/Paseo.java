@@ -20,6 +20,9 @@ public class Paseo {
     @Column(name = "idpaseo", length = 100)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+	
+	@DateTimeFormat(pattern="yyyy-MM-dd'T'HH:mm")
+    private Date fecha;
 
     @ManyToOne()
     @Comment("Codigo de personas")

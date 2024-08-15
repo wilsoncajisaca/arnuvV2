@@ -15,7 +15,7 @@
       <div
               class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
 
-        <form th:action="@{/usuario/create-access}" th:object="${nuevo}" class="form-material" method="post" enctype="multipart/form-data">
+        <form th:action="@{/auth/create-accessUsuarioCliente}" th:object="${nuevo}" class="form-material" method="post" enctype="multipart/form-data">
           <input type="hidden" th:field="*{idpersona}" >
           <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
             <label class="block text-sm">
