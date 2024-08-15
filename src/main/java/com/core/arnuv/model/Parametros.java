@@ -6,6 +6,9 @@ import lombok.Data;
 import java.io.Serializable;
 import java.sql.Clob;
 
+import org.hibernate.annotations.Comment;
+import org.springframework.web.multipart.MultipartFile;
+
 @Data
 @Entity
 public class Parametros implements Serializable {
@@ -33,4 +36,8 @@ public class Parametros implements Serializable {
     
     @Column
     private byte[] archivos;
+    
+    @Comment("Imagen")
+    @Transient
+    private MultipartFile file;
 }

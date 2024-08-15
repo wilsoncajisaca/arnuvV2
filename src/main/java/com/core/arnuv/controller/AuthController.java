@@ -182,7 +182,13 @@ public class AuthController {
             usuariorolentity.setId(usuariorolId);            
             servicioUsuarioRol.insertarUsuarioRol(usuariorolentity);            
             String htmlContent = new String(parametroService.getParametro(KEY_PLANTILLA_MAIL).getArchivos(), StandardCharsets.UTF_8);
-            emailSender.sendEmail("javies8784@gmail.com", "Creacion de usuario", htmlContent);
+            
+            String mensajeDinamico = "BIENVENIDO A LA FUNDACION ARNUV! <br> "+personaentity.getNombres()+ " "+personaentity.getApellidos();
+
+         // Reemplaza el marcador de posición en el HTML con el mensaje dinámico
+            htmlContent = htmlContent.replace("{{mensajeBienvenida}}", "<p style=\"font-size: 14px; line-height: 140%; text-align: center;\"><span style=\"font-family: Lato, sans-serif; font-size: 16px; line-height: 22.4px;\">" + mensajeDinamico.toUpperCase() + "</span></p>");
+            
+            emailSender.sendEmail(personaentity.getEmail(), "Creacion de usuario", htmlContent);
             
         } catch (DataIntegrityViolationException e) {
             throw new ArnuvNotFoundException("Error al guardar datos: {0}", e.getMessage().split("Detail:")[1].split("]")[0]);
