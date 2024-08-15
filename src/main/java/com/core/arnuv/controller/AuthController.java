@@ -26,12 +26,16 @@ import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import static com.core.arnuv.constants.Constants.KEY_PLANTILLA_MAIL;
+
 
 @Slf4j
 @RequiredArgsConstructor
@@ -47,6 +51,7 @@ public class AuthController {
 	private final IUbicacionService  ubicacionService;
     private final IRolService servicioRol;
     private final IUsuarioRolService servicioUsuarioRol;
+    private final IParametroService parametroService;
 
     @GetMapping("/login")
 
@@ -67,6 +72,36 @@ public class AuthController {
         }
         return "/landing/login";
     }
+    /*-----------------------CREAR NUEVO PARAMATROS ------------------------*/
+    @GetMapping("/test")
+   	public String tsest(Model model) {   		
+    	
+   		return "/landing/plantillamail";
+   	}
+    
+    
+    @GetMapping("/crearParametros")
+	public String pcrearParametro(Model model) {
+		model.addAttribute("nuevo", new PersonaDetalleRequest());
+		return "/landing/parametros";
+	}
+        
+    @PostMapping("/subirArchivo")
+    public String subirArchivo(@RequestParam("archivo") MultipartFile archivo) {
+        try {
+            Parametros doc = new Parametros();
+            doc.setCodigo(KEY_PLANTILLA_MAIL);
+            doc.setArchivos(archivo.getBytes());
+            doc.setEstado(Boolean.TRUE);
+            parametroService.save(doc);
+            return "redirect:/landing/login";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/errorAlSubirArchivo";
+        }
+    }
+	
+    
     
     /*-----------------------CREAR NUEVO CLIENTE ------------------------*/
     @GetMapping("/crearCliente")
@@ -74,6 +109,8 @@ public class AuthController {
 		model.addAttribute("nuevo", new PersonaDetalleRequest());
 		return "/landing/persona-crearCliente";
 	}
+    
+    
     
     @PostMapping("/create-access")
 	private String personCreateAccess(@ModelAttribute("nuevo") PersonaDetalleRequest persona, Model model) {
@@ -117,7 +154,7 @@ public class AuthController {
         return "/landing/usuario-crearCliente";
     }
     @PostMapping("/create-accessUsuarioCliente")
-    private String personCreateAccess(@ModelAttribute("nuevo") UsuarioDetalleRequest usuario) {
+    private String personCreateAccess(@ModelAttribute("nuevo") UsuarioDetalleRequest usuario) throws UnsupportedEncodingException, MessagingException {
         var personaentity = servicioPersonaDetalle.buscarPorId(usuario.getIdpersona());
         Usuariodetalle usuariodetalle = usuario.mapearDato(usuario, Usuariodetalle.class);
         usuariodetalle.setPassword(passwordEncoder.encode(usuario.getPassword()));
@@ -142,10 +179,10 @@ public class AuthController {
             var usuariorolentity = nuevo1.mapearDato(nuevo1, Usuariorol.class, "idrol","idusuario");
             usuariorolentity.setIdusuario(entity);
             usuariorolentity.setIdrol(rolentity);
-            usuariorolentity.setId(usuariorolId);
-            
-            servicioUsuarioRol.insertarUsuarioRol(usuariorolentity);
-            
+            usuariorolentity.setId(usuariorolId);            
+            servicioUsuarioRol.insertarUsuarioRol(usuariorolentity);            
+            String htmlContent = new String(parametroService.getParametro(KEY_PLANTILLA_MAIL).getArchivos(), StandardCharsets.UTF_8);
+            emailSender.sendEmail("javies8784@gmail.com", "Creacion de usuario", htmlContent);
             
         } catch (DataIntegrityViolationException e) {
             throw new ArnuvNotFoundException("Error al guardar datos: {0}", e.getMessage().split("Detail:")[1].split("]")[0]);

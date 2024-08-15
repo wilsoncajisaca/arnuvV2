@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.sql.Clob;
 
 @Data
 @Entity
@@ -15,12 +16,12 @@ public class Parametros implements Serializable {
     @Column
     private Integer id;
 
-    @Column
+    @Column(unique = true)
     private String codigo;
 
     @Column
     private String valorText;
-
+    
     @Column
     private Double valorNumber;
 
@@ -29,4 +30,7 @@ public class Parametros implements Serializable {
 
     @Column
     private Boolean estado;
+    
+    @Column
+    private byte[] archivos;
 }
