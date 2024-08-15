@@ -11,6 +11,8 @@ import com.core.arnuv.model.MascotaDetalle;
 @Repository
 public interface IMascotaDetalleRepository extends JpaRepository<MascotaDetalle, Integer>{
 	
-	public List<MascotaDetalle> findByIdpersonaId(int idpersona); 
+	public List<MascotaDetalle> findByIdpersonaId(int idpersona);
+	
+	public MascotaDetalle findByIdmascota(long idmascota); 
 
 }

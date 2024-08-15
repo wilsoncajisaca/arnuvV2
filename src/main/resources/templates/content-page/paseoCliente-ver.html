@@ -42,109 +42,193 @@
 						class="form-material" method="post" >
 
 
-						<div
-							class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
-
-							<div
-								class="readonly-select block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
-								<label class="float-label">Fecha del paseo</label> <input
+						<div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
+						
+						<h2	class="flex flex-col items-center justify-center"> Fechas </h2>		
+							<div class="readonly-select grid grid-cols-1 md:grid-cols-2 gap-4 p-2 w-full"> 
+							    <div class="block mt-1 text-sm">
+							    	<label class="float-label">Fecha</label> <input
 									type="datetime-local" name="fecha"
+									class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+									th:field="*{fecha}" required> <span
+									class="form-bar"></span>
+							    	
+							        
+							    </div>
+							    <div class="block text-sm">
+							    
+							    	<label class="float-label">Fecha del paseo</label> <input
+									type="datetime-local" name="fechainicial"
 									class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
 									th:field="*{fecharealinicio}" required> <span
 									class="form-bar"></span>
+							    	
+							       
+							    </div>
 							</div>
-							<!--
-						<div class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
-							<label class="float-label">Fecha Fin</label>
-							<input type="datetime-local" name="fecha" class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
-								th:field="*{fechafin}" required> <span
-								class="form-bar"></span>
-						</div>
- -->
-
-							<label class="block mt-4 text-sm"> <span
-								class="text-gray-700 dark:text-gray-400"> Datos del
-									Paseador </span> <select id="personaSelect"
-								th:field="*{idpersonapasedor.id}" required
-								class="readonly-select block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
-									<option value="0" selected>Seleccione una persona</option>
-									<option th:each="persona : ${persona}"
-										th:text="${persona.nombres}+' '+${persona.apellidos}"
-										th:value="${persona.id}"></option>
-
-							</select>
-							</label>
-
-
-
-							<h2
-								class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
-
-							<label class="block mt-4 text-sm"> <span
-								class="text-gray-700 dark:text-gray-400"> Dueño de la
-									Mascota </span> <select id="personaSelect"
-								th:field="*{idpersonacliente.id}" required
-								class="readonly-select block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
-									<option value="0" selected>Seleccione una persona</option>
-									<option th:each="persona : ${persona}"
-										th:text="${persona.nombres}+' '+${persona.apellidos}"
-										th:value="${persona.id}"></option>
-
-							</select>
-							</label>
-
-							<h2
-								class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
 
 							
-								    <img height="100px" width="200px" th:src="*{idMascota.urlPhotoPet}" alt="Descripción de la imagen"/>
-								
 
+							
+							<h2	class="flex flex-col items-center justify-center"> Datos del Paseador </h2>		
+							<div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-2 w-full"> 
+							    <div class="block mt-1 text-sm">
+							    	
+							    	<label class="block mt-1 text-sm">  
+										<select id="personaSelect" th:field="*{idpersonapasedor.id}" required 
+										class="readonly-select block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
+											<option value="0" selected>Seleccione una persona</option>
+											<option th:each="persona : ${persona}"
+													th:text="'Nombres y Apellidos: '+ ${persona.nombres}+' '+${persona.apellidos}"
+													th:value="${persona.id}">
+											</option>
+		
+									</select>
+									</label>
+									<label th:text="'Identificación: '+*{idpersonapasedor.identificacion}"
+							            class="readonly-select block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
+							        </label>
+							    	
+							        
+							    </div>
+							    <div class="block text-sm">
+							    
+							    	<label th:text="'Celular: '+*{idpersonapasedor.celular}"
+							            class="readonly-select block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
+							        </label>
+							        <label th:text="'Email: '+*{idpersonapasedor.email}"
+							            class="readonly-select block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
+							        </label>
+							    	
+							       
+							    </div>
+							</div>
+							
+							
+							
+							<h2	class="flex flex-col items-center justify-center"></h2>			
+							<h2	class="flex flex-col items-center justify-center"> Dueño de la Mascota </h2>							
+						
+							
+							<div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-2 w-full"> 
+							    <div class="block mt-1 text-sm">
+							        <label class="block w-full">  
+							            <select id="personaSelect"
+							                th:field="*{idpersonacliente.id}" required
+							                class="readonly-select block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
+							                <option value="0" selected>Seleccione una persona</option>
+							                <option th:each="persona : ${persona}"
+							                    th:text="'Nombres y Apellidos: '+${persona.nombres}+' '+${persona.apellidos}"
+							                     th:data-nombres="'NombresApellidos: '+${persona.nombres}+' '+${persona.apellidos}" 
+							                    th:value="${persona.id}"></option>
+							            </select>
+							        </label>
+							        <label th:text="'Identificación: '+*{idpersonacliente.identificacion}"
+							            class="readonly-select block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
+							        </label>							        
+							        
+							        <label th:each="ubicacion : ${ubicacion}"
+							                    th:text="'Latitud: '+${ubicacion.latitud}"
+							            class="readonly-select block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
+							        </label>
+							    </div>
+							    <div class="block mt-1 text-sm">
+							        <label th:text="'Celular: '+*{idpersonacliente.celular}"
+							            class="readonly-select block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
+							        </label>
+							        <label th:text="'Email: '+*{idpersonacliente.email}"
+							            class="readonly-select block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
+							        </label>
+							        <label id="ubicacion" th:each="ubicacion : ${ubicacion}"
+							        			th:text="'Longitud: '+${ubicacion.longitud}"
+							                    th:data-latitud="${ubicacion.latitud}" 
+       											th:data-longitud="${ubicacion.longitud}" 
+							            class="readonly-select block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
+							        </label>
+							    </div>
+							</div>
+							<h2	class="flex flex-col items-center justify-center"> Datos de la mascota </h2>							
+							
+							<div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-2 w-full"> 
+							    <div class="block mt-1 text-sm">
+							    	<label class="block mt-1 text-sm">
+							    		<select th:field="*{idMascota.idmascota}" required
+											class=" readonly-select block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
+												<option value="0" selected>Seleccione una mascota</option>
+												<option th:each="mascota : ${mascota}"
+														th:text="'Nombre: '+${mascota.nombre}" 
+														th:value="${mascota.idmascota}">
+												</option>
+			
+										</select>
+										</label>
+										<label th:text="'Edad: '+*{idMascota.edad}"
+								            class="readonly-select block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
+								        </label>
+								        <label th:text="'Observación: '+*{idMascota.observacion}"
+								            class="readonly-select block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
+								        </label>
+							        
+							    </div>
+							    <div class="block mt-1 text-sm">
+							    	<img height="100px" width="200px" th:src="*{idMascota.urlPhotoPet}" alt="Descripción de la imagen" />
+							       
+							    </div>
+							</div>
 
+							
 							<h2
 								class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
 
-							<label class="block mt-4 text-sm"> <span
-								class="text-gray-700 dark:text-gray-400"> Mascota </span> <select
-								th:field="*{idMascota.idmascota}" required
-								class=" readonly-select block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
-									<option value="0" selected>Seleccione una mascota</option>
-									<option th:each="mascota : ${mascota}"
-										th:text="${mascota.nombre}" th:value="${mascota.idmascota}"></option>
-
-							</select>
-							</label>
-
+							<h2	class="flex flex-col items-center justify-center"> Tiempo a pasear </h2>					
+							<div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-2 w-full"> 
+							    <div class="block mt-1 text-sm">
+							    	<label class="block mt-1 text-sm"> 
+							    			<select th:field="*{idtarifario.id}" required
+												class="readonly-select block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
+												<option value="0" selected>Seleccione una tarifa</option>
+												<option th:each="tarifario : ${tarifario}"
+														th:text="${tarifario.nombre}+ '  valor : $'+${tarifario.precio}"
+														th:value="${tarifario.id}">
+												</option>
+			
+											</select>
+										</label>
+							    	
+							        
+							    </div>
+							    <div class="block text-sm">
+							    
+							        <label th:text="'Observación: '+*{idtarifario.observacion}"
+							            class="readonly-select block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
+							        </label>
+							    	
+							       
+							    </div>
+							</div>
 
 							<h2
 								class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
-
-							<label class="block mt-4 text-sm"> <span
-								class="text-gray-700 dark:text-gray-400"> Tiempo a pasear
-							</span> <select th:field="*{idtarifario.id}" required
-								class="readonly-select block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
-									<option value="0" selected>Seleccione una tarifa</option>
-									<option th:each="tarifario : ${tarifario}"
-										th:text="${tarifario.nombre}+ '  valor : $'+${tarifario.precio}"
-										th:value="${tarifario.id}"></option>
-
-							</select>
-							</label>
-
-							<h2
-								class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
-							<label class="block text-sm"> <span
-								class="text-gray-700 dark:text-gray-400">Observacion del
-									paseo</span> <input
+							
+							<span class=" block text-sm ">Observación del paseador sobre el paseo</span>
+							 <label th:text="*{observacionpaseo}"
+							            class="readonly-select block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
+							 </label>
+							
+							
+							<label class="block mt-1 text-sm"> <span
+								class="text-gray-700 dark:text-gray-400">Observación sobre el paseador y su servicio</span> <input
 								class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-								placeholder="observacion paseo" th:field="*{observacionpaseo}" />
+								placeholder="observación paseo" th:text="*{observacionpaseador}" />
 
 							</label>
+							
+							
 
 							<h2
 								class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
 
-							<label class="block mt-4 text-sm"> <span
+							<label class="block mt-1 text-sm"> <span
 								class="text-gray-700 dark:text-gray-400">Estado </span> <select
 								id="estadoSelect" th:field="*{estado}" required
 								class=" readonly-select block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">

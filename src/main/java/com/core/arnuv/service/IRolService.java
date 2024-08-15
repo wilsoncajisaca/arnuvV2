@@ -17,4 +17,6 @@ public interface IRolService {
 	public Rol actualizarRol(Rol data);
 
 	public Rol buscarPorId(int id);
+	
+	public Rol findByNombre(String nombre);
 }
