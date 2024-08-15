@@ -16,4 +16,7 @@ public interface IPersonaDetalleRepository extends JpaRepository<Personadetalle,
 
     @Query("Select t from Personadetalle t where t.identificacion= ?1")
     Personadetalle buscarPorIdentificacion(String identificacion);
+    @Query("Select t from Personadetalle t where t.email= ?1")
+    Personadetalle buscarEmail(String email);
+
 }

@@ -3,6 +3,7 @@ package com.core.arnuv.model;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
+import lombok.With;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -91,6 +92,10 @@ public class Usuariodetalle implements Serializable, UserDetails {
 	@OneToOne(mappedBy = "usuarioDetalle")
 	@ToString.Exclude
 	private Usuariosession usuariosession;
+	// almacena los token de recuperacion de claves
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "token_id")
+	private Token token;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -116,4 +121,5 @@ public class Usuariodetalle implements Serializable, UserDetails {
 	public boolean isEnabled() {
 		return false;
 	}
+
 }

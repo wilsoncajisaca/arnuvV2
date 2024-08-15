@@ -92,4 +92,9 @@ public class UsuarioDetalleServiceImp implements IUsuarioDetalleService {
 				.toString();
 	}
 
+	@Override
+	public Usuariodetalle buscarToken(String token) {
+		return repo.buscarToken(token);
+	}
+
 }

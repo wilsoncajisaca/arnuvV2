@@ -56,6 +56,7 @@
 
     </style>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.0/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/landing/css/animacionFiru.css">
 </head>
 <body>
 <div
@@ -137,7 +138,6 @@
                                 placeholder="Search for projects"
                                 aria-label="Search"
                         />-->
-
                         <div class="relative">
                             <img th:src="@{/landing/images/firuRun.gif}" id="runningDog" class="object-cover w-80 h-8 rounded-full"
                                  style="width: 50px; height: auto;"
@@ -201,34 +201,7 @@
         </main>
     </div>
 </div>
-
-
 </div>
-
-<script>
-    let isRunning = true;  // Estado inicial: el perro está corriendo
-
-    document.getElementById('runningDog').addEventListener('click', function() {
-        if (isRunning) {
-            // Pausa la animación del perro corriendo y muestra el perro moviendo la cola
-            this.style.animationPlayState = 'paused';
-            this.style.display = 'none';
-            document.getElementById('waggingDog').style.display = 'block';
-        } else {
-            // Reanuda la animación del perro corriendo y oculta el perro moviendo la cola
-            this.style.animationPlayState = 'running';
-            this.style.display = 'block';
-            document.getElementById('waggingDog').style.display = 'none';
-        }
-        isRunning = !isRunning;  // Cambia el estado
-    });
-
-    document.getElementById('waggingDog').addEventListener('click', function() {
-        // Vuelve a mostrar el perro corriendo y oculta el perro moviendo la cola
-        document.getElementById('runningDog').style.display = 'block';
-        this.style.display = 'none';
-        isRunning = true;  // Resetea el estado a corriendo
-    });
-</script>
+<script src="/landing/js/animacionFiru.js"></script>
 </body>
 </html>

@@ -17,4 +17,6 @@ public interface IUsuarioDetalleRepository extends JpaRepository<Usuariodetalle,
     @Query("Select t from Usuariodetalle t where t.username= ?1")
     Optional<Usuariodetalle> buscarPorUsername(String username);
 
+    @Query("SELECT t from Usuariodetalle t WHERE t.token.token= ?1")
+    Usuariodetalle buscarToken(String token);
 }
