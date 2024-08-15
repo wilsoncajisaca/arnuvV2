@@ -2,11 +2,15 @@ package com.core.arnuv.controller;
 
 import com.core.arnuv.model.MenuItem;
 import com.core.arnuv.model.Personadetalle;
+import com.core.arnuv.model.Token;
 import com.core.arnuv.model.Usuariodetalle;
+import com.core.arnuv.request.ChangePasswordRequest;
 import com.core.arnuv.request.PersonaDetalleRequest;
 import com.core.arnuv.service.IMenuService;
 import com.core.arnuv.service.IPersonaDetalleService;
 import com.core.arnuv.service.IUsuarioDetalleService;
+import com.core.arnuv.services.imp.EmailSender;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,11 +27,15 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -43,8 +51,8 @@ public class AuthController {
     private final IUsuarioDetalleService userService;
     private final IMenuService menuService;
     private final IPersonaDetalleService servicioPersonaDetalle;
-
-    private final JavaMailSender mailSender;
+    private final PasswordEncoder passwordEncoder;
+    private final EmailSender emailSender;
 
     @GetMapping("/login")
 
@@ -129,63 +137,53 @@ public class AuthController {
     //RECUPERAR CONTRASEÑA
     @GetMapping("/recupera")
     public String mostrarFormularioRecuperacion() {
-        return "/content-page/recuperaPass";  //return "/landing/login";
+        return "/landing/recuperaPass";
     }
 
     // Paso 1: Validar y enviar enlace de recuperación
     @PostMapping("/validamail")
-    public String buscarMail(@RequestParam("email") String email, Model model) {
-        Personadetalle persona = servicioPersonaDetalle.buscarEmail(email);
-
-        if (persona == null || !persona.getEmail().equals(email)) {
-            model.addAttribute("error", "El correo no existe, comuníquese con el administrador.");
-            return "/content-page/recuperaPass";
-        }
-
+    public String buscarMail(@RequestParam("email") String email, Model model)
+            throws MessagingException, UnsupportedEncodingException {
         // Generar token y enviarlo por correo
         String token = generarTokenRecuperacion();
-       // Usuariodetalle usuario = usuarioDetalleService.buscarPorPersona(persona);
-        Usuariodetalle usuario = userService.buscarPorId(persona.getId()); // Buscar el usuario asociado
+        Usuariodetalle usuario = userService.buscarPorEmailOrUserName(email);
+        if (usuario == null) {
+            model.addAttribute("error", "El correo electronico no se encuentra registrado.");
+            return "/landing/recuperaPass";
+        }
         guardarToken(usuario, token);
         enviarCorreoRecuperacion(email, token);
-
         model.addAttribute("mensaje", "Se ha enviado un enlace de recuperación a su correo.");
-        return "/content-page/recuperaPass";
+        return "/landing/recuperaPass";
     }
 
     // Paso 2: Mostrar formulario para restablecer la contraseña
     @GetMapping("/restablecer")
     public String mostrarFormularioRestablecer(@RequestParam("token") String token, Model model) {
         Usuariodetalle usuario = userService.buscarToken(token);
-
         if (usuario == null) {
-            model.addAttribute("error", "El enlace de recuperación no es válido o ha expirado.");
-            return "/content-page/restablecer";
+            if(usuario.getToken() == null && isTokenValid(usuario.getToken())){
+                model.addAttribute("error", "El enlace de recuperación no es válido o ha expirado.");
+                return "/landing/recuperaPass";
+            }
         }
-
-        model.addAttribute("token", token);  // Pasar el token al formulario
-        return "/content-page/restablecer";
+        ChangePasswordRequest changePasswordReq = new ChangePasswordRequest();
+        changePasswordReq.setUser(usuario);
+        model.addAttribute("changePass", changePasswordReq);
+        return "/landing/restablecer";
     }
 
     // Paso 3: Procesar el restablecimiento de contraseña
-    @PostMapping("/restablecer")
-    public String restablecerContrasena(@RequestParam("token") String token,
-                                        @RequestParam("nuevaContrasena") String nuevaContrasena,
+    @PostMapping("/cambiarPass")
+    public String restablecerContrasena(@ModelAttribute("changePass") ChangePasswordRequest changePasswordReq,
                                         Model model) {
-        Usuariodetalle usuario = userService.buscarToken(token);
-
-        if (usuario == null) {
-            model.addAttribute("error", "El enlace de recuperación no es válido o ha expirado.");
-            return "/content-page/restablecer";
-        }
-
+        Usuariodetalle usuario = changePasswordReq.getUser();
         // Encriptar y guardar la nueva contraseña
-        usuario.setPassword(encriptarContrasena(nuevaContrasena));
-        usuario.setToken(null);  // Eliminar el token después de usarlo
+        usuario.setPassword(encriptarContrasena(changePasswordReq.getPassword()));
         userService.insertarUsuarioDetalle(usuario);
 
         model.addAttribute("mensaje", "Su contraseña ha sido restablecida con éxito.");
-        return "/content-page/login";  // Redirigir a la página de inicio de sesión
+        return "/landing/login";  // Redirigir a la página de inicio de sesión
     }
 
     // Métodos auxiliares
@@ -194,22 +192,33 @@ public class AuthController {
     }
 
     private void guardarToken(Usuariodetalle usuario, String token) {
-        usuario.setToken(token);
+        Instant now = Instant.now();
+        // Sumar 5 minutos a la hora actual
+        Instant expirationTime = now.plusSeconds(300);
+        Token nuevoToken = new Token();
+        nuevoToken.setToken(token);
+        nuevoToken.setStartDate(now);
+        nuevoToken.setEndDate(expirationTime);
+        nuevoToken.setEstado(Boolean.TRUE);
+        usuario.setToken(nuevoToken);
         userService.insertarUsuarioDetalle(usuario);
     }
 
-    private void enviarCorreoRecuperacion(String email, String token) {
-        String urlRecuperacion = "http://tusitio.com/restablecer?token=" + token;// cambiar por el url del dominio de la aplicacion
-        SimpleMailMessage mensaje = new SimpleMailMessage();
-        mensaje.setTo(email);
-        mensaje.setSubject("Recuperación de contraseña");
-        mensaje.setText("Haga clic en el siguiente enlace para restablecer su contraseña: " + urlRecuperacion);
-        mailSender.send(mensaje);
+    public boolean isTokenValid(Token token) {
+        // Obtén la hora actual
+        Instant now = Instant.now();
+
+        // Verifica si la hora actual está antes de la fecha de expiración del token
+        return now.isBefore(token.getEndDate());
+    }
+
+    private void enviarCorreoRecuperacion(String email, String token)
+            throws MessagingException, UnsupportedEncodingException {
+        String urlRecuperacion = "http://127.0.0.1:8087/auth/restablecer?token=" + token;
+        emailSender.sendEmail(email, "Recuperación de contraseña", "Haga clic en el siguiente enlace para restablecer su contraseña: " + urlRecuperacion);
     }
 
     private String encriptarContrasena(String contrasena) {
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         return passwordEncoder.encode(contrasena);
-        //passwordEncoder.encode(contrasena)
     }
 }
