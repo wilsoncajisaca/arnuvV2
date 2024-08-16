@@ -19,7 +19,7 @@ public class Paseo {
     @Comment("Codigo del paseo")
     @Column(name = "idpaseo", length = 100)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int id=-1;
 	
 	@DateTimeFormat(pattern="yyyy-MM-dd'T'HH:mm")
     private Date fecha;

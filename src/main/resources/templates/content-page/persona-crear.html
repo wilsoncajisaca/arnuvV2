@@ -3,8 +3,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{content-page/plantilla}">
 <head>
-<script
-	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDOTcLb_EU2ud-xK2_Rormqf4lm5xH_S5w"></script>
+<script	th:src="@{${linkMapaGoogle.valorText}}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
 #map {

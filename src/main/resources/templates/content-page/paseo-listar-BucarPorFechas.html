@@ -58,14 +58,14 @@
 						class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
 						<tr th:each="datos: ${lista}"
 							class="text-gray-700 dark:text-gray-400">
-							<td th:text="${datos.fecha}"></td>
-							<td th:text="${datos.fecharealinicio}"></td>
-							<td th:text="${datos.idpersonapasedor.nombres}+' '+${datos.idpersonapasedor.apellidos}"></td>
-							<td th:text="${datos.idMascota.nombre}"></td>
-							<td th:text="${datos.idtarifario.precio}"></td>
-							<td th:text="${datos.estado}"></td>
-							<td th:text="${datos.observacionpaseo}"></td>
-							<td th:text="${datos.observacionpaseador}"></td>
+							<td  class="px-4 py-3" th:text="${#dates.format(datos.fecha, 'yyyy-MM-dd')}"></td>
+							<td  class="px-4 py-3" th:text="${datos.fecharealinicio}"></td>
+							<td  class="px-4 py-3" th:text="${datos.idpersonapasedor.nombres}+' '+${datos.idpersonapasedor.apellidos}"></td>
+							<td  class="px-4 py-3" th:text="${datos.idMascota.nombre}"></td>
+							<td  class="px-4 py-3" th:text="${datos.idtarifario.precio}"></td>
+							<td  class="px-4 py-3" th:text="${datos.estado}"></td>
+							<td  class="px-4 py-3" th:text="${datos.observacionpaseo}"></td>
+							<td  class="px-4 py-3" th:text="${datos.observacionpaseador}"></td>
 						</tr>
 
 					</tbody>

@@ -4,8 +4,7 @@
 	layout:decorate="~{content-page/plantilla}">
 <head>
 
-<script
-	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDOTcLb_EU2ud-xK2_Rormqf4lm5xH_S5w"></script>
+<script	th:src="@{${linkMapaGoogle.valorText}}"></script>
 <style>
 #map {
 	height: 300px;
@@ -103,7 +102,7 @@
 							</select>
 
 
-							</label> <label id="resultadoObservacion" class="focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray "></label>
+							</label> <label id="resultadoObservacion" class="block mt-4 text-sm text-gray-700 dark:text-gray-400 "></label>
 
 							<script>
 								function mostrarObservacionesLabel() {
@@ -124,16 +123,6 @@
 									  
 									}
 							</script>
-<!-- 
-							<h2	class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
-							<label class="block text-sm"> <span
-								class="text-gray-700 dark:text-gray-400">Observacion del
-									paseo</span> <input
-								class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-								placeholder="observacion paseo" th:field="*{observacionpaseo}" />
-
-							</label>
- -->
 							<h2
 								class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
 

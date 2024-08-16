@@ -1,5 +1,9 @@
 package com.core.arnuv.controller;
 
+import static com.core.arnuv.constants.Constants.KEY_LINK_MAPA_GOOGLE;
+
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -19,47 +23,55 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.core.arnuv.model.MascotaDetalle;
+import com.core.arnuv.model.Parametros;
 import com.core.arnuv.model.Paseo;
 import com.core.arnuv.model.Personadetalle;
 import com.core.arnuv.model.Ubicacion;
 import com.core.arnuv.response.BusquedaFechasResponse.BusquedaFechaeDto;
-import com.core.arnuv.response.UbicacionDetalleResponse;
 import com.core.arnuv.service.IMascotaDetalleService;
 import com.core.arnuv.service.IParametroService;
 import com.core.arnuv.service.IPaseoService;
 import com.core.arnuv.service.IPersonaDetalleService;
 import com.core.arnuv.service.ITarifarioService;
 import com.core.arnuv.service.IUbicacionService;
+import com.core.arnuv.services.imp.EmailSender;
 import com.core.arnuv.utils.ArnuvUtils;
-import java.time.LocalDate;
+
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
+import static com.core.arnuv.constants.Constants.KEY_PLANTILLA_MAIL;
 
 @Controller
 @RequestMapping("/paseo")
 public class PaseosController {
 
 	@Autowired
-	public IPaseoService paseoService;
+	private IPaseoService paseoService;
 
 	@Autowired
-	public IPersonaDetalleService personaDetalleService;
+	private IPersonaDetalleService personaDetalleService;
 
 	@Autowired
-	public ITarifarioService ITarifarioService;
+	private ITarifarioService ITarifarioService;
 
 	@Autowired
-	public IMascotaDetalleService mascotaDetalleService;
+	private IMascotaDetalleService mascotaDetalleService;
 
 	@Autowired
-	public IUbicacionService ubicacionService;
+	private IUbicacionService ubicacionService;
 	
 	@Autowired
-	public IParametroService parametroService;
+	private IParametroService parametroService;
 	
 
 	@Autowired 
-	public ArnuvUtils arnuvUtils;
+	private ArnuvUtils arnuvUtils;
+	@Autowired 
+	private EmailSender emailSender;
+	
+	
+	
+	
 	
 	@GetMapping("/listar")
 	public String listar(Model model, HttpServletRequest request) {
@@ -120,10 +132,7 @@ public class PaseosController {
     		model.addAttribute("lista", listapaseos);
     		return "/content-page/paseo-listar-BucarPorFechas";
         }
-      
-		
-		
-       // model.addAttribute("lista", listapaseos1);
+        
         return "/content-page/paseo-listar-BucarPorFechas"; // Cambia esto por el nombre de la vista Thymeleaf que estás usando
     }
 
@@ -131,21 +140,24 @@ public class PaseosController {
 	public String crear(Model model) {		
 
 		var idusuariologueado =arnuvUtils.getLoggedInUsername();
+		Parametros linkMapaGoogle = parametroService.getParametro(KEY_LINK_MAPA_GOOGLE);
 		model.addAttribute("nuevo", new Paseo());
 		model.addAttribute("persona", personaDetalleService.listarTodosPersonaDetalle());
 		model.addAttribute("tarifario", ITarifarioService.listarTarifarios());
 		model.addAttribute("mascota", mascotaDetalleService.findByIdpersonaId(idusuariologueado.getId()));
 		model.addAttribute("ubicaciones",ubicacionService.listarUbicacion());
+		model.addAttribute("linkMapaGoogle", linkMapaGoogle);
 		return "/content-page/paseo-crear";
 	}
 
 	// guardar
 	@PostMapping("/insertar")
-	public String guardar(@ModelAttribute("nuevo") Paseo nuevo, HttpServletRequest request) {
+	public String guardar(@ModelAttribute("nuevo") Paseo nuevo, HttpServletRequest request) throws UnsupportedEncodingException, MessagingException {
 		
 		Date date = new Date();
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
 		String formattedDate = formatter.format(date);		
+		
 		
 		if (request.isUserInRole("CLIENTE")) {
 			Personadetalle personaCLiente = new Personadetalle();
@@ -155,12 +167,17 @@ public class PaseosController {
 			nuevo.setIdpersonacliente(personaCLiente);
 			
         }
-		/*
-		if (nuevo.getId() != 0){
-			Paseo existePaseo = paseoService.buscarPorId(nuevo.getId());		
-			nuevo.setFecha(existePaseo.getFecha());
+		
+		if (nuevo.getId() == -1){
+			
+			Personadetalle personadetalle = personaDetalleService.buscarPorId(nuevo.getIdpersonapasedor().getId());
+			String htmlContent = new String(parametroService.getParametro(KEY_PLANTILLA_MAIL).getArchivos(), StandardCharsets.UTF_8);
+            String mensajeDinamico = "SOLICITUD DE SERVICIO DE PASEO A MASCOTA ! <br> !! REVISA TU BANDEJA DE PASEOS !!";
+            htmlContent = htmlContent.replace("{{mensajeBienvenida}}", "<p style=\"font-size: 14px; line-height: 140%; text-align: center;\"><span style=\"font-family: Lato, sans-serif; font-size: 16px; line-height: 22.4px;\">" + mensajeDinamico.toUpperCase() + "</span></p>");
+            System.out.println(personadetalle.getEmail());
+            emailSender.sendEmail(personadetalle.getEmail(), "SOLICITUD DE SERVICIO", htmlContent);
 		}
-		*/
+		
 			
 		
 		paseoService.insertarPaseo(nuevo);
@@ -171,10 +188,12 @@ public class PaseosController {
 	@GetMapping("/editar/{idpaseo}")
 	public String editar(@PathVariable(value = "idpaseo") int codigo, Model model) {
 		Paseo itemrecuperado = paseoService.buscarPorId(codigo);
+		Parametros linkMapaGoogle = parametroService.getParametro(KEY_LINK_MAPA_GOOGLE);
 		model.addAttribute("nuevo", itemrecuperado);
 		model.addAttribute("persona", personaDetalleService.listarTodosPersonaDetalle());
 		model.addAttribute("tarifario", ITarifarioService.listarTarifarios());
 		model.addAttribute("mascota", mascotaDetalleService.listarMascotasDetalle());
+		model.addAttribute("linkMapaGoogle", linkMapaGoogle);
 		return "/content-page/paseo-crear";
 	}
 	
@@ -185,24 +204,26 @@ public class PaseosController {
 		Ubicacion ubicacionCliente = ubicacionService.ubicacionPersonaPorDefecto(itemrecuperado.getIdpersonacliente().getId());
 		List <Ubicacion> listUbicacionCliente = new ArrayList<>();;		
 		listUbicacionCliente.add(ubicacionCliente);
-		
-		
+		Parametros linkMapaGoogle = parametroService.getParametro(KEY_LINK_MAPA_GOOGLE);		
 		
 		model.addAttribute("nuevo", itemrecuperado);
 		model.addAttribute("persona", personaDetalleService.listarTodosPersonaDetalle());
 		model.addAttribute("tarifario", ITarifarioService.listarTarifarios());
 		model.addAttribute("mascota", mascotaDetalleService.listarMascotasDetalle());
 		model.addAttribute("ubicacion", listUbicacionCliente);
+		model.addAttribute("linkMapaGoogle", linkMapaGoogle);
 		return "/content-page/paseoPaseador-crear";
 	}
 	
 	@GetMapping("/editarCliente/{idpaseo}")
 	public String editarCliente(@PathVariable(value = "idpaseo") int codigo, Model model) {
 		Paseo itemrecuperado = paseoService.buscarPorId(codigo);
+		Parametros linkMapaGoogle = parametroService.getParametro(KEY_LINK_MAPA_GOOGLE);
 		model.addAttribute("nuevo", itemrecuperado);
 		model.addAttribute("persona", personaDetalleService.listarTodosPersonaDetalle());
 		model.addAttribute("tarifario", ITarifarioService.listarTarifarios());
 		model.addAttribute("mascota", mascotaDetalleService.listarMascotasDetalle());
+		model.addAttribute("linkMapaGoogle", linkMapaGoogle);
 		return "/content-page/paseoCliente-ver";
 	}
 

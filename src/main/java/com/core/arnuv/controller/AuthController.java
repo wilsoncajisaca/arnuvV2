@@ -35,7 +35,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import static com.core.arnuv.constants.Constants.KEY_PLANTILLA_MAIL;
-
+import static com.core.arnuv.constants.Constants.KEY_LINK_MAPA_GOOGLE;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -52,6 +52,7 @@ public class AuthController {
     private final IRolService servicioRol;
     private final IUsuarioRolService servicioUsuarioRol;
     private final IParametroService parametroService;
+    
 
     @GetMapping("/login")
 
@@ -106,7 +107,9 @@ public class AuthController {
     /*-----------------------CREAR NUEVO CLIENTE ------------------------*/
     @GetMapping("/crearCliente")
 	public String personCliente(Model model) {
+    	Parametros linkMapaGoogle = parametroService.getParametro(KEY_LINK_MAPA_GOOGLE);
 		model.addAttribute("nuevo", new PersonaDetalleRequest());
+		model.addAttribute("linkMapaGoogle", linkMapaGoogle);
 		return "/landing/persona-crearCliente";
 	}
     
@@ -181,14 +184,12 @@ public class AuthController {
             usuariorolentity.setIdrol(rolentity);
             usuariorolentity.setId(usuariorolId);            
             servicioUsuarioRol.insertarUsuarioRol(usuariorolentity);            
-            String htmlContent = new String(parametroService.getParametro(KEY_PLANTILLA_MAIL).getArchivos(), StandardCharsets.UTF_8);
             
+            String htmlContent = new String(parametroService.getParametro(KEY_PLANTILLA_MAIL).getArchivos(), StandardCharsets.UTF_8);
             String mensajeDinamico = "BIENVENIDO A LA FUNDACION ARNUV! <br> "+personaentity.getNombres()+ " "+personaentity.getApellidos();
-
-         // Reemplaza el marcador de posición en el HTML con el mensaje dinámico
             htmlContent = htmlContent.replace("{{mensajeBienvenida}}", "<p style=\"font-size: 14px; line-height: 140%; text-align: center;\"><span style=\"font-family: Lato, sans-serif; font-size: 16px; line-height: 22.4px;\">" + mensajeDinamico.toUpperCase() + "</span></p>");
             
-            emailSender.sendEmail(personaentity.getEmail(), "Creacion de usuario", htmlContent);
+            emailSender.sendEmail(personaentity.getEmail(), "CREACIÓN DE USUARIO", htmlContent);
             
         } catch (DataIntegrityViolationException e) {
             throw new ArnuvNotFoundException("Error al guardar datos: {0}", e.getMessage().split("Detail:")[1].split("]")[0]);
@@ -278,8 +279,11 @@ public class AuthController {
         }
         guardarToken(usuario, token);
         enviarCorreoRecuperacion(email, token);
+        
+        
+        
         model.addAttribute("mensaje", "Se ha enviado un enlace de recuperación a su correo.");
-        return "/landing/recuperaPass";
+        return "/landing/index";
     }
 
     // Paso 2: Mostrar formulario para restablecer la contraseña
@@ -301,12 +305,21 @@ public class AuthController {
     // Paso 3: Procesar el restablecimiento de contraseña
     @PostMapping("/cambiarPass")
     public String restablecerContrasena(@ModelAttribute("changePass") ChangePasswordRequest changePasswordReq,
-                                        Model model) {
+                                        Model model) throws UnsupportedEncodingException, MessagingException {
         Usuariodetalle usuario = changePasswordReq.getUser();
         // Encriptar y guardar la nueva contraseña
         usuario.setPassword(encriptarContrasena(changePasswordReq.getPassword()));
         userService.insertarUsuarioDetalle(usuario);
 
+        
+        
+        String htmlContent = new String(parametroService.getParametro(KEY_PLANTILLA_MAIL).getArchivos(), StandardCharsets.UTF_8);
+        String mensajeDinamico = "BIENVENIDO A LA FUNDACION ARNUV! <br>TU CAMBIO DE CONTRASEÑA FUE EXITOSA <br>"+usuario.getIdpersona().getNombres()+ " "+usuario.getIdpersona().getApellidos();
+        htmlContent = htmlContent.replace("{{mensajeBienvenida}}", "<p style=\"font-size: 14px; line-height: 140%; text-align: center;\"><span style=\"font-family: Lato, sans-serif; font-size: 16px; line-height: 22.4px;\">" + mensajeDinamico.toUpperCase() + "</span></p>");
+        
+        //emailSender.sendEmail('dsfsdf', "Creacion de usuario", htmlContent);
+        emailSender.sendEmail(usuario.getIdpersona().getEmail(), "CAMBIO DE CONTRASEÑA", htmlContent);
+        
         model.addAttribute("mensaje", "Su contraseña ha sido restablecida con éxito.");
         return "/landing/login";  // Redirigir a la página de inicio de sesión
     }
@@ -340,7 +353,15 @@ public class AuthController {
     private void enviarCorreoRecuperacion(String email, String token)
             throws MessagingException, UnsupportedEncodingException {
         String urlRecuperacion = "http://127.0.0.1:8087/auth/restablecer?token=" + token;
-        emailSender.sendEmail(email, "Recuperación de contraseña", "Haga clic en el siguiente enlace para restablecer su contraseña: " + urlRecuperacion);
+        
+        String htmlContent = new String(parametroService.getParametro(KEY_PLANTILLA_MAIL).getArchivos(), StandardCharsets.UTF_8);
+        String mensajeDinamico = "BIENVENIDO A LA FUNDACION ARNUV! <br> CAMBIA TU CONTRASEÑA EN EL SIGUIENTE ENLACE: <br>"+urlRecuperacion;
+        htmlContent = htmlContent.replace("{{mensajeBienvenida}}", "<p style=\"font-size: 14px; line-height: 140%; text-align: center;\"><span style=\"font-family: Lato, sans-serif; font-size: 16px; line-height: 22.4px;\">" + mensajeDinamico + "</span></p>");
+        
+        //emailSender.sendEmail('dsfsdf', "Creacion de usuario", htmlContent);
+        emailSender.sendEmail(email, "RESTABLECER CONTRASEÑA", htmlContent);
+        
+        //emailSender.sendEmail(email, "Recuperación de contraseña", "Haga clic en el siguiente enlace para restablecer su contraseña: " + urlRecuperacion);
     }
 
     private String encriptarContrasena(String contrasena) {
