@@ -10,4 +10,6 @@ public interface IParametroService {
     Parametros save(Parametros parametro)throws IOException;
 
     Parametros delete(Parametros parametro);
+    
+    Parametros findByCodigo(String code);
 }

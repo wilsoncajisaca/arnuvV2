@@ -80,30 +80,6 @@ public class AuthController {
    		return "/landing/plantillamail";
    	}
     
-    
-    @GetMapping("/crearParametros")
-	public String pcrearParametro(Model model) {
-		model.addAttribute("nuevo", new PersonaDetalleRequest());
-		return "/landing/parametros";
-	}
-        
-    @PostMapping("/subirArchivo")
-    public String subirArchivo(@RequestParam("archivo") MultipartFile archivo) {
-        try {
-            Parametros doc = new Parametros();
-            doc.setCodigo(KEY_PLANTILLA_MAIL);
-            doc.setArchivos(archivo.getBytes());
-            doc.setEstado(Boolean.TRUE);
-            parametroService.save(doc);
-            return "redirect:/landing/login";
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "redirect:/errorAlSubirArchivo";
-        }
-    }
-	
-    
-    
     /*-----------------------CREAR NUEVO CLIENTE ------------------------*/
     @GetMapping("/crearCliente")
 	public String personCliente(Model model) {
@@ -310,16 +286,10 @@ public class AuthController {
         // Encriptar y guardar la nueva contraseña
         usuario.setPassword(encriptarContrasena(changePasswordReq.getPassword()));
         userService.insertarUsuarioDetalle(usuario);
-
-        
-        
         String htmlContent = new String(parametroService.getParametro(KEY_PLANTILLA_MAIL).getArchivos(), StandardCharsets.UTF_8);
         String mensajeDinamico = "BIENVENIDO A LA FUNDACION ARNUV! <br>TU CAMBIO DE CONTRASEÑA FUE EXITOSA <br>"+usuario.getIdpersona().getNombres()+ " "+usuario.getIdpersona().getApellidos();
         htmlContent = htmlContent.replace("{{mensajeBienvenida}}", "<p style=\"font-size: 14px; line-height: 140%; text-align: center;\"><span style=\"font-family: Lato, sans-serif; font-size: 16px; line-height: 22.4px;\">" + mensajeDinamico.toUpperCase() + "</span></p>");
-        
-        //emailSender.sendEmail('dsfsdf', "Creacion de usuario", htmlContent);
         emailSender.sendEmail(usuario.getIdpersona().getEmail(), "CAMBIO DE CONTRASEÑA", htmlContent);
-        
         model.addAttribute("mensaje", "Su contraseña ha sido restablecida con éxito.");
         return "/landing/login";  // Redirigir a la página de inicio de sesión
     }

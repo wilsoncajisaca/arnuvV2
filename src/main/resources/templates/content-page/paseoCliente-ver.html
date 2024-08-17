@@ -6,6 +6,14 @@
 
 <link rel="stylesheet"
 	href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+	
+	<!-- Bootstrap CSS -->
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<!-- jQuery y Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
 
 <style>
@@ -22,6 +30,18 @@
     cursor: not-allowed;   /* Cambia el cursor al pasar sobre el enlace */
     text-decoration: none; /* Remueve el subrayado del enlace */
 }
+
+.star-rating select {
+    color: gold; /* Cambia el color del texto a dorado */
+}
+
+.star-rating option {
+    color: black; /* Color de texto por defecto para las opciones no seleccionadas */
+}
+
+.star-rating option:checked {
+    color: gold; /* Cambia el color del texto a dorado cuando la opción está seleccionada */
+}
 </style>
 
 </head>
@@ -32,13 +52,24 @@
 			<div class="container px-6 mx-auto grid comic-font">
 				<h2
 					class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
-					Paseo</h2>
+					Paseos</h2>
 				<div
 					class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
-
-
-
-					<form th:action="@{/paseo/insertar}" th:object="${nuevo}"
+					
+					<h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
+					<div 
+						class="flex items-center justify-end px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray">
+						<a class="btn btn-outline-secondary" href="#" role="button" th:href="@{/calificacion/nuevo/{paseoId}(paseoId=${paseoID})}" id="botonValorar">
+							<i class="fas fa-plus-circle mr-1 text-secondary"></i> 
+							Califica el paseo
+							<i class="fas fa-star ml-2 text-yellow-500"></i>
+							<i class="fas fa-star text-yellow-500"></i>
+							<i class="fas fa-star text-yellow-500"></i>
+							<i class="fas fa-star text-yellow-500"></i>
+							<i class="fas fa-star text-yellow-500"></i>
+						</a>
+					</div>
+					<form th:action="@{/paseo/insertarCalificacion}" th:object="${nuevo}"
 						class="form-material" method="post" >
 
 
@@ -260,6 +291,8 @@
 										Finalizar
 									</button>
 								</div>
+								
+								
 
 								
 
@@ -290,37 +323,36 @@
 						
 						function cambiarEstadoFinalizar() {
 							document.getElementById('estadoSelect').value = 'FINALIZADO';
-						}
+						};
 						
 						
 						window.onload = function() {
 						    var estado = document.getElementById('estadoSelect').value;  // Thymeleaf asigna el valor del estado
 						    
-						    console.log('aqui javi',estado);
-						    var aprobarBoton = document.getElementById('aprobarBoton');
-						    var rechazarBoton = document.getElementById('rechazarBoton');
 						    
+						    var aprobarBoton = document.getElementById('aprobarBoton');
+						    
+						    var botonValorar = document.getElementById('botonValorar');
+						    if (estado === 'FINALIZADO') {
+						        botonValorar.disabled = false;
+						    } else {
+						        botonValorar.disabled = true;						        
+						    }
 
-						    if ( estado === 'RECHAZADO' || estado === 'FINALIZADO') {
+						    if ( estado === 'PENDIENTE'|| estado === 'RECHAZADO' || estado === 'FINALIZADO') {
+						    	
 						    	aprobarBoton.onclick = function(event) {
 						            event.preventDefault();  // Evita la navegación
 						        };
 						        aprobarBoton.classList.add('disabled-link');
-						        aprobarBoton// Añade una clase para cambiar el estilo
-						        
-						        
-						        rechazarBoton.onclick = function(event) {
-						            event.preventDefault();  // Evita la navegación
-						        };
-						        rechazarBoton.classList.add('disabled-link');
-						        rechazarBoton// Añade una clase para cambiar el estilo
-						    }
+						        aprobarBoton;
+						    } 
+						   
 						};
 						
 						
 						
-					</script>
-
+					</script>					
 
 				</div>
 			</div>

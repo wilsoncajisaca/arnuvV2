@@ -17,7 +17,7 @@ public class Parametros implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
-    private Integer id;
+    private Integer id=-1;
 
     @Column(unique = true)
     private String codigo;

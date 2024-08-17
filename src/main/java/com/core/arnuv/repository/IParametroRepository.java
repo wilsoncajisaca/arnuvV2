@@ -9,4 +9,8 @@ import java.util.Optional;
 @Repository
 public interface IParametroRepository extends JpaRepository<Parametros, Integer> {
     Optional<Parametros> findByCodigoAndEstado(String codigo, Boolean estado);
+    
+    Parametros findByCodigo(String codigo);
+    
+    
 }

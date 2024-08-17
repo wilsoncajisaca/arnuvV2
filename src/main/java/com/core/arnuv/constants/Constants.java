@@ -17,8 +17,7 @@ public class Constants {
                 "/landing/**",
                 "/auth/**",
                 "/index",
-                "/paseos/**",
-                "/crear/**",
+                "/paseos/**",                           
                 "/"
         };
     }

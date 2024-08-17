@@ -1,9 +1,11 @@
 package com.core.arnuv.controller;
 
+import com.core.arnuv.model.Parametros;
 import com.core.arnuv.model.Personadetalle;
 import com.core.arnuv.model.Ubicacion;
 import com.core.arnuv.request.PersonaDetalleRequest;
 import com.core.arnuv.service.ICatalogoDetalleService;
+import com.core.arnuv.service.IParametroService;
 import com.core.arnuv.service.IPersonaDetalleService;
 import com.core.arnuv.service.IUbicacionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import static com.core.arnuv.constants.Constants.KEY_LINK_MAPA_GOOGLE;
 
 @Controller
 @RequestMapping("/persona")
@@ -24,10 +27,17 @@ public class PersonaController {
 	private IPersonaDetalleService servicioPersonaDetalle;
 	@Autowired
 	private IUbicacionService  ubicacionService;
+	@Autowired
+	private IParametroService parametroService;
+	
+	
 	
 	@GetMapping("crear")
 	public String personCreate(Model model) {
+		
+		Parametros linkMapaGoogle = parametroService.getParametro(KEY_LINK_MAPA_GOOGLE);
 		model.addAttribute("nuevo", new PersonaDetalleRequest());
+		model.addAttribute("linkMapaGoogle", linkMapaGoogle);		
 		return "/content-page/persona-crear";
 	}
 	@PostMapping("create-access")

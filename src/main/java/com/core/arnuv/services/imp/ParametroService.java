@@ -46,4 +46,10 @@ public class ParametroService implements IParametroService {
         parametro.setEstado(false);
         return repo.save(parametro);
     }
+
+	@Override
+	public Parametros findByCodigo(String code) {
+		// TODO Auto-generated method stub
+		return repo.findByCodigo(code);
+	}
 }

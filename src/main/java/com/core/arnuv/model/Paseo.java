@@ -92,7 +92,7 @@ public class Paseo {
     @Column(name = "observacionpaseador", length = 200)
     private String observacionpaseador;
     
-    
+    @Column
     private String estado;
 
 }

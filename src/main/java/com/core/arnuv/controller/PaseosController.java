@@ -23,11 +23,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.core.arnuv.model.Calificacion;
 import com.core.arnuv.model.Parametros;
 import com.core.arnuv.model.Paseo;
 import com.core.arnuv.model.Personadetalle;
 import com.core.arnuv.model.Ubicacion;
 import com.core.arnuv.response.BusquedaFechasResponse.BusquedaFechaeDto;
+import com.core.arnuv.service.ICalificacionService;
 import com.core.arnuv.service.IMascotaDetalleService;
 import com.core.arnuv.service.IParametroService;
 import com.core.arnuv.service.IPaseoService;
@@ -62,16 +64,10 @@ public class PaseosController {
 	
 	@Autowired
 	private IParametroService parametroService;
-	
-
 	@Autowired 
 	private ArnuvUtils arnuvUtils;
 	@Autowired 
 	private EmailSender emailSender;
-	
-	
-	
-	
 	
 	@GetMapping("/listar")
 	public String listar(Model model, HttpServletRequest request) {
@@ -184,6 +180,8 @@ public class PaseosController {
 		return "redirect:/paseo/listar";
 
 	}
+	
+	
 
 	@GetMapping("/editar/{idpaseo}")
 	public String editar(@PathVariable(value = "idpaseo") int codigo, Model model) {
@@ -220,12 +218,15 @@ public class PaseosController {
 		Paseo itemrecuperado = paseoService.buscarPorId(codigo);
 		Parametros linkMapaGoogle = parametroService.getParametro(KEY_LINK_MAPA_GOOGLE);
 		model.addAttribute("nuevo", itemrecuperado);
+		model.addAttribute("paseoID", itemrecuperado.getId());
 		model.addAttribute("persona", personaDetalleService.listarTodosPersonaDetalle());
 		model.addAttribute("tarifario", ITarifarioService.listarTarifarios());
 		model.addAttribute("mascota", mascotaDetalleService.listarMascotasDetalle());
 		model.addAttribute("linkMapaGoogle", linkMapaGoogle);
 		return "/content-page/paseoCliente-ver";
 	}
+	
+	
 
 	// eliminar
 	@GetMapping("/eliminar/{codigo}")
