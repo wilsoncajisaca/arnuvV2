@@ -50,7 +50,7 @@ public class CalificacionController {
 		var idusuariologueado =arnuvUtils.getLoggedInUsername();
 		List<Calificacion> listaCalificacion = calificacionService.BuscarPersonaPasedor(idusuariologueado.getId());
 		model.addAttribute("lista", listaCalificacion);
-		return "/content-page/Calificacion-listar";
+		return "content-page/calificacion-listar";
 		
 
 	}
@@ -63,7 +63,7 @@ public class CalificacionController {
 		calificacion.setPaseoID(paseoId);
 		model.addAttribute("nuevo", calificacion);		
 		model.addAttribute("persona", personaDetalleService.listarTodosPersonaDetalle());		
-		return "/content-page/Calificacion-crear";
+		return "content-page/calificacion-crear";
 	}
 	
 	@PostMapping("/insertar")

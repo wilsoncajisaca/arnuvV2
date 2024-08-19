@@ -40,7 +40,7 @@ public class MascotaController {
 		var idusuariologueado =arnuvUtils.getLoggedInUsername();		
 		List<MascotaDetalle> listaMascotas = mscotaDetalleService.findByIdpersonaId(idusuariologueado.getId());
 		model.addAttribute("lista", listaMascotas);
-		return "/content-page/mascotas-listar";
+		return "content-page/mascotas-listar";
 	}
 
 	@GetMapping("/nuevo")
@@ -48,7 +48,7 @@ public class MascotaController {
 	public String crear(Model model) {
 		model.addAttribute("nuevo", new MascotaDetalle());	 
 		model.addAttribute("catalogo",catalogoDetalleService.listarCatalogoDetalle());
-		return "/content-page/mascotas-crear";
+		return "content-page/mascotas-crear";
 	}
 
 	// guardar
@@ -72,7 +72,7 @@ public class MascotaController {
 			return "redirect:/mascota/listar";
         } catch (IOException e) {
 			redirectAttributes.addFlashAttribute("message", "La imagen no se pudo guardar");
-			return "/content-page/mascotas-crear";
+			return "content-page/mascotas-crear";
         }
 	}
 
@@ -85,7 +85,7 @@ public class MascotaController {
 		model.addAttribute("nuevo", itemrecuperado);
 		model.addAttribute("catalogo", catalogoDetalleService.listarCatalogoDetalle());
 		model.addAttribute("personas", personaDetalleService.listarTodosPersonaDetalle());
-		return "/content-page/mascotas-crear";
+		return "content-page/mascotas-crear";
 	}
 
 	// eliminar

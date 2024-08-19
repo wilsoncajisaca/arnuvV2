@@ -1,8 +1,6 @@
 package com.core.arnuv.controller;
 
-import com.core.arnuv.model.Personadetalle;
 import com.core.arnuv.model.Usuariodetalle;
-import com.core.arnuv.request.PersonaDetalleRequest;
 import com.core.arnuv.request.UsuarioDetalleRequest;
 import com.core.arnuv.service.IPersonaDetalleService;
 import com.core.arnuv.service.IUsuarioDetalleService;
@@ -28,7 +26,7 @@ public class UsuarioController {
         UsuarioDetalleRequest requestUser = new UsuarioDetalleRequest();
         requestUser.setIdpersona(personaId);
         model.addAttribute("nuevo", requestUser);
-        return "/content-page/usuario-crear";
+        return "content-page/usuario-crear";
     }
 
     @PostMapping("create-access")

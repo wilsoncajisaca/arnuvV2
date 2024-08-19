@@ -38,7 +38,7 @@ public class PersonaController {
 		Parametros linkMapaGoogle = parametroService.getParametro(KEY_LINK_MAPA_GOOGLE);
 		model.addAttribute("nuevo", new PersonaDetalleRequest());
 		model.addAttribute("linkMapaGoogle", linkMapaGoogle);		
-		return "/content-page/persona-crear";
+		return "content-page/persona-crear";
 	}
 	@PostMapping("create-access")
 	private String personCreateAccess(@ModelAttribute("nuevo") PersonaDetalleRequest persona, Model model) {
@@ -67,7 +67,7 @@ public class PersonaController {
 			}
 			model.addAttribute("error", errorMessage);
 			model.addAttribute("nuevo", persona);
-			return "/content-page/persona-crear";
+			return "content-page/persona-crear";
 		}
 	}
 }

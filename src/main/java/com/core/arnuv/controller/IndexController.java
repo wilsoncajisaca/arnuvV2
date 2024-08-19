@@ -13,11 +13,11 @@ public class IndexController {
         if (userDetails != null) {
             return "redirect:/auth/default";
         }
-        return "/landing/index";
+        return "landing/index";
     }
 
     @GetMapping("/home")
     public String home() {
-        return "/content-page/blank";
+        return "content-page/blank";
     }
 }

@@ -5,18 +5,6 @@ import com.core.arnuv.repository.IPersonaDetalleRepository;
 import com.core.arnuv.repository.IRolRepository;
 import com.core.arnuv.repository.IUsuarioDetalleRepository;
 import com.core.arnuv.repository.IUsuarioRolRepository;
-import com.core.arnuv.service.IUsuarioDetalleService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
-import com.core.arnuv.model.*;
-import com.core.arnuv.repository.IPersonaDetalleRepository;
-import com.core.arnuv.repository.IRolRepository;
-import com.core.arnuv.repository.IUsuarioDetalleRepository;
-import com.core.arnuv.repository.IUsuarioRolRepository;
-import com.core.arnuv.service.IUsuarioDetalleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -30,8 +18,6 @@ public class DataInitializer {
     private final IUsuarioDetalleRepository usuarioDetalleRepository;
     private final IRolRepository rolRepository;
     private final IUsuarioRolRepository usuariorolRepository;
-    private final IUsuarioDetalleService servicioUsuarioDetalle;
-
     @PostConstruct
     public void init() {
         try {
@@ -47,9 +33,9 @@ public class DataInitializer {
             usuario.setPassword("$2a$10$24gd1zfug.iQ5Z7Tv6tSduXt9iZCc5V2LFgJn0jbFriseX0dpnpiS");
             usuario.setUsername("admin");
             usuario.setIdpersona(persona);
+            usuario.setEstado(true);
             usuarioDetalleRepository.save(usuario);
 
-            // Insertar en la tabla 'rol'
             Rol rol = new Rol();
             rol.setNombre("ADMIN");
             rolRepository.save(rol);

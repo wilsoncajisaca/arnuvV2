@@ -76,18 +76,18 @@ public class PaseosController {
 		if (request.isUserInRole("ADMIN")) {
 			List<Paseo> listapaseos = paseoService.listarPaseos();		
 			model.addAttribute("lista", listapaseos);
-			return "/content-page/paseo-listar";
+			return "content-page/paseo-listar";
 		}
         if (request.isUserInRole("CLIENTE")) {
         	List<Paseo> listapaseos = paseoService.buscarpersonacliente(idusuariologueado.getId());
     		model.addAttribute("lista", listapaseos);
-    		return "/content-page/paseo-listar";
+    		return "content-page/paseo-listar";
         }
 
         if (request.isUserInRole("PASEADOR")) {
         	List<Paseo> listapaseos = paseoService.buscaridpersonapasedor(idusuariologueado.getId());
     		model.addAttribute("lista", listapaseos);
-    		return "/content-page/paseoPaseador-listar";
+    		return "content-page/paseoPaseador-listar";
         }
 
         return "redirect:/home";
@@ -102,7 +102,7 @@ public class PaseosController {
 	{		
 		BusquedaFechaeDto busquedaFechasResponse= new BusquedaFechaeDto();
         model.addAttribute("nuevo", busquedaFechasResponse);
-        return "/content-page/paseo-listar-BucarPorFechas"; // Cambia esto por el nombre de la vista Thymeleaf que estás usando
+        return "content-page/paseo-listar-por-fecha"; // Cambia esto por el nombre de la vista Thymeleaf que estás usando
     }
 	
 	@GetMapping("/ListarbuscarPorFecha")
@@ -120,16 +120,16 @@ public class PaseosController {
         if (request.isUserInRole("CLIENTE")) {
         	List<Paseo> listapaseos = paseoService.buscarRangoFechasCliente(fechaIni, fechaFinal, idusuariologueado.getId());
     		model.addAttribute("lista", listapaseos);
-    		return "/content-page/paseo-listar-BucarPorFechas";
+    		return "content-page/paseo-listar-por-fecha";
         }
 
         if (request.isUserInRole("PASEADOR")) {
         	List<Paseo> listapaseos = paseoService.buscarRangoFechasPaseador(fechaIni, fechaFinal, idusuariologueado.getId());
     		model.addAttribute("lista", listapaseos);
-    		return "/content-page/paseo-listar-BucarPorFechas";
+    		return "content-page/paseo-listar-por-fecha";
         }
         
-        return "/content-page/paseo-listar-BucarPorFechas"; // Cambia esto por el nombre de la vista Thymeleaf que estás usando
+        return "content-page/paseo-listar-por-fecha";
     }
 
 	@GetMapping("/nuevo")
@@ -143,7 +143,7 @@ public class PaseosController {
 		model.addAttribute("mascota", mascotaDetalleService.findByIdpersonaId(idusuariologueado.getId()));
 		model.addAttribute("ubicaciones",ubicacionService.listarUbicacion());
 		model.addAttribute("linkMapaGoogle", linkMapaGoogle);
-		return "/content-page/paseo-crear";
+		return "content-page/paseo-crear";
 	}
 
 	// guardar
@@ -192,7 +192,7 @@ public class PaseosController {
 		model.addAttribute("tarifario", ITarifarioService.listarTarifarios());
 		model.addAttribute("mascota", mascotaDetalleService.listarMascotasDetalle());
 		model.addAttribute("linkMapaGoogle", linkMapaGoogle);
-		return "/content-page/paseo-crear";
+		return "content-page/paseo-crear";
 	}
 	
 	@GetMapping("/editarPaseador/{idpaseo}")
@@ -210,7 +210,7 @@ public class PaseosController {
 		model.addAttribute("mascota", mascotaDetalleService.listarMascotasDetalle());
 		model.addAttribute("ubicacion", listUbicacionCliente);
 		model.addAttribute("linkMapaGoogle", linkMapaGoogle);
-		return "/content-page/paseoPaseador-crear";
+		return "content-page/paseoPaseador-crear";
 	}
 	
 	@GetMapping("/editarCliente/{idpaseo}")
@@ -223,7 +223,7 @@ public class PaseosController {
 		model.addAttribute("tarifario", ITarifarioService.listarTarifarios());
 		model.addAttribute("mascota", mascotaDetalleService.listarMascotasDetalle());
 		model.addAttribute("linkMapaGoogle", linkMapaGoogle);
-		return "/content-page/paseoCliente-ver";
+		return "content-page/paseo-cliente-ver";
 	}
 	
 	

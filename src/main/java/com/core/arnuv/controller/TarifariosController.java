@@ -26,14 +26,14 @@ public class TarifariosController {
 	public String listarTarifario(Model model) {
 		List<Tarifario> listacatalogos = tarifarioService.listarTarifarios(); 
 		model.addAttribute("lista", listacatalogos);
-		return "/content-page/tarifario-listar"; 
+		return "content-page/tarifario-listar"; 
 	}
 
 	@GetMapping("/nuevo")
 	public String crearTarifario(Model model) {
 		model.addAttribute("nuevo", new Tarifario());
 
-		return "/content-page/tarifario-crear"; 
+		return "content-page/tarifario-crear"; 
 	}
 
 	// guardar
@@ -49,7 +49,7 @@ public class TarifariosController {
 	public String editarTarifario(@PathVariable(value = "idcatalogo") int codigo, Model model) {
 		Tarifario itemrecuperado = tarifarioService.buscarPorId(codigo);
 		model.addAttribute("nuevo", itemrecuperado);
-		return "/content-page/tarifario-crear";
+		return "content-page/tarifario-crear";
 	}
 
 	// eliminar
