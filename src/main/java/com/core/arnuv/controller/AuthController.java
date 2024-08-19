@@ -86,7 +86,7 @@ public class AuthController {
     	Parametros linkMapaGoogle = parametroService.getParametro(KEY_LINK_MAPA_GOOGLE);
 		model.addAttribute("nuevo", new PersonaDetalleRequest());
 		model.addAttribute("linkMapaGoogle", linkMapaGoogle);
-		return "landing/persona-crearCliente";
+		return "landing/persona-crear-cliente";
 	}
     
     
@@ -121,7 +121,7 @@ public class AuthController {
 			model.addAttribute("error", errorMessage);
 			model.addAttribute("nuevo", persona);
 
-			return "landing/persona-crearCliente";
+			return "landing/persona-crear-cliente";
 		}
 	}
     
@@ -130,7 +130,7 @@ public class AuthController {
         UsuarioDetalleRequest requestUser = new UsuarioDetalleRequest();
         requestUser.setIdpersona(personaId);
         model.addAttribute("nuevo", requestUser);
-        return "landing/usuario-crearCliente";
+        return "landing/usuario-crear-cliente";
     }
     @PostMapping("/create-accessUsuarioCliente")
     private String personCreateAccess(@ModelAttribute("nuevo") UsuarioDetalleRequest usuario) throws UnsupportedEncodingException, MessagingException {
@@ -142,19 +142,12 @@ public class AuthController {
         Usuariodetalle entity = null;
         try {
             entity = userService.insertarUsuarioDetalle(usuariodetalle);
-            
-            ///////////////////////////////////////////////
             var rolCliente = servicioRol.findByNombre("ROLE_CLIENTE");            
-            var rolentity = servicioRol.buscarPorId(rolCliente.getId());            
-            
-            
+            var rolentity = servicioRol.buscarPorId(rolCliente.getId());
             UsuariorolId usuariorolId = new UsuariorolId();
             UsuarioRolRequest nuevo1 = new UsuarioRolRequest();
-            
             usuariorolId.setIdusuario(entity.getIdusuario());
             usuariorolId.setIdrol(rolCliente.getId());
-            
-            
             var usuariorolentity = nuevo1.mapearDato(nuevo1, Usuariorol.class, "idrol","idusuario");
             usuariorolentity.setIdusuario(entity);
             usuariorolentity.setIdrol(rolentity);
@@ -166,11 +159,9 @@ public class AuthController {
             htmlContent = htmlContent.replace("{{mensajeBienvenida}}", "<p style=\"font-size: 14px; line-height: 140%; text-align: center;\"><span style=\"font-family: Lato, sans-serif; font-size: 16px; line-height: 22.4px;\">" + mensajeDinamico.toUpperCase() + "</span></p>");
             
             emailSender.sendEmail(personaentity.getEmail(), "CREACIÓN DE USUARIO", htmlContent);
-            
         } catch (DataIntegrityViolationException e) {
             throw new ArnuvNotFoundException("Error al guardar datos: {0}", e.getMessage().split("Detail:")[1].split("]")[0]);
         }
-        
         return "redirect:/index";
     }   
     
@@ -239,7 +230,7 @@ public class AuthController {
     //RECUPERAR CONTRASEÑA
     @GetMapping("/recupera")
     public String mostrarFormularioRecuperacion() {
-        return "landing/recuperaPass";
+        return "landing/recuperar-pass";
     }
 
     // Paso 1: Validar y enviar enlace de recuperación
@@ -251,7 +242,7 @@ public class AuthController {
         Usuariodetalle usuario = userService.buscarPorEmailOrUserName(email);
         if (usuario == null) {
             model.addAttribute("error", "El correo electronico no se encuentra registrado.");
-            return "landing/recuperaPass";
+            return "landing/recuperar-pass";
         }
         guardarToken(usuario, token);
         enviarCorreoRecuperacion(email, token);
@@ -269,7 +260,7 @@ public class AuthController {
         if (usuario == null) {
             if(usuario.getToken() == null && isTokenValid(usuario.getToken())){
                 model.addAttribute("error", "El enlace de recuperación no es válido o ha expirado.");
-                return "landing/recuperaPass";
+                return "landing/recuperar-pass";
             }
         }
         ChangePasswordRequest changePasswordReq = new ChangePasswordRequest();
