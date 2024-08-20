@@ -32,7 +32,7 @@ public class Calificacion {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date fecha;
 
-	@ManyToOne()
+	/*@ManyToOne()
 	@Comment("Codigo de personas")
 	@OnDelete(action = OnDeleteAction.RESTRICT)
 	@JoinColumn(name = "idpersonapasedor")
@@ -45,6 +45,14 @@ public class Calificacion {
 	@JoinColumn(name = "idpersonacliente")
 	@ToString.Exclude
 	private Personadetalle idpersonacliente;
+	*/
+	@ManyToOne()
+	@Comment("Codigo de paseo")
+	@OnDelete(action = OnDeleteAction.RESTRICT)
+	@JoinColumn(name = "idpaseo",  unique=true)
+	@ToString.Exclude
+	private Paseo idpaseo;
+	
 	
 	@Column
 	private int calificacion;

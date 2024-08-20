@@ -9,6 +9,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.format.annotation.DateTimeFormat;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Comment("Tabla que almacena al paseador con la mascota ")
@@ -94,5 +95,8 @@ public class Paseo {
     
     @Column
     private String estado;
+    
+    @OneToMany(mappedBy = "idpaseo")
+	private List<Calificacion> calificacionpaseos;
 
 }
