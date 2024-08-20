@@ -10,6 +10,8 @@ public class Constants {
     public static final String KEY_PLANTILLA_MAIL = "PLANTILLAMAIL";
     public static final String KEY_LINK_MAPA_GOOGLE = "LINKMAPAGOOGLE";
     public static final int EARTH_RADIUS = 6371;
+    public static final String ESTADO_APROBADO = "APROBADO";
+    
 
     public static String[] getPermittedRoutes() {
         return new String[]{

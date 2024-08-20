@@ -85,10 +85,11 @@ public class Personadetalle implements Serializable {
 	@OneToMany(mappedBy = "idpersona")
 	private List<Ubicacion> ubicaciones;
 	
-	
+	/*
 	@OneToMany(mappedBy = "idpersonapasedor")
 	private List<Calificacion> calificacionpaseador;
 
 	@OneToMany(mappedBy = "idpersonacliente")
 	private List<Calificacion> calificacioncliente;
+	*/
 }

@@ -1,6 +1,7 @@
 package com.core.arnuv.controller;
 
 import static com.core.arnuv.constants.Constants.KEY_LINK_MAPA_GOOGLE;
+import static com.core.arnuv.constants.Constants.ESTADO_APROBADO;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
@@ -68,6 +69,9 @@ public class PaseosController {
 	private ArnuvUtils arnuvUtils;
 	@Autowired 
 	private EmailSender emailSender;
+	
+	@Autowired
+	private ICalificacionService calificacionService;
 	
 	@GetMapping("/listar")
 	public String listar(Model model, HttpServletRequest request) {
@@ -211,19 +215,52 @@ public class PaseosController {
 		model.addAttribute("ubicacion", listUbicacionCliente);
 		model.addAttribute("linkMapaGoogle", linkMapaGoogle);
 		return "/content-page/paseoPaseador-crear";
+		
+		//@{/calificacion/nuevo/{paseoId}(paseoId=${paseoID})}
+		
 	}
 	
 	@GetMapping("/editarCliente/{idpaseo}")
 	public String editarCliente(@PathVariable(value = "idpaseo") int codigo, Model model) {
 		Paseo itemrecuperado = paseoService.buscarPorId(codigo);
 		Parametros linkMapaGoogle = parametroService.getParametro(KEY_LINK_MAPA_GOOGLE);
+		Calificacion calificacion =  calificacionService.findByIdpaseoId(codigo);
+		String errorMessag="";
+		if(calificacion == null && itemrecuperado.getEstado().equals(ESTADO_APROBADO)) {
+			errorMessag ="Tienes que calificar el paseo antes de finalizar";
+			
+		}
+		
 		model.addAttribute("nuevo", itemrecuperado);
 		model.addAttribute("paseoID", itemrecuperado.getId());
 		model.addAttribute("persona", personaDetalleService.listarTodosPersonaDetalle());
 		model.addAttribute("tarifario", ITarifarioService.listarTarifarios());
 		model.addAttribute("mascota", mascotaDetalleService.listarMascotasDetalle());
+		model.addAttribute("error", errorMessag);			
 		model.addAttribute("linkMapaGoogle", linkMapaGoogle);
 		return "/content-page/paseoCliente-ver";
+	}
+	
+	@PostMapping("/finalizarPaseo")
+	public String finalizarPaseo(@ModelAttribute("nuevo") Paseo nuevo, HttpServletRequest request,Model model) {
+		
+		Calificacion calificacion =  calificacionService.findByIdpaseoId(nuevo.getId());
+		
+		if(calificacion == null) {
+			String errorMessage ="Tienes que calificar el paseo antes de finalizar";
+			model.addAttribute("error", errorMessage);			
+			return "redirect:/paseo/editarCliente/".concat(String.valueOf(nuevo.getId()));
+		}
+		else {
+			
+			paseoService.insertarPaseo(nuevo);
+			
+			return "redirect:/paseo/listar";
+			
+		}
+		
+		
+
 	}
 	
 	

@@ -4,15 +4,35 @@
 	layout:decorate="~{content-page/plantilla}">
 <head>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+<style>
+
+
+.estado-pendiente {
+    
+    color: #ee2e45; /* Texto negro */
+}
+
+.estado-aprobado {
+    
+    color: #5fa900; /* Texto blanco */
+}
+
+.estado-finalizado {
+   
+    color: #2196f3; /* Texto blanco */
+}
+
+</style>
 </head>
+
+
 <body>
 
 	<div layout:fragment="espaciocontenidohtml">
 		<main class="h-full pb-16 overflow-y-auto">
 			<div class="container px-6 mx-auto grid comic-font">
-				<h2
-					class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
-					Mis paseos  de mascotas</h2>
+				<h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"> Mis paseos  de mascotas</h2>
 				
 				<div>
 				<a id="visualizarBoton" th:href="@{/paseo/buscarPorFecha}"
@@ -48,7 +68,10 @@
 							<td  class="px-4 py-3" th:text="${datos.idpersonapasedor.nombres}+' '+${datos.idpersonapasedor.apellidos}"></td>
 							<td  class="px-4 py-3" th:text="${datos.idMascota.nombre}"></td>
 							<td  class="px-4 py-3" th:text="${datos.idtarifario.nombre}+' - '+${datos.idtarifario.precio}"></td>
-							<td  class="px-4 py-3" th:text="${datos.estado}"></td>
+							<td  class="px-4 py-3" th:text="${datos.estado}" th:classappend="${datos.estado == 'PENDIENTE' ? 'estado-pendiente' : 
+														                                    (datos.estado == 'APROBADO' ? 'estado-aprobado' : 
+														                                    (datos.estado == 'FINALIZADO' ? 'estado-finalizado' : 
+														                                    (datos.estado == 'RECHAZADO' ? 'estado-rechazado' : '')))}"></td>
 
 							<td class="px-4 py-3">
 

@@ -2,6 +2,8 @@ package com.core.arnuv.controller;
 
 import static com.core.arnuv.constants.Constants.KEY_PLANTILLA_MAIL;
 import static com.core.arnuv.constants.Constants.KEY_RADIO;
+import static com.core.arnuv.constants.Constants.KEY_LINK_MAPA_GOOGLE;
+
 
 import java.io.IOException;
 
@@ -120,6 +122,42 @@ public class ParametroController {
 	            if (parametroPlantilla != null && parametroPlantilla.getId() != null) {    			
 					
 	            	doc.setId(parametroPlantilla.getId());
+	    		}
+	            
+	            parametroService.save(doc);
+	            return "redirect:/home";
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            return "redirect:/home";
+	        }
+	    }
+	    //------------------------	CONFIGURACION DE APY DE GOOGLE	-----------------------
+	    
+	    @GetMapping("/crearParametrosKeyGoogle")
+		@PreAuthorize("hasRole('ADMIN')")
+		public String crearParametrosKeyGoogle(Model model) {
+	    	model.addAttribute("nuevo", new Parametros());	 
+			return "/content-page/parametroApiGoogle";
+		}
+	        
+	    @PostMapping("/modificarParametrosKeyGoogle")
+	    @PreAuthorize("hasRole('ADMIN')")
+	    public String modificarParametrosKeyGoogle(@ModelAttribute("nuevo") Parametros nuevo) {
+	        try {
+	            Parametros doc = new Parametros();
+	            
+	            
+	            String url = "https://maps.googleapis.com/maps/api/js?key="+nuevo.getValorText();
+	            
+	            
+	            doc.setCodigo(KEY_LINK_MAPA_GOOGLE);
+	            doc.setValorText(url);
+	            doc.setEstado(Boolean.TRUE);
+	            Parametros parametroKEY = parametroService.getParametro(KEY_LINK_MAPA_GOOGLE);
+	            
+	            if (parametroKEY != null && parametroKEY.getId() != null) {    			
+					
+	            	doc.setId(parametroKEY.getId());
 	    		}
 	            
 	            parametroService.save(doc);
