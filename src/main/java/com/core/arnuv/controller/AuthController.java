@@ -246,9 +246,7 @@ public class AuthController {
         }
         guardarToken(usuario, token);
         enviarCorreoRecuperacion(email, token);
-        
-        
-        
+
         model.addAttribute("mensaje", "Se ha enviado un enlace de recuperación a su correo.");
         return "landing/index";
     }
@@ -304,25 +302,19 @@ public class AuthController {
     }
 
     public boolean isTokenValid(Token token) {
-        // Obtén la hora actual
         Instant now = Instant.now();
-
-        // Verifica si la hora actual está antes de la fecha de expiración del token
         return now.isBefore(token.getEndDate());
     }
 
     private void enviarCorreoRecuperacion(String email, String token)
             throws MessagingException, UnsupportedEncodingException {
-        String urlRecuperacion = "http://127.0.0.1:8087/auth/restablecer?token=" + token;
+        String urlRecuperacion = "https://arnuvv2.onrender.com/auth/restablecer?token=" + token;
         
         String htmlContent = new String(parametroService.getParametro(KEY_PLANTILLA_MAIL).getArchivos(), StandardCharsets.UTF_8);
         String mensajeDinamico = "BIENVENIDO A LA FUNDACION ARNUV! <br> CAMBIA TU CONTRASEÑA EN EL SIGUIENTE ENLACE: <br>"+urlRecuperacion;
         htmlContent = htmlContent.replace("{{mensajeBienvenida}}", "<p style=\"font-size: 14px; line-height: 140%; text-align: center;\"><span style=\"font-family: Lato, sans-serif; font-size: 16px; line-height: 22.4px;\">" + mensajeDinamico + "</span></p>");
-        
-        //emailSender.sendEmail('dsfsdf', "Creacion de usuario", htmlContent);
+
         emailSender.sendEmail(email, "RESTABLECER CONTRASEÑA", htmlContent);
-        
-        //emailSender.sendEmail(email, "Recuperación de contraseña", "Haga clic en el siguiente enlace para restablecer su contraseña: " + urlRecuperacion);
     }
 
     private String encriptarContrasena(String contrasena) {

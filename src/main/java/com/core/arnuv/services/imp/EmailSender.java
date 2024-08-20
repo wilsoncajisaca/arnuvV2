@@ -1,5 +1,6 @@
 package com.core.arnuv.services.imp;
 
+import com.core.arnuv.service.IParametroService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -13,17 +14,19 @@ import java.io.UnsupportedEncodingException;
 @RequiredArgsConstructor
 public class EmailSender {
     private final JavaMailSender mailSender;
+    private final IParametroService serviceParam;
     public void sendEmail(String email, String subject, String content)
             throws MessagingException, UnsupportedEncodingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
-
-        helper.setFrom("wilsoncajisaca@gmail.com", "ARNUV FUNDACION");
+        helper.setFrom(getUsernameFromDatabase(), "ARNUV FUNDACION");
         helper.setTo(email);
-
         helper.setSubject(subject);
         helper.setText(content, true);
-
         mailSender.send(message);
+    }
+
+    private String getUsernameFromDatabase() {
+        return serviceParam.getParametro("MAILSENDER").getValorText();
     }
 }

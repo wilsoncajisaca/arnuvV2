@@ -4,6 +4,7 @@ import com.core.arnuv.model.Parametros;
 import com.core.arnuv.repository.IParametroRepository;
 import com.core.arnuv.service.IParametroService;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -14,12 +15,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ParametroService implements IParametroService {
-    @Autowired
-    private IParametroRepository repo;
-    
-    @Autowired
-	private FirebaseFileService firebaseFileService;
+    private final IParametroRepository repo;
+	private final FirebaseFileService firebaseFileService;
 
     @Override
     public Parametros getParametro(String code) {
@@ -37,7 +36,6 @@ public class ParametroService implements IParametroService {
 			parametro.setValorText(fileUrl);
 			parametro.setEstado(Boolean.TRUE);
 		}
-		
         return repo.save(parametro);
     }
 

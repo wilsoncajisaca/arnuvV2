@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class EnvioEmail {
 
-    @Value("${spring.mail.username}")
     private String emailarnuv;
 
     @Autowired
