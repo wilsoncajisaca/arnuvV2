@@ -11,6 +11,9 @@ import com.core.arnuv.model.Calificacion;
 @Repository
 public interface ICalificacionRepository  extends JpaRepository<Calificacion, Integer> {
 	
-	 @Query("Select c from Calificacion c where c.idpersonapasedor.id= ?1")
+	 @Query("Select c from Calificacion c where c.idpaseo.idpersonapasedor.id= ?1")
 	List<Calificacion> BuscarPersonaPasedor(int idpersonapasedor);
+	
+	 //@Query("Select c from Calificacion c where c.idpaseo.idpersonapasedor.id= ?1")
+	Calificacion findByIdpaseoId(int idpaseo);
 }

@@ -1,15 +1,10 @@
 package com.core.arnuv.controller;
 
-import static com.core.arnuv.constants.Constants.KEY_LINK_MAPA_GOOGLE;
-import static com.core.arnuv.constants.Constants.KEY_PLANTILLA_MAIL;
 
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,17 +12,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import com.core.arnuv.model.Calificacion;
-import com.core.arnuv.model.Parametros;
 import com.core.arnuv.model.Paseo;
-import com.core.arnuv.model.Personadetalle;
 import com.core.arnuv.service.ICalificacionService;
 import com.core.arnuv.service.IPaseoService;
 import com.core.arnuv.service.IPersonaDetalleService;
 import com.core.arnuv.utils.ArnuvUtils;
-
-import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
@@ -67,15 +57,27 @@ public class CalificacionController {
 	}
 	
 	@PostMapping("/insertar")
-	public String insertarCalificacion(@ModelAttribute("nuevaCalificacion") Calificacion nuevo)  {
-		nuevo.setFecha(new Date());
+	public String insertarCalificacion(@ModelAttribute("nuevaCalificacion") Calificacion nuevo,Model model)  {
 		
-		Paseo paseo = paseoService.buscarPorId(nuevo.getPaseoID());
-		nuevo.setIdpersonapasedor(paseo.getIdpersonapasedor());
-		nuevo.setIdpersonacliente(paseo.getIdpersonacliente());
+		try {
+			
+			nuevo.setFecha(new Date());
+			
+			Paseo paseo = paseoService.buscarPorId(nuevo.getPaseoID());
+			nuevo.setIdpaseo(paseo);
+			calificacionService.insertarCalificacion(nuevo);
+			
+			return "redirect:/paseo/editarCliente/".concat(String.valueOf(nuevo.getPaseoID()));
+			
+		} catch ( DataIntegrityViolationException e) {
+			String errorMessage;
+			errorMessage = "El paseador: "+ nuevo.getIdpaseo().getIdpersonapasedor().getNombres()+" "+nuevo.getIdpaseo().getIdpersonapasedor().getApellidos()+ " ya fue calificado" ;
+			model.addAttribute("error", errorMessage);
+			model.addAttribute("nuevo", nuevo);
+
+			return "content-page/Calificacion-crear";
+		}
 		
-		calificacionService.insertarCalificacion(nuevo);
-		return "redirect:/paseo/listar";
 
 	}
 }

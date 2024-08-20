@@ -57,4 +57,10 @@ public class CalificacionServiceImp implements ICalificacionService {
 		
 	}
 
+	@Override
+	public Calificacion findByIdpaseoId(int idpaseo) {
+		// TODO Auto-generated method stub
+		return repo.findByIdpaseoId(idpaseo);
+	}
+
 }

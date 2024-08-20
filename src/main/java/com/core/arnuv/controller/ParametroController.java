@@ -13,35 +13,33 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 
-import static com.core.arnuv.constants.Constants.KEY_PLANTILLA_MAIL;
-import static com.core.arnuv.constants.Constants.KEY_RADIO;
+import static com.core.arnuv.constants.Constants.*;
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("parametro")
 public class ParametroController {
-	
 	private final IParametroService  parametroService;
-	
+
 	@GetMapping("/general")
 	@PreAuthorize("hasRole('ADMIN')")
-	public String general(Model model) {	 
+	public String general(Model model) {
 		return "content-page/parametro";
 	}
 
 	@GetMapping("/nuevaImagen")
 	@PreAuthorize("hasRole('ADMIN')")
 	public String crearImagen(Model model) {
-		model.addAttribute("nuevo", new Parametros());	 
+		model.addAttribute("nuevo", new Parametros());
 		return "content-page/parametro-subir-imagen";
 	}
+
 
 	@PostMapping("/insertar")
 	@PreAuthorize("hasRole('ADMIN')")
 	public String guardar(@ModelAttribute("nuevo") Parametros nuevo, @RequestParam("file") MultipartFile file,
 						  RedirectAttributes redirectAttributes) {
 		try {
-
 			Parametros parametros = nuevo;
 			parametros.setFile(file);
 			parametroService.save(nuevo);
@@ -56,7 +54,7 @@ public class ParametroController {
 	@PreAuthorize("hasRole('ADMIN')")
 	public String crearParametrosPlantillaMaill(Model model) {
 		model.addAttribute("nuevo", new PersonaDetalleRequest());
-		return "content-page/parametro-subir-plantilla";
+		return "content-page/parametros-plantilla-mail";
 	}
 
 	@PostMapping("/subirArchivoPlantillaMaill")
@@ -64,19 +62,13 @@ public class ParametroController {
 	public String subirArchivosPlantillaMaill(@RequestParam("archivo") MultipartFile archivo) {
 		try {
 			Parametros doc = new Parametros();
-
-			System.out.println(KEY_PLANTILLA_MAIL);
-
 			doc.setCodigo(KEY_PLANTILLA_MAIL);
 			doc.setArchivos(archivo.getBytes());
 			doc.setEstado(Boolean.TRUE);
 			Parametros parametroPlantilla = parametroService.findByCodigo(KEY_PLANTILLA_MAIL);
-
 			if (parametroPlantilla != null && parametroPlantilla.getId() != null) {
-
 				doc.setId(parametroPlantilla.getId());
 			}
-
 			parametroService.save(doc);
 			return "redirect:/home";
 		} catch (Exception e) {
@@ -101,8 +93,37 @@ public class ParametroController {
 			doc.setValorNumber(nuevo.getValorNumber());
 			doc.setEstado(Boolean.TRUE);
 			Parametros parametroPlantilla = parametroService.getParametro(KEY_RADIO);
-			if (parametroPlantilla != null && parametroPlantilla.getId() != null) {
+			if (parametroPlantilla != null)  {
 				doc.setId(parametroPlantilla.getId());
+			}
+			parametroService.save(doc);
+			return "redirect:/home";
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "redirect:/home";
+		}
+	}
+	//------------------------	CONFIGURACION DE APY DE GOOGLE	-----------------------
+
+	@GetMapping("/crearParametrosKeyGoogle")
+	@PreAuthorize("hasRole('ADMIN')")
+	public String crearParametrosKeyGoogle(Model model) {
+		model.addAttribute("nuevo", new Parametros());
+		return "content-page/parametro-api-google";
+	}
+
+	@PostMapping("/modificarParametrosKeyGoogle")
+	@PreAuthorize("hasRole('ADMIN')")
+	public String modificarParametrosKeyGoogle(@ModelAttribute("nuevo") Parametros nuevo) {
+		try {
+			Parametros doc = new Parametros();
+			String url = "https://maps.googleapis.com/maps/api/js?key="+nuevo.getValorText();
+			doc.setCodigo(KEY_LINK_MAPA_GOOGLE);
+			doc.setValorText(url);
+			doc.setEstado(Boolean.TRUE);
+			Parametros parametroKEY = parametroService.getParametro(KEY_LINK_MAPA_GOOGLE);
+			if (parametroKEY != null && parametroKEY.getId() != null) {
+				doc.setId(parametroKEY.getId());
 			}
 			parametroService.save(doc);
 			return "redirect:/home";
