@@ -5,12 +5,14 @@ import static com.core.arnuv.constants.Constants.ESTADO_APROBADO;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -157,8 +159,6 @@ public class PaseosController {
 		Date date = new Date();
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
 		String formattedDate = formatter.format(date);		
-		
-		
 		if (request.isUserInRole("CLIENTE")) {
 			Personadetalle personaCLiente = new Personadetalle();
 			
@@ -166,27 +166,27 @@ public class PaseosController {
 			personaCLiente.setId(idusuariologueado);
 			nuevo.setIdpersonacliente(personaCLiente);
 			
+        }	
+		Personadetalle personadetalle = personaDetalleService.buscarPorId(nuevo.getIdpersonapasedor().getId());
+		String htmlContent = new String(parametroService.getParametro(KEY_PLANTILLA_MAIL).getArchivos(), StandardCharsets.UTF_8);
+		
+		String fechaRealInicio = nuevo.getFecharealinicio().toString();
+		SimpleDateFormat formatoEntrada = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH);
+        SimpleDateFormat formatoSalida = new SimpleDateFormat("EEEE dd 'de' MMMM 'del' yyyy HH:mm:ss", new Locale("es", "ES"));
+        String fechaEnEspanol="";
+        try {
+            Date fecha = formatoEntrada.parse(fechaRealInicio);
+            fechaEnEspanol = formatoSalida.format(fecha);            
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
-		
-		if (nuevo.getId() == -1){
-			
-			Personadetalle personadetalle = personaDetalleService.buscarPorId(nuevo.getIdpersonapasedor().getId());
-			String htmlContent = new String(parametroService.getParametro(KEY_PLANTILLA_MAIL).getArchivos(), StandardCharsets.UTF_8);
-            String mensajeDinamico = "SOLICITUD DE SERVICIO DE PASEO A MASCOTA ! <br> !! REVISA TU BANDEJA DE PASEOS !!";
-            htmlContent = htmlContent.replace("{{mensajeBienvenida}}", "<p style=\"font-size: 14px; line-height: 140%; text-align: center;\"><span style=\"font-family: Lato, sans-serif; font-size: 16px; line-height: 22.4px;\">" + mensajeDinamico.toUpperCase() + "</span></p>");
-            System.out.println(personadetalle.getEmail());
-            emailSender.sendEmail(personadetalle.getEmail(), "SOLICITUD DE SERVICIO", htmlContent);
-		}
-		
-			
-		
-		paseoService.insertarPaseo(nuevo);
+        String mensajeDinamico = "SOLICITUD DE SERVICIO DE PASEO A MASCOTA ! FECHA:" + fechaEnEspanol+", REVISA TU BANDEJA DE PASEOS !!";
+        htmlContent = htmlContent.replace("{{mensajeBienvenida}}", "<p style=\"font-size: 14px; line-height: 140%; text-align: center;\"><span style=\"font-family: Lato, sans-serif; font-size: 16px; line-height: 22.4px;\">" + mensajeDinamico.toUpperCase() + "</span></p>");        
+        emailSender.sendEmail(personadetalle.getEmail(), "SOLICITUD DE SERVICIO", htmlContent);
+        paseoService.insertarPaseo(nuevo);
 		return "redirect:/paseo/listar";
 
 	}
-	
-	
-
 	@GetMapping("/editar/{idpaseo}")
 	public String editar(@PathVariable(value = "idpaseo") int codigo, Model model) {
 		Paseo itemrecuperado = paseoService.buscarPorId(codigo);

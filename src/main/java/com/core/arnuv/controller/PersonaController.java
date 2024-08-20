@@ -42,6 +42,8 @@ public class PersonaController {
 	}
 	@PostMapping("create-access")
 	private String personCreateAccess(@ModelAttribute("nuevo") PersonaDetalleRequest persona, Model model) {
+		Parametros linkMapaGoogle = parametroService.getParametro(KEY_LINK_MAPA_GOOGLE);
+		model.addAttribute("linkMapaGoogle", linkMapaGoogle);		
 		Personadetalle personadetalle = persona.mapearDato(persona, Personadetalle.class, "idcatalogoidentificacion", "iddetalleidentificacion");
 		Personadetalle personaEntity;
 		try {
