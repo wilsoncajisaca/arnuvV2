@@ -119,7 +119,7 @@ public class ParametroController {
 	            doc.setEstado(Boolean.TRUE);
 	            Parametros parametroPlantilla = parametroService.getParametro(KEY_RADIO);
 	            
-	            if (parametroPlantilla != null && parametroPlantilla.getId() != null) {    			
+	            if (parametroPlantilla != null)  {    			
 					
 	            	doc.setId(parametroPlantilla.getId());
 	    		}

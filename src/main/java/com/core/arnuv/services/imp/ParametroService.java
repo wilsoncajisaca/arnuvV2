@@ -23,8 +23,15 @@ public class ParametroService implements IParametroService {
 
     @Override
     public Parametros getParametro(String code) {
-        return repo.findByCodigoAndEstado(code, true)
-                .orElseThrow(() -> new RuntimeException("Parametro no encontrado"));
+    	Parametros parametro = new Parametros();
+    	try {
+    		parametro= repo.findByCodigoAndEstado(code, true).get();
+		} catch (Exception e) {
+			// TODO: handle exception
+			log.error("{}",e.getMessage());
+		}
+    	return parametro;
+        
     }
 
     @Override
