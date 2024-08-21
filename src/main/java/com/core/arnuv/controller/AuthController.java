@@ -132,7 +132,7 @@ public class AuthController {
         model.addAttribute("nuevo", requestUser);
         return "landing/usuario-crear-cliente";
     }
-    @PostMapping("/create-accessUsuarioCliente")
+    @PostMapping("/createAccessUsuarioCliente")
     private String personCreateAccess(@ModelAttribute("nuevo") UsuarioDetalleRequest usuario) throws UnsupportedEncodingException, MessagingException {
         var personaentity = servicioPersonaDetalle.buscarPorId(usuario.getIdpersona());
         Usuariodetalle usuariodetalle = usuario.mapearDato(usuario, Usuariodetalle.class);
@@ -280,7 +280,7 @@ public class AuthController {
         htmlContent = htmlContent.replace("{{mensajeBienvenida}}", "<p style=\"font-size: 14px; line-height: 140%; text-align: center;\"><span style=\"font-family: Lato, sans-serif; font-size: 16px; line-height: 22.4px;\">" + mensajeDinamico.toUpperCase() + "</span></p>");
         emailSender.sendEmail(usuario.getIdpersona().getEmail(), "CAMBIO DE CONTRASEÑA", htmlContent);
         model.addAttribute("mensaje", "Su contraseña ha sido restablecida con éxito.");
-        return "landing/login";  // Redirigir a la página de inicio de sesión
+        return "landing/login";
     }
 
     // Métodos auxiliares
@@ -290,7 +290,6 @@ public class AuthController {
 
     private void guardarToken(Usuariodetalle usuario, String token) {
         Instant now = Instant.now();
-        // Sumar 5 minutos a la hora actual
         Instant expirationTime = now.plusSeconds(300);
         Token nuevoToken = new Token();
         nuevoToken.setToken(token);
@@ -308,8 +307,7 @@ public class AuthController {
 
     private void enviarCorreoRecuperacion(String email, String token)
             throws MessagingException, UnsupportedEncodingException {
-        String urlRecuperacion = "https://arnuvv2.onrender.com/auth/restablecer?token=" + token;
-        
+        String urlRecuperacion = "<a href=\"https://fundacion-arnuv.onrender.com/auth/restablecer?token=" + token + "\">Clil para restablecer la contraseña</a>";
         String htmlContent = new String(parametroService.getParametro(KEY_PLANTILLA_MAIL).getArchivos(), StandardCharsets.UTF_8);
         String mensajeDinamico = "BIENVENIDO A LA FUNDACION ARNUV! <br> CAMBIA TU CONTRASEÑA EN EL SIGUIENTE ENLACE: <br>"+urlRecuperacion;
         htmlContent = htmlContent.replace("{{mensajeBienvenida}}", "<p style=\"font-size: 14px; line-height: 140%; text-align: center;\"><span style=\"font-family: Lato, sans-serif; font-size: 16px; line-height: 22.4px;\">" + mensajeDinamico + "</span></p>");
