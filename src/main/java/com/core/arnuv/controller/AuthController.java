@@ -255,11 +255,14 @@ public class AuthController {
     @GetMapping("/restablecer")
     public String mostrarFormularioRestablecer(@RequestParam("token") String token, Model model) {
         Usuariodetalle usuario = userService.buscarToken(token);
-        if (usuario == null) {
-            if(usuario.getToken() == null && isTokenValid(usuario.getToken())){
+        if (usuario != null) {
+            if(!isTokenValid(usuario.getToken())){
                 model.addAttribute("error", "El enlace de recuperación no es válido o ha expirado.");
                 return "landing/recuperar-pass";
             }
+        }else{
+            model.addAttribute("error", "El enlace de recuperación no es válido o ha expirado.");
+            return "landing/recuperar-pass";
         }
         ChangePasswordRequest changePasswordReq = new ChangePasswordRequest();
         changePasswordReq.setUser(usuario);
@@ -301,6 +304,9 @@ public class AuthController {
     }
 
     public boolean isTokenValid(Token token) {
+        if(token == null){
+            return false;
+        }
         Instant now = Instant.now();
         return now.isBefore(token.getEndDate());
     }
