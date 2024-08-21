@@ -140,14 +140,13 @@ public class PaseosController {
 
 	@GetMapping("/nuevo")
 	public String crear(Model model) {
-
 		var idusuariologueado =arnuvUtils.getLoggedInUsername();
 		Parametros linkMapaGoogle = parametroService.getParametro(KEY_LINK_MAPA_GOOGLE);
 		model.addAttribute("nuevo", new Paseo());
 		model.addAttribute("persona", personaDetalleService.listarTodosPersonaDetalle());
 		model.addAttribute("tarifario", ITarifarioService.listarTarifarios());
 		model.addAttribute("mascota", mascotaDetalleService.findByIdpersonaId(idusuariologueado.getId()));
-		model.addAttribute("ubicaciones",ubicacionService.listarUbicacion());
+		model.addAttribute("ubicaciones", ubicacionService.listarUbicacion());
 		model.addAttribute("linkMapaGoogle", linkMapaGoogle);
 		return "content-page/paseo-crear";
 	}

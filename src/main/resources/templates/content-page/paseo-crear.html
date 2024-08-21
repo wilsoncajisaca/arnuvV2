@@ -179,7 +179,7 @@
 
 						async function initMap12() {
 							var personId = '[[${session.loggedInUser.id}]]';
-							const apiURL = 'http://127.0.0.1:8087/paseos/listar/'+personId.trim();		
+							const apiURL = 'https://fundacion-arnuv.onrender.com/paseos/listar/'+personId.trim();
 							try {
 								const response = await fetch(apiURL);
 								if (!response.ok) {
