@@ -7,8 +7,7 @@
 <link rel="stylesheet"
 	href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
 	
-	<!-- Bootstrap CSS -->
-<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
 <!-- jQuery y Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
@@ -56,8 +55,8 @@
 					class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
 					
 					<h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
-					<div class="flex items-center justify-end px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray">
-    <a class="btn btn-outline-secondary" href="#" role="button" th:href="@{/calificacion/nuevo/{paseoId}(paseoId=${paseoID})}" id="botonValorar">
+					<div class="flex items-center justify-end px-2 py-2 text-sm font-medium leading-5 text-black-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray">
+    <a  class="btn btn-outline-secondary " href="#" role="button" th:href="@{/calificacion/nuevo/{paseoId}(paseoId=${paseoID})}" id="botonValorar">
         <i class="fas fa-plus-circle mr-1 text-secondary"></i>
         Califica el paseo
         <i class="fas fa-star ml-2 text-yellow-500"></i>
@@ -236,26 +235,24 @@
 							    </div>
 							</div>
 
-							<h2
-								class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
+							<h2	class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
 							
-							<span class=" block text-sm ">Observación del paseador sobre el paseo</span>
-							 <label th:text="*{observacionpaseo}"
-							            class="readonly-select block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
-							 </label>
-							
-							
-							<label class="block mt-1 text-sm"> <span
-								class="text-gray-700 dark:text-gray-400">Observación sobre el paseador y su servicio</span> <input
-								class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-								placeholder="observación paseo" th:text="*{observacionpaseador}" />
+													 
+							 <label class="block mt-1 text-sm "> <span
+								class="text-gray-700 dark:text-gray-400">Observación del paseador sobre el paseo</span> <input
+								class="readonly-select block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+								placeholder="observación del paseo" th:value="*{observacionpaseo}"  readonly />
 
 							</label>
 							
-							
+							<h2	class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
+							<label class="block mt-1 text-sm"> <span
+								class="text-gray-700 dark:text-gray-400">Observación sobre el paseador y su servicio</span> <input
+								class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+								placeholder="observación del paseador" th:value="*{observacionpaseador}" />
 
-							<h2
-								class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
+							</label>
+							<h2	class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
 
 							<label class="block mt-1 text-sm"> <span
 								class="text-gray-700 dark:text-gray-400">Estado </span> <select

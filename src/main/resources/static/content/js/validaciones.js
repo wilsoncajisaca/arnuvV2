@@ -66,7 +66,7 @@ function validarEmail(input) {
 
 function validaIdentificacion(input) {
     // Reemplaza los caracteres no numéricos con una cadena vacía
-    input.value = input.value.replace(/[^0-9]/g, '');
+    //input.value = input.value.replace(/[^0-9]/g, '');
 
     const identificacion = input.value;
 

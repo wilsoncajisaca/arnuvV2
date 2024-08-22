@@ -293,20 +293,74 @@ function geocodeLatLng(geocoder, latlng) {
 
 
 function makeSelectReadonly(selectId) {
-            const selectElement = document.getElementById(selectId);
+	const selectElement = document.getElementById(selectId);
 
-            if (!selectElement) {
-                console.error(`Element with id ${selectId} not found.`);
-                return;
-            }
+	if (!selectElement) {
+		console.error(`Element with id ${selectId} not found.`);
+		return;
+	}
 
-            selectElement.classList.add('readonly-select');
+	selectElement.classList.add('readonly-select');
 
-            selectElement.addEventListener('mousedown', function(e) {
-                e.preventDefault();
-            });
+	selectElement.addEventListener('mousedown', function(e) {
+		e.preventDefault();
+	});
 
-            selectElement.addEventListener('keydown', function(e) {
-                e.preventDefault();
-            });
+	selectElement.addEventListener('keydown', function(e) {
+		e.preventDefault();
+	});
+}
+
+
+function initDataTable() {
+	$('#dataTable').DataTable({
+		responsive: true,
+		autoWidth: false, // Asegura que la tabla no se expanda fuera de su contenedor
+		language: {
+			url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json'
+		},
+		dom: '<"top"f>rt<"bottom"lp><"clear">', // Para que la barra de búsqueda sea también responsiva
+		drawCallback: function() {
+			// Asegúrate de que las líneas divisorias estén presentes después de cada actualización
+			$('#dataTable thead th, #dataTable tbody td').css({
+				'border': '1px solid #e5e7eb'
+			});
+		}
+	});
+}
+
+
+function handleResize() {
+	const table = document.getElementById('dataTable');
+	const isLargeScreen = window.innerWidth >= 1024; // 1024px es el breakpoint para pantallas grandes en Tailwind
+
+	if (isLargeScreen) {
+		// Mostrar columna en pantallas grandes
+		table.querySelectorAll('.estado-column').forEach(cell => {
+			cell.classList.remove('hidden');
+			cell.classList.add('lg:table-cell');
+		});
+	} else {
+		// Ocultar columna en pantallas pequeñas
+		table.querySelectorAll('.estado-column').forEach(cell => {
+			cell.classList.remove('lg:table-cell');
+			cell.classList.add('hidden');
+		});
+	}
+}
+
+// Función para alternar la visibilidad de la columna con el botón
+function toggleColumnVisibility() {
+	const table = document.getElementById('dataTable');
+	const columns = table.querySelectorAll('.estado-column');
+
+	columns.forEach(cell => {
+		if (cell.classList.contains('hidden')) {
+			cell.classList.remove('hidden');
+			cell.classList.add('lg:table-cell');
+		} else {
+			cell.classList.remove('lg:table-cell');
+			cell.classList.add('hidden');
+		}
+	});
 }

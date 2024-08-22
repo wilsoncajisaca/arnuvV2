@@ -4,12 +4,10 @@ import com.core.arnuv.model.Parametros;
 import com.core.arnuv.model.Personadetalle;
 import com.core.arnuv.model.Ubicacion;
 import com.core.arnuv.request.PersonaDetalleRequest;
-import com.core.arnuv.service.ICatalogoDetalleService;
 import com.core.arnuv.service.IParametroService;
 import com.core.arnuv.service.IPersonaDetalleService;
 import com.core.arnuv.service.IUbicacionService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +17,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import static com.core.arnuv.constants.Constants.KEY_LINK_MAPA_GOOGLE;
 
+import java.util.Date;
+import java.util.List;
+
 @Controller
 @RequestMapping("/persona")
 @RequiredArgsConstructor
@@ -26,6 +27,15 @@ public class PersonaController {
 	private final IPersonaDetalleService servicioPersonaDetalle;
 	private final IUbicacionService  ubicacionService;
 	private final IParametroService parametroService;
+	
+	@GetMapping("listar")
+	public String personListar(Model model) {		
+		List<Personadetalle> listaPersonas = servicioPersonaDetalle.listarTodosPersonaDetalle();
+		model.addAttribute("lista", listaPersonas);
+		return "content-page/persona-listar";
+	}
+	
+	
 	@GetMapping("crear")
 	public String personCreate(Model model) {
 		Parametros linkMapaGoogle = parametroService.getParametro(KEY_LINK_MAPA_GOOGLE);
@@ -41,6 +51,7 @@ public class PersonaController {
 		Personadetalle personadetalle = persona.mapearDato(persona, Personadetalle.class, "idcatalogoidentificacion", "iddetalleidentificacion");
 		Personadetalle personaEntity;
 		try {
+			personadetalle.setFechaingreso(new Date());
 			personaEntity = servicioPersonaDetalle.insertarPersonaDetalle(personadetalle);
 			var ubicacion = new Ubicacion();
 			ubicacion.setLatitud(persona.getLatitud());

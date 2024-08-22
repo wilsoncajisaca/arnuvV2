@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import com.core.arnuv.model.MascotaDetalle;
+import com.core.arnuv.model.Paseo;
 import com.core.arnuv.service.ICatalogoDetalleService;
 import com.core.arnuv.service.IMascotaDetalleService;
 import com.core.arnuv.service.IPersonaDetalleService;
@@ -35,11 +36,19 @@ public class MascotaController {
 
 	@GetMapping("/listar")
 	@PreAuthorize("hasRole('ADMIN') or hasRole('CLIENTE')")
-	public String listar(Model model ) {
+	public String listar(Model model , HttpServletRequest request ) {
 		var idusuariologueado =arnuvUtils.getLoggedInUsername();		
-		List<MascotaDetalle> listaMascotas = mscotaDetalleService.findByIdpersonaId(idusuariologueado.getId());
-		model.addAttribute("lista", listaMascotas);
-		return "content-page/mascotas-listar";
+		if (request.isUserInRole("ADMIN")) {
+			List<MascotaDetalle> listaMascotas = mscotaDetalleService.listarMascotasDetalle();
+			model.addAttribute("lista", listaMascotas);
+			return "content-page/mascotas-listar";
+		}
+		if (request.isUserInRole("CLIENTE") || request.isUserInRole("PASEADOR")) {
+			List<MascotaDetalle> listaMascotas = mscotaDetalleService.findByIdpersonaId(idusuariologueado.getId());
+			model.addAttribute("lista", listaMascotas);
+			return "content-page/mascotas-listar";
+		}
+		return "redirect:/home";
 	}
 
 	@GetMapping("/nuevo")
@@ -56,6 +65,8 @@ public class MascotaController {
 	public String guardar(@ModelAttribute("nuevo") MascotaDetalle nuevo, @RequestParam("file") MultipartFile file,
 						  RedirectAttributes redirectAttributes, HttpServletRequest request) {
         try {
+        	
+        	
 			HttpSession session = request.getSession(false);
 			PersonaDetalleRequest persona = (PersonaDetalleRequest) session.getAttribute("loggedInUser");
 			MascotaDetalle mascota = nuevo;
