@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import com.core.arnuv.model.Calificacion;
+import com.core.arnuv.model.MascotaDetalle;
 import com.core.arnuv.model.Paseo;
 import com.core.arnuv.service.ICalificacionService;
 import com.core.arnuv.service.IPaseoService;
@@ -33,10 +34,18 @@ public class CalificacionController {
 	
 	@GetMapping("/listar")
 	public String listar(Model model, HttpServletRequest request) {
-		var idusuariologueado =arnuvUtils.getLoggedInUsername();
-		List<Calificacion> listaCalificacion = calificacionService.BuscarPersonaPasedor(idusuariologueado.getId());
-		model.addAttribute("lista", listaCalificacion);
-		return "content-page/calificacion-listar";
+		var idusuariologueado =arnuvUtils.getLoggedInUsername();		
+		if (request.isUserInRole("ADMIN")) {
+			List<Calificacion> listaCalificacion = calificacionService.listarCalificacion();
+			model.addAttribute("lista", listaCalificacion);
+			return "content-page/calificacion-listar";
+		}
+		if (request.isUserInRole("PASEADOR")) {
+			List<Calificacion> listaCalificacion = calificacionService.BuscarPersonaPasedor(idusuariologueado.getId());
+			model.addAttribute("lista", listaCalificacion);
+			return "content-page/calificacion-listar";
+		}
+		return "redirect:/home";
 		
 
 	}
