@@ -3,6 +3,8 @@ package com.core.arnuv.controller;
 
 import java.util.Date;
 import java.util.List;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
@@ -22,18 +24,12 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping("/calificacion")
+@RequiredArgsConstructor
 public class CalificacionController {
-
-	@Autowired
-	private ICalificacionService calificacionService;
-	@Autowired
-	private IPaseoService paseoService;
-
-	@Autowired
-	private IPersonaDetalleService personaDetalleService;
-	
-	@Autowired 
-	private ArnuvUtils arnuvUtils;
+	private final ICalificacionService calificacionService;
+	private final IPaseoService paseoService;
+	private final IPersonaDetalleService personaDetalleService;
+	private final ArnuvUtils arnuvUtils;
 	
 	@GetMapping("/listar")
 	public String listar(Model model, HttpServletRequest request) {
@@ -58,26 +54,17 @@ public class CalificacionController {
 	
 	@PostMapping("/insertar")
 	public String insertarCalificacion(@ModelAttribute("nuevaCalificacion") Calificacion nuevo,Model model)  {
-		
 		try {
-			
 			nuevo.setFecha(new Date());
-			
 			Paseo paseo = paseoService.buscarPorId(nuevo.getPaseoID());
 			nuevo.setIdpaseo(paseo);
 			calificacionService.insertarCalificacion(nuevo);
-			
 			return "redirect:/paseo/editarCliente/".concat(String.valueOf(nuevo.getPaseoID()));
-			
 		} catch ( DataIntegrityViolationException e) {
-			String errorMessage;
-			errorMessage = "El paseador: "+ nuevo.getIdpaseo().getIdpersonapasedor().getNombres()+" "+nuevo.getIdpaseo().getIdpersonapasedor().getApellidos()+ " ya fue calificado" ;
+			String errorMessage = "El paseador: "+ nuevo.getIdpaseo().getIdpersonapasedor().getNombres()+" "+nuevo.getIdpaseo().getIdpersonapasedor().getApellidos()+ " ya fue calificado" ;
 			model.addAttribute("error", errorMessage);
 			model.addAttribute("nuevo", nuevo);
-
 			return "content-page/Calificacion-crear";
 		}
-		
-
 	}
 }

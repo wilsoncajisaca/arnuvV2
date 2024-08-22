@@ -3,6 +3,7 @@ package com.core.arnuv.services.imp;
 import com.core.arnuv.model.Usuariosession;
 import com.core.arnuv.repository.IUsuarioSesionRepository;
 import com.core.arnuv.service.IUsuarioSesionService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,10 +14,9 @@ import java.util.List;
 
 @Service
 @Component
+@RequiredArgsConstructor
 public class UsuarioSesionServiceImp implements IUsuarioSesionService {
-
-	@Autowired
-	private IUsuarioSesionRepository repo;
+	private final IUsuarioSesionRepository repo;
 
 	@Override
 	public List<Usuariosession> listarUsuariosSesionActivos() {

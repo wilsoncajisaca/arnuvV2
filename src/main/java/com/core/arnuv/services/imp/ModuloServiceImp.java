@@ -2,6 +2,7 @@ package com.core.arnuv.services.imp;
 
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -12,10 +13,9 @@ import com.core.arnuv.service.IModuloService;
 
 @Service
 @Component
+@RequiredArgsConstructor
 public class ModuloServiceImp implements IModuloService {
-
-	@Autowired
-	private IModuloRepository repo;
+	private final IModuloRepository repo;
 
 	@Override
 	public List<Modulo> listarModulos() {

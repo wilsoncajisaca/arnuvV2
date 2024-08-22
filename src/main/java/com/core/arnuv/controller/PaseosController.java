@@ -1,8 +1,5 @@
 package com.core.arnuv.controller;
 
-import static com.core.arnuv.constants.Constants.KEY_LINK_MAPA_GOOGLE;
-import static com.core.arnuv.constants.Constants.ESTADO_APROBADO;
-
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
@@ -15,6 +12,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -44,36 +44,23 @@ import com.core.arnuv.utils.ArnuvUtils;
 
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
-import static com.core.arnuv.constants.Constants.KEY_PLANTILLA_MAIL;
+
+import static com.core.arnuv.constants.Constants.*;
 
 @Controller
 @RequestMapping("/paseo")
+@RequiredArgsConstructor
+@Slf4j
 public class PaseosController {
-
-	@Autowired
-	private IPaseoService paseoService;
-
-	@Autowired
-	private IPersonaDetalleService personaDetalleService;
-
-	@Autowired
-	private ITarifarioService ITarifarioService;
-
-	@Autowired
-	private IMascotaDetalleService mascotaDetalleService;
-
-	@Autowired
-	private IUbicacionService ubicacionService;
-
-	@Autowired
-	private IParametroService parametroService;
-	@Autowired
-	private ArnuvUtils arnuvUtils;
-	@Autowired
-	private EmailSender emailSender;
-
-	@Autowired
-	private ICalificacionService calificacionService;
+	private final IPaseoService paseoService;
+	private final IPersonaDetalleService personaDetalleService;
+	private final ITarifarioService ITarifarioService;
+	private final IMascotaDetalleService mascotaDetalleService;
+	private final IUbicacionService ubicacionService;
+	private final IParametroService parametroService;
+	private final ArnuvUtils arnuvUtils;
+	private final EmailSender emailSender;
+	private final ICalificacionService calificacionService;
 
 	@GetMapping("/listar")
 	public String listar(Model model, HttpServletRequest request) {
@@ -89,23 +76,16 @@ public class PaseosController {
 			model.addAttribute("lista", listapaseos);
 			return "content-page/paseo-listar";
 		}
-
 		if (request.isUserInRole("PASEADOR")) {
 			List<Paseo> listapaseos = paseoService.buscaridpersonapasedor(idusuariologueado.getId());
 			model.addAttribute("lista", listapaseos);
-			return "content-page/paseoPaseador-listar";
+			return "content-page/paseo-paseador-listar";
 		}
-
 		return "redirect:/home";
-
-
-
 	}
 
 	@GetMapping("/buscarPorFecha")
-	public String buscarPorFecha( Model model)
-
-	{
+	public String buscarPorFecha( Model model){
 		BusquedaFechaeDto busquedaFechasResponse= new BusquedaFechaeDto();
 		model.addAttribute("nuevo", busquedaFechasResponse);
 		return "content-page/paseo-listar-por-fecha"; // Cambia esto por el nombre de la vista Thymeleaf que estás usando
@@ -115,26 +95,20 @@ public class PaseosController {
 	public String ListarbuscarPorFecha(
 			@RequestParam("fechaInicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
 			@RequestParam("fechaFin") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin,
-			Model model,HttpServletRequest request)
-	{
-
-
+			Model model,HttpServletRequest request){
 		Date fechaIni = Date.from(fechaInicio.atStartOfDay(ZoneId.systemDefault()).toInstant());
 		Date fechaFinal = Date.from(fechaFin.atStartOfDay(ZoneId.systemDefault()).toInstant());
 		var idusuariologueado =arnuvUtils.getLoggedInUsername();
-
 		if (request.isUserInRole("CLIENTE")) {
 			List<Paseo> listapaseos = paseoService.buscarRangoFechasCliente(fechaIni, fechaFinal, idusuariologueado.getId());
 			model.addAttribute("lista", listapaseos);
 			return "content-page/paseo-listar-por-fecha";
 		}
-
 		if (request.isUserInRole("PASEADOR")) {
 			List<Paseo> listapaseos = paseoService.buscarRangoFechasPaseador(fechaIni, fechaFinal, idusuariologueado.getId());
 			model.addAttribute("lista", listapaseos);
 			return "content-page/paseo-listar-por-fecha";
 		}
-
 		return "content-page/paseo-listar-por-fecha";
 	}
 
@@ -153,33 +127,29 @@ public class PaseosController {
 
 	// guardar
 	@PostMapping("/insertar")
-	public String guardar(@ModelAttribute("nuevo") Paseo nuevo, HttpServletRequest request) throws UnsupportedEncodingException, MessagingException {
-
+	public String guardar(@ModelAttribute("nuevo") Paseo nuevo, HttpServletRequest request)
+			throws UnsupportedEncodingException, MessagingException {
 		Date date = new Date();
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
 		String formattedDate = formatter.format(date);
 		if (request.isUserInRole("CLIENTE")) {
 			Personadetalle personaCLiente = new Personadetalle();
-
 			var idusuariologueado =arnuvUtils.getLoggedInUsername().getId();
 			personaCLiente.setId(idusuariologueado);
 			nuevo.setIdpersonacliente(personaCLiente);
-
 		}
 		Personadetalle personadetalle = personaDetalleService.buscarPorId(nuevo.getIdpersonapasedor().getId());
 		String htmlContent = new String(parametroService.getParametro(KEY_PLANTILLA_MAIL).getArchivos(), StandardCharsets.UTF_8);
 
 		String fechaRealInicio = nuevo.getFecharealinicio().toString();
-		SimpleDateFormat formatoEntrada = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH);
-		SimpleDateFormat formatoSalida = new SimpleDateFormat("EEEE dd 'de' MMMM 'del' yyyy HH:mm:ss", new Locale("es", "ES"));
-		String fechaEnEspanol="";
+		String fechaEspanol= Strings.EMPTY;
 		try {
-			Date fecha = formatoEntrada.parse(fechaRealInicio);
-			fechaEnEspanol = formatoSalida.format(fecha);
+			Date fecha = FECHA_FORMATO_ENTRADA.parse(fechaRealInicio);
+			fechaEspanol = FECHA_FORMATO_SALIDA.format(fecha);
 		} catch (ParseException e) {
-			e.printStackTrace();
+			log.error("Ocurrio un error: {}", e.getMessage());
 		}
-		String mensajeDinamico = "SOLICITUD DE SERVICIO DE PASEO A MASCOTA ! FECHA:" + fechaEnEspanol+", REVISA TU BANDEJA DE PASEOS !!";
+		String mensajeDinamico = "SOLICITUD DE SERVICIO DE PASEO A MASCOTA ! FECHA:" + fechaEspanol+", REVISA TU BANDEJA DE PASEOS !!";
 		htmlContent = htmlContent.replace("{{mensajeBienvenida}}", "<p style=\"font-size: 14px; line-height: 140%; text-align: center;\"><span style=\"font-family: Lato, sans-serif; font-size: 16px; line-height: 22.4px;\">" + mensajeDinamico.toUpperCase() + "</span></p>");
 		emailSender.sendEmail(personadetalle.getEmail(), "SOLICITUD DE SERVICIO", htmlContent);
 		paseoService.insertarPaseo(nuevo);
@@ -201,19 +171,17 @@ public class PaseosController {
 	@GetMapping("/editarPaseador/{idpaseo}")
 	public String editarPaseador(@PathVariable(value = "idpaseo") int codigo, Model model) {
 		Paseo itemrecuperado = paseoService.buscarPorId(codigo);
-
 		Ubicacion ubicacionCliente = ubicacionService.ubicacionPersonaPorDefecto(itemrecuperado.getIdpersonacliente().getId());
 		List <Ubicacion> listUbicacionCliente = new ArrayList<>();;
 		listUbicacionCliente.add(ubicacionCliente);
 		Parametros linkMapaGoogle = parametroService.getParametro(KEY_LINK_MAPA_GOOGLE);
-
 		model.addAttribute("nuevo", itemrecuperado);
 		model.addAttribute("persona", personaDetalleService.listarTodosPersonaDetalle());
 		model.addAttribute("tarifario", ITarifarioService.listarTarifarios());
 		model.addAttribute("mascota", mascotaDetalleService.listarMascotasDetalle());
 		model.addAttribute("ubicacion", listUbicacionCliente);
 		model.addAttribute("linkMapaGoogle", linkMapaGoogle);
-		return "content-page/paseoPaseador-crear";
+		return "content-page/paseo-paseador-crear";
 	}
 
 	@GetMapping("/editarCliente/{idpaseo}")
@@ -221,12 +189,10 @@ public class PaseosController {
 		Paseo itemrecuperado = paseoService.buscarPorId(codigo);
 		Parametros linkMapaGoogle = parametroService.getParametro(KEY_LINK_MAPA_GOOGLE);
 		Calificacion calificacion =  calificacionService.findByIdpaseoId(codigo);
-		String errorMessag="";
+		String errorMessag= Strings.EMPTY;
 		if(calificacion == null && itemrecuperado.getEstado().equals(ESTADO_APROBADO)) {
 			errorMessag ="Tienes que calificar el paseo antes de finalizar";
-
 		}
-
 		model.addAttribute("nuevo", itemrecuperado);
 		model.addAttribute("paseoID", itemrecuperado.getId());
 		model.addAttribute("persona", personaDetalleService.listarTodosPersonaDetalle());
@@ -239,27 +205,15 @@ public class PaseosController {
 
 	@PostMapping("/finalizarPaseo")
 	public String finalizarPaseo(@ModelAttribute("nuevo") Paseo nuevo, HttpServletRequest request,Model model) {
-
 		Calificacion calificacion =  calificacionService.findByIdpaseoId(nuevo.getId());
-
 		if(calificacion == null) {
-			String errorMessage ="Tienes que calificar el paseo antes de finalizar";
-			model.addAttribute("error", errorMessage);
+			model.addAttribute("error", "Tienes que calificar el paseo antes de finalizar");
 			return "redirect:/paseo/editarCliente/".concat(String.valueOf(nuevo.getId()));
-		}
-		else {
-
+		}else {
 			paseoService.insertarPaseo(nuevo);
-
 			return "redirect:/paseo/listar";
-
 		}
-
-
-
 	}
-
-
 
 	// eliminar
 	@GetMapping("/eliminar/{codigo}")

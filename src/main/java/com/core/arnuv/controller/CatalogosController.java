@@ -2,6 +2,7 @@ package com.core.arnuv.controller;
 
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,12 +19,9 @@ import com.core.arnuv.service.ICatalogoDetalleService;
 
 @Controller
 @RequestMapping("/catalogo")
+@RequiredArgsConstructor
 public class CatalogosController {
-
-	@Autowired
-	public ICatalogoDetalleService catalogoDetalleService;
-
-	
+	public final ICatalogoDetalleService catalogoDetalleService;
 	@GetMapping("/listar")
 	public String listarColores(Model model) {
 		List<CatalogoDetalle> listacatalogos = catalogoDetalleService.listarCatalogoDetalle(); 
@@ -34,7 +32,6 @@ public class CatalogosController {
 	@GetMapping("/nuevo")
 	public String crear(Model model) {
 		model.addAttribute("nuevo", new CatalogoDetalle());
-
 		return "content-page/catalogo-crear"; 
 	}
 
@@ -44,7 +41,6 @@ public class CatalogosController {
 		nuevo.setActivo(true);
 		catalogoDetalleService.insertarCatalogoDetalle(nuevo);
 		return "redirect:/catalogo/listar";
-
 	}
 
 	@GetMapping("/editar/{idcatalogo}")

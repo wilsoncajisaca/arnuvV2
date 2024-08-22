@@ -4,6 +4,7 @@ import com.core.arnuv.model.Recurso;
 import com.core.arnuv.model.RecursoId;
 import com.core.arnuv.repository.IRecursoRepository;
 import com.core.arnuv.service.IRecursoService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -12,10 +13,9 @@ import java.util.List;
 
 @Service
 @Component
+@RequiredArgsConstructor
 public class RecursoServiceImp implements IRecursoService {
-
-	@Autowired
-	private IRecursoRepository repo;
+	private final IRecursoRepository repo;
 
 
 	@Override

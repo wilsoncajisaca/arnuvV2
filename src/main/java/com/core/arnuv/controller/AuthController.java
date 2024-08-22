@@ -1,5 +1,6 @@
 package com.core.arnuv.controller;
 
+import com.core.arnuv.enums.RolEnum;
 import com.core.arnuv.model.*;
 import com.core.arnuv.request.ChangePasswordRequest;
 import com.core.arnuv.request.PersonaDetalleRequest;
@@ -42,20 +43,18 @@ import static com.core.arnuv.constants.Constants.KEY_LINK_MAPA_GOOGLE;
 @Controller
 @RequestMapping("/auth")
 public class AuthController {
-
     private final IUsuarioDetalleService userService;
     private final IMenuService menuService;
     private final IPersonaDetalleService servicioPersonaDetalle;
     private final PasswordEncoder passwordEncoder;
     private final EmailSender emailSender;
-	private final IUbicacionService  ubicacionService;
+	private final IUbicacionService ubicacionService;
     private final IRolService servicioRol;
     private final IUsuarioRolService servicioUsuarioRol;
     private final IParametroService parametroService;
     
 
     @GetMapping("/login")
-
     public String login(Model model, HttpServletRequest request,
                         @AuthenticationPrincipal UserDetails userDetails) {
         if (userDetails != null) {
@@ -93,9 +92,7 @@ public class AuthController {
     
     @PostMapping("/create-access")
 	private String personCreateAccess(@ModelAttribute("nuevo") PersonaDetalleRequest persona, Model model) {
-		//var catDetEntity = servicioCatalogoDetalle.buscarPorId(persona.getIdcatalogoidentificacion(), persona.getIddetalleidentificacion());
 		Personadetalle personadetalle = persona.mapearDato(persona, Personadetalle.class, "idcatalogoidentificacion", "iddetalleidentificacion");
-		//personadetalle.setCatalogodetalle(catDetEntity);
 		Personadetalle personaEntity;
 		try {
 			personaEntity = servicioPersonaDetalle.insertarPersonaDetalle(personadetalle);
@@ -142,7 +139,7 @@ public class AuthController {
         Usuariodetalle entity = null;
         try {
             entity = userService.insertarUsuarioDetalle(usuariodetalle);
-            var rolCliente = servicioRol.findByNombre("ROLE_CLIENTE");            
+            var rolCliente = servicioRol.findByNombre(RolEnum.ROLE_USER.getDisplayName());
             var rolentity = servicioRol.buscarPorId(rolCliente.getId());
             UsuariorolId usuariorolId = new UsuariorolId();
             UsuarioRolRequest nuevo1 = new UsuarioRolRequest();
@@ -313,7 +310,7 @@ public class AuthController {
 
     private void enviarCorreoRecuperacion(String email, String token)
             throws MessagingException, UnsupportedEncodingException {
-        String urlRecuperacion = "<a href=\"https://fundacion-arnuv.onrender.com/auth/restablecer?token=" + token + "\">Clil para restablecer la contraseña</a>";
+        String urlRecuperacion = "<a href=\"https://fundacion-arnuv.onrender.com/auth/restablecer?token=" + token + "\">Clic para restablecer la contraseña</a>";
         String htmlContent = new String(parametroService.getParametro(KEY_PLANTILLA_MAIL).getArchivos(), StandardCharsets.UTF_8);
         String mensajeDinamico = "BIENVENIDO A LA FUNDACION ARNUV! <br> CAMBIA TU CONTRASEÑA EN EL SIGUIENTE ENLACE: <br>"+urlRecuperacion;
         htmlContent = htmlContent.replace("{{mensajeBienvenida}}", "<p style=\"font-size: 14px; line-height: 140%; text-align: center;\"><span style=\"font-family: Lato, sans-serif; font-size: 16px; line-height: 22.4px;\">" + mensajeDinamico + "</span></p>");

@@ -28,7 +28,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Slf4j
 @RequiredArgsConstructor
 public class MascotaController {
-
 	public final IMascotaDetalleService mscotaDetalleService;
 	public final ICatalogoDetalleService catalogoDetalleService;
 	public final IPersonaDetalleService personaDetalleService;
@@ -64,11 +63,8 @@ public class MascotaController {
 			mascota.setPhotoPet(file);
 			if (nuevo.getObservacion().length()==0) {
 				nuevo.setObservacion("");
-				
 			}
-			
             mscotaDetalleService.insertarMascotaDetalle(nuevo);
-            
 			return "redirect:/mascota/listar";
         } catch (IOException e) {
 			redirectAttributes.addFlashAttribute("message", "La imagen no se pudo guardar");
@@ -77,7 +73,6 @@ public class MascotaController {
 	}
 
 	// editar
-	
 	@GetMapping("/editar/{idmascota}")
 	@PreAuthorize("hasRole('ADMIN') or hasRole('CLIENTE')")
 	public String editar(@PathVariable(value = "idmascota") int codigo, Model model) {
@@ -95,5 +90,4 @@ public class MascotaController {
 		mscotaDetalleService.EliminarMascotaDetalle(codigo);
 		return "redirect:/mascota/listar";
 	}
-	
 }

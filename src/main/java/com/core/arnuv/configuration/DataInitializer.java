@@ -1,5 +1,6 @@
 package com.core.arnuv.configuration;
 
+import com.core.arnuv.enums.RolEnum;
 import com.core.arnuv.model.*;
 import com.core.arnuv.repository.IPersonaDetalleRepository;
 import com.core.arnuv.repository.IRolRepository;
@@ -37,7 +38,7 @@ public class DataInitializer {
             usuarioDetalleRepository.save(usuario);
 
             Rol rol = new Rol();
-            rol.setNombre("ROLE_ADMIN");
+            rol.setNombre(RolEnum.ROLE_ADMIN.getDisplayName());
             rolRepository.save(rol);
 
             UsuariorolId usuariorolId = new UsuariorolId();

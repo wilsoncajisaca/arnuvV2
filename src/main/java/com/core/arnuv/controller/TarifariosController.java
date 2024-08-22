@@ -2,6 +2,7 @@ package com.core.arnuv.controller;
 
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,12 +17,9 @@ import com.core.arnuv.service.ITarifarioService;
 
 @Controller
 @RequestMapping("/tarifario")
+@RequiredArgsConstructor
 public class TarifariosController {
-	
-	@Autowired
-	public ITarifarioService tarifarioService;
-
-	
+	public final ITarifarioService tarifarioService;
 	@GetMapping("/listar")
 	public String listarTarifario(Model model) {
 		List<Tarifario> listacatalogos = tarifarioService.listarTarifarios(); 
@@ -32,7 +30,6 @@ public class TarifariosController {
 	@GetMapping("/nuevo")
 	public String crearTarifario(Model model) {
 		model.addAttribute("nuevo", new Tarifario());
-
 		return "content-page/tarifario-crear"; 
 	}
 
@@ -42,7 +39,6 @@ public class TarifariosController {
 		nuevo.setActivo(true);
 		tarifarioService.insertarTarifario(nuevo);
 		return "redirect:/tarifario/listar";
-
 	}
 
 	@GetMapping("/editar/{idcatalogo}")

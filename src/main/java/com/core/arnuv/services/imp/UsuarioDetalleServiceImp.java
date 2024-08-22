@@ -4,6 +4,7 @@ import com.core.arnuv.model.Usuariodetalle;
 import com.core.arnuv.repository.IUsuarioDetalleRepository;
 import com.core.arnuv.service.IUsuarioDetalleService;
 import com.google.common.hash.Hashing;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,10 +15,9 @@ import java.util.List;
 import java.util.Random;
 
 @Service
+@RequiredArgsConstructor
 public class UsuarioDetalleServiceImp implements IUsuarioDetalleService {
-
-	@Autowired
-	private IUsuarioDetalleRepository repo;
+	private final IUsuarioDetalleRepository repo;
 
 	@Override
 	public List<Usuariodetalle> listarTodosUsuariosDetalle() {

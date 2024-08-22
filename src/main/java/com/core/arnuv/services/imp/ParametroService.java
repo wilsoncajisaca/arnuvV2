@@ -29,7 +29,6 @@ public class ParametroService implements IParametroService {
 			log.error("{}",e.getMessage());
 		}
     	return parametro;
-        
     }
 
     @Override

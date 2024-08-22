@@ -2,6 +2,7 @@ package com.core.arnuv.services.imp;
 
 import com.core.arnuv.model.Usuariodetalle;
 import com.core.arnuv.repository.IUsuarioDetalleRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,9 +19,9 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class UserServicesAuth implements UserDetailsService {
-    @Autowired
-    private IUsuarioDetalleRepository repo;
+    private final IUsuarioDetalleRepository repo;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         var usuario = repo.buscarPorEmailOrUsername(username)

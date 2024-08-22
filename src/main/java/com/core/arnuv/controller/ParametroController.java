@@ -56,7 +56,6 @@ public class ParametroController {
 		model.addAttribute("nuevo", new PersonaDetalleRequest());
 		return "content-page/parametros-plantilla-mail";
 	}
-
 	@PostMapping("/subirArchivoPlantillaMaill")
 	@PreAuthorize("hasRole('ADMIN')")
 	public String subirArchivosPlantillaMaill(@RequestParam("archivo") MultipartFile archivo) {
@@ -117,7 +116,7 @@ public class ParametroController {
 	public String modificarParametrosKeyGoogle(@ModelAttribute("nuevo") Parametros nuevo) {
 		try {
 			Parametros doc = new Parametros();
-			String url = "https://maps.googleapis.com/maps/api/js?key="+nuevo.getValorText();
+			String url = URL_API_GOOGLE_MAP + nuevo.getValorText();
 			doc.setCodigo(KEY_LINK_MAPA_GOOGLE);
 			doc.setValorText(url);
 			doc.setEstado(Boolean.TRUE);

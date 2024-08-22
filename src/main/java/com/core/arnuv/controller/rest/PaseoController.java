@@ -6,6 +6,7 @@ import com.core.arnuv.response.UbicacionCabeceraResponse;
 import com.core.arnuv.response.UbicacionDetalleResponse;
 import com.core.arnuv.service.*;
 import com.core.arnuv.utils.ArnuvUtils;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,28 +21,11 @@ import static com.core.arnuv.constants.Constants.KEY_RADIO;
 
 @RestController
 @RequestMapping("/paseos")
+@RequiredArgsConstructor
 public class PaseoController {
-
-	@Autowired
-	public IPaseoService paseoService;
-
-	@Autowired
-	public IPersonaDetalleService personaDetalleService;
-
-	@Autowired
-	public ITarifarioService ITarifarioService;
-
-	@Autowired
-	public IMascotaDetalleService mascotaDetalleService;
-
-	@Autowired
-	public IUbicacionService ubicacionService;
-
-	@Autowired
-	public IParametroService parametroService;
-
-	@Autowired
-	private IUsuarioDetalleService userService;
+	public final IPersonaDetalleService personaDetalleService;
+	public final IUbicacionService ubicacionService;
+	public final IParametroService parametroService;
 
 	@GetMapping("/listar/{idpersona}")
 	public ResponseEntity<?> listar(@PathVariable(value = "idpersona") Integer personId) {

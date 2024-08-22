@@ -2,6 +2,7 @@ package com.core.arnuv.services.imp;
 
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -12,10 +13,9 @@ import com.core.arnuv.service.ISeguridadPoliticaService;
 
 @Service
 @Component
+@RequiredArgsConstructor
 public class SeguridadPoliticaServiceImp implements ISeguridadPoliticaService {
-
-	@Autowired
-	private ISeguridadPoliticaRepository repo;
+	private final ISeguridadPoliticaRepository repo;
 
 	@Override
 	public List<Seguridadpolitica> listarSeguridadPoliticas() {

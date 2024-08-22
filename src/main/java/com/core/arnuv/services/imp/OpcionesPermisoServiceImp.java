@@ -4,6 +4,7 @@ import com.core.arnuv.model.Opcionespermiso;
 import com.core.arnuv.model.OpcionespermisoId;
 import com.core.arnuv.repository.IOpcionesPermisoRepository;
 import com.core.arnuv.service.IOpcionesPermisoService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -12,10 +13,9 @@ import java.util.*;
 
 @Service
 @Component
+@RequiredArgsConstructor
 public class OpcionesPermisoServiceImp implements IOpcionesPermisoService {
-
-	@Autowired
-	private IOpcionesPermisoRepository repo;
+	private final IOpcionesPermisoRepository repo;
 
 	@Override
 	public List<Opcionespermiso> listarTodos() {

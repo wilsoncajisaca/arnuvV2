@@ -3,6 +3,7 @@ package com.core.arnuv.services.imp;
 import java.util.Date;
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -13,10 +14,9 @@ import com.core.arnuv.service.IPaseoService;
 
 @Service
 @Component
+@RequiredArgsConstructor
 public class PaseoServiceImp implements IPaseoService {
-
-	@Autowired
-	private IPaseoRepository repo;
+	private final IPaseoRepository repo;
 
 	@Override
 	public List<Paseo> listarPaseos() {
@@ -25,26 +25,11 @@ public class PaseoServiceImp implements IPaseoService {
 
 	@Override
 	public Paseo insertarPaseo(Paseo data) {
-		/*System.out.println(data.getId());
-		if (data.getId() != 0){
-			Paseo existePaseo = repo.findById(data.getId()).orElse(null);		
-			data.setFecha(existePaseo.getFecha());
-		}*/
 		return repo.save(data);
 	}
 
 	@Override
 	public Paseo actualizarPaseo(Paseo data) {
-		/*Paseo existePaseo = repo.findById(data.getId()).orElse(null);
-		existePaseo.setFecha(data.getFecha());
-		existePaseo.setFecharealfin(data.getFecharealfin());
-		existePaseo.setFechainicio(data.getFechainicio());
-		existePaseo.setFechafin(data.getFechafin());
-		existePaseo.setHorainicio(data.getHorainicio());
-		existePaseo.setHorafin(data.getHorafin());
-		existePaseo.setPreciototal(data.getPreciototal());
-		existePaseo.setObservacionpaseo(data.getObservacionpaseo());
-		existePaseo.setObservacionpaseador(data.getObservacionpaseador());*/
 		return repo.save(data);
 	}
 
@@ -55,11 +40,9 @@ public class PaseoServiceImp implements IPaseoService {
 	
 	@Override
 	public void eliminarPaseo(int codigo) {
-		// TODO Auto-generated method stub
 		try {
 			repo.deleteById(codigo);
 		} catch (Exception e) {
-			// TODO: handle exception
 			System.out.println("Error al eliminar item");
 		}
 	}
@@ -68,9 +51,7 @@ public class PaseoServiceImp implements IPaseoService {
 	public List<Paseo> buscarpersonacliente(int idcliente) {
 		try {
 			return repo.buscarpersonacliente( idcliente);
-			
 		} catch (Exception e) {
-			// TODO: handle exception
 			System.out.print(e);
 			return null;
 		}
@@ -80,9 +61,7 @@ public class PaseoServiceImp implements IPaseoService {
 	public List<Paseo> buscaridpersonapasedor(int idpersonapasedor) {
 		try {
 			return repo.buscaridpersonapasedor( idpersonapasedor);
-			
 		} catch (Exception e) {
-			// TODO: handle exception
 			System.out.print(e);
 			return null;
 		}
@@ -92,9 +71,7 @@ public class PaseoServiceImp implements IPaseoService {
 	public List<Paseo> buscarRangoFechasPaseador(Date fechaIni, Date fechaFin, int idpersonapasedor) {
 		try {
 			return repo.buscarRangoFechasPaseador( fechaIni,fechaFin,idpersonapasedor);
-			
 		} catch (Exception e) {
-			// TODO: handle exception
 			System.out.print(e);
 			return null;
 		}
@@ -104,9 +81,7 @@ public class PaseoServiceImp implements IPaseoService {
 	public List<Paseo> buscarRangoFechasCliente(Date fechaIni, Date fechaFin, int idpersonacliente) {
 		try {
 			return repo.buscarRangoFechasCliente( fechaIni,fechaFin,idpersonacliente);
-			
 		} catch (Exception e) {
-			// TODO: handle exception
 			System.out.print(e);
 			return null;
 		}

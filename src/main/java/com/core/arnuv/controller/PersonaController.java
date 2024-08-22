@@ -8,6 +8,7 @@ import com.core.arnuv.service.ICatalogoDetalleService;
 import com.core.arnuv.service.IParametroService;
 import com.core.arnuv.service.IPersonaDetalleService;
 import com.core.arnuv.service.IUbicacionService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
@@ -20,26 +21,19 @@ import static com.core.arnuv.constants.Constants.KEY_LINK_MAPA_GOOGLE;
 
 @Controller
 @RequestMapping("/persona")
+@RequiredArgsConstructor
 public class PersonaController {
-	@Autowired
-	private ICatalogoDetalleService servicioCatalogoDetalle;
-	@Autowired
-	private IPersonaDetalleService servicioPersonaDetalle;
-	@Autowired
-	private IUbicacionService  ubicacionService;
-	@Autowired
-	private IParametroService parametroService;
-	
-	
-	
+	private final IPersonaDetalleService servicioPersonaDetalle;
+	private final IUbicacionService  ubicacionService;
+	private final IParametroService parametroService;
 	@GetMapping("crear")
 	public String personCreate(Model model) {
-		
 		Parametros linkMapaGoogle = parametroService.getParametro(KEY_LINK_MAPA_GOOGLE);
 		model.addAttribute("nuevo", new PersonaDetalleRequest());
 		model.addAttribute("linkMapaGoogle", linkMapaGoogle);		
 		return "content-page/persona-crear";
 	}
+
 	@PostMapping("create-access")
 	private String personCreateAccess(@ModelAttribute("nuevo") PersonaDetalleRequest persona, Model model) {
 		Parametros linkMapaGoogle = parametroService.getParametro(KEY_LINK_MAPA_GOOGLE);

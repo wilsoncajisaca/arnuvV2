@@ -6,6 +6,7 @@ import com.core.arnuv.request.UsuarioRolRequest;
 import com.core.arnuv.service.IRolService;
 import com.core.arnuv.service.IUsuarioDetalleService;
 import com.core.arnuv.service.IUsuarioRolService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,14 +14,11 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/role")
+@RequiredArgsConstructor
 public class RoleController {
-    @Autowired
-    private IRolService servicioRol;
-    @Autowired
-    private IUsuarioDetalleService servicioUsuarioDetalle;
-
-    @Autowired
-    private IUsuarioRolService servicioUsuarioRol;
+    private final IRolService servicioRol;
+    private final IUsuarioDetalleService servicioUsuarioDetalle;
+    private final IUsuarioRolService servicioUsuarioRol;
 
     @GetMapping("/listar")
     public String getRoles(Model model) {
@@ -45,12 +43,10 @@ public class RoleController {
         usuariorolId.setIdrol(nuevo.getIdrol());
         var rolentity = servicioRol.buscarPorId(nuevo.getIdrol());
         var usuariodetalleentity = servicioUsuarioDetalle.buscarPorId(nuevo.getIdusuario());
-
         var usuariorolentity = nuevo.mapearDato(nuevo, Usuariorol.class, "idrol","idusuario");
         usuariorolentity.setIdrol(rolentity);
         usuariorolentity.setIdusuario(usuariodetalleentity);
         usuariorolentity.setId(usuariorolId);
-
         servicioUsuarioRol.insertarUsuarioRol(usuariorolentity);
         return "redirect:/home";
     }

@@ -3,6 +3,7 @@ package com.core.arnuv.services.imp;
 import com.core.arnuv.model.CatalogoDetalle;
 import com.core.arnuv.repository.ICatalogoDetalleRepository;
 import com.core.arnuv.service.ICatalogoDetalleService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -11,13 +12,9 @@ import java.util.List;
 
 @Service
 @Component
+@RequiredArgsConstructor
 public class CatalogoDetalleServiceImp implements ICatalogoDetalleService {
-
-	//@Autowired
-	//private ICatalogoDetRepository repoCatalogo;
-
-	@Autowired
-	private ICatalogoDetalleRepository repo;
+	private final ICatalogoDetalleRepository repo;
 
 	@Override
 	public List<CatalogoDetalle> listarCatalogoDetalle() {
@@ -31,9 +28,6 @@ public class CatalogoDetalleServiceImp implements ICatalogoDetalleService {
 
 	@Override
 	public CatalogoDetalle actualizarCatalogoDetalle(CatalogoDetalle data) {
-		//CatalogoDetalle existeCatalogo = repo.findById(data.getId()).orElse(null);
-		///existeCatalogo.setNombre(data.getNombre());
-		//existeCatalogo.setActivo(data.getActivo());
 		return repo.save(data);
 	}
 
@@ -44,11 +38,9 @@ public class CatalogoDetalleServiceImp implements ICatalogoDetalleService {
 	
 	@Override
 	public void eliminarCatalogoDetalle(int codigo) {
-		// TODO Auto-generated method stub
 		try {
 			repo.deleteById(codigo);
 		} catch (Exception e) {
-			// TODO: handle exception
 			System.out.println("Error al eliminar item");
 		}
 	}

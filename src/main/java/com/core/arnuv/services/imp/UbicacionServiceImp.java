@@ -7,6 +7,7 @@ import com.core.arnuv.model.Usuariorol;
 import com.core.arnuv.repository.IUbicacionRepository;
 import com.core.arnuv.repository.IUsuarioRolRepository;
 import com.core.arnuv.service.IUbicacionService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -17,10 +18,9 @@ import java.util.stream.Collectors;
 
 @Service
 @Component
+@RequiredArgsConstructor
 public class UbicacionServiceImp implements IUbicacionService {
-  @Autowired
   private IUbicacionRepository repo;
-  @Autowired
   private IUsuarioRolRepository repoRol;
   
     @Override

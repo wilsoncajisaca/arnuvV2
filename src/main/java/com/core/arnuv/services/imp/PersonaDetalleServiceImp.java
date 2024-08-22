@@ -3,6 +3,7 @@ package com.core.arnuv.services.imp;
 import com.core.arnuv.model.Personadetalle;
 import com.core.arnuv.repository.IPersonaDetalleRepository;
 import com.core.arnuv.service.IPersonaDetalleService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -11,9 +12,9 @@ import java.util.List;
 
 @Service
 @Component
+@RequiredArgsConstructor
 public class PersonaDetalleServiceImp implements IPersonaDetalleService {
-	@Autowired
-	private IPersonaDetalleRepository repo;
+	private final IPersonaDetalleRepository repo;
 	
 	@Override
 	public List<Personadetalle> listarTodosPersonaDetalle() {
@@ -37,7 +38,6 @@ public class PersonaDetalleServiceImp implements IPersonaDetalleService {
 		existePersonaDetalle.setIdentificacion(data.getIdentificacion());
 		existePersonaDetalle.setCelular(data.getCelular());
 		existePersonaDetalle.setEmail(data.getEmail());
-		//existePersonaDetalle.setCatalogodetalle(data.getCatalogodetalle());
 		return repo.save(existePersonaDetalle);
 	}
 
@@ -61,8 +61,4 @@ public class PersonaDetalleServiceImp implements IPersonaDetalleService {
 	public Personadetalle buscarEmail(String email) {
 		return repo.buscarEmail(email);
 	}
-
-
-
-
 }

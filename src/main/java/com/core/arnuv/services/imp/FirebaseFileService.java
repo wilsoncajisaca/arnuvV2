@@ -26,10 +26,11 @@ public class FirebaseFileService {
     public void init(ApplicationReadyEvent event) {
         try {
             ClassPathResource serviceAccount = new ClassPathResource("serviceAccountKey.json");
-            storage = StorageOptions.newBuilder().
-                    setCredentials(GoogleCredentials.fromStream(serviceAccount.getInputStream())).
-                    setProjectId(projectId)
-                    .build().getService();
+            storage = StorageOptions.newBuilder()
+                    .setCredentials(GoogleCredentials.fromStream(serviceAccount.getInputStream()))
+                    .setProjectId(projectId)
+                    .build()
+                    .getService();
         } catch (Exception ex) {
             ex.printStackTrace();
         }

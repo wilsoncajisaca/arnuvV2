@@ -3,6 +3,7 @@ package com.core.arnuv.services.imp;
 import java.util.List;
 import java.util.Set;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -15,13 +16,10 @@ import com.core.arnuv.service.IRolService;
 
 @Service
 @Component
+@RequiredArgsConstructor
 public class RolServiceImp implements IRolService {
-
-	@Autowired
-	private IRolRepository repo;
-	
-	@Autowired
-	private IUsuarioRolRepository repoUsuarioRol;
+	private final IRolRepository repo;
+	private final IUsuarioRolRepository repoUsuarioRol;
 
 	@Override
 	public List<Rol> listarRolesActivos() {
