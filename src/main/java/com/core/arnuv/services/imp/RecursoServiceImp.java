@@ -16,8 +16,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RecursoServiceImp implements IRecursoService {
 	private final IRecursoRepository repo;
-
-
 	@Override
 	public List<Recurso> listarTodos() {
 		return repo.findAll();

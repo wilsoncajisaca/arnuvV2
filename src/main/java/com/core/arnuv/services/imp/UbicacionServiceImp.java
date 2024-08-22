@@ -20,14 +20,13 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class UbicacionServiceImp implements IUbicacionService {
-  private IUbicacionRepository repo;
-  private IUsuarioRolRepository repoRol;
+  private final IUbicacionRepository repo;
+  private final IUsuarioRolRepository repoRol;
   
     @Override
     public List<Ubicacion> listarUbicacion() {
         try {
             return repo.findAll();
-
         } catch (Exception e) {
             System.out.println("Error al Listar la Ubicacion");
         }
