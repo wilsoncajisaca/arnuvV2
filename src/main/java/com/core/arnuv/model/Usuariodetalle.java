@@ -33,7 +33,7 @@ public class Usuariodetalle implements Serializable, UserDetails {
 
 	@ManyToOne()
 	@Comment("Codigo de personas")
-	@JoinColumn(name = "idpersona")
+	@JoinColumn(name = "idpersona", nullable = false)
 	@ToString.Exclude
 	private Personadetalle idpersona;
 

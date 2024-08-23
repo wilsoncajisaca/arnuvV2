@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
@@ -23,6 +24,7 @@ public class UsuarioRolServiceImp implements IUsuarioRolService {
 	}
 
 	@Override
+	@Transactional
 	public Usuariorol insertarUsuarioRol(Usuariorol data) {
 		return repo.save(data);
 	}

@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
@@ -34,6 +35,7 @@ public class UbicacionServiceImp implements IUbicacionService {
     }
 
     @Override
+    @Transactional
     public Ubicacion insertarUbicacion(Ubicacion data) {
         try {
             return repo.save(data);

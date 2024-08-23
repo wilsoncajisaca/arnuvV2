@@ -29,6 +29,8 @@ import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.thymeleaf.util.StringUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
@@ -82,46 +84,40 @@ public class AuthController {
 	}
 
     @PostMapping("/create-access")
-	private String personCreateAccess(@ModelAttribute("nuevo") PersonaDetalleRequest persona, Model model) {
+	private String personCreateAccess(@ModelAttribute("nuevo") PersonaDetalleRequest persona, Model model, RedirectAttributes redirectAttributes) {
 		try {
+            String error = servicioPersonaDetalle.verificarDuplicados(persona.getEmail(), persona.getCelular(), persona.getIdentificacion());
+            if(!StringUtils.isEmpty(error)) {
+                redirectAttributes.addFlashAttribute("error", error);
+                return "redirect:/auth/crearCliente";
+            }
             UsuarioDetalleRequest requestUser = new UsuarioDetalleRequest();
             requestUser.setPersona(objectMapper.writeValueAsString(persona));
             model.addAttribute("nuevo", requestUser);
 			return "landing/usuario-crear-cliente";
-		} catch (DataIntegrityViolationException e) {
-			String errorMessage;
-			if (e.getMessage().contains("uk_eqrqigy92n8fi43p0e9pmf9aw")) { // Email
-				errorMessage = "Error al guardar datos: Ya existe el email registrado=" + persona.getEmail();
-			} else if (e.getMessage().contains("uk_q5r1m95xoe8hnuv378tdsymul")) { // Celular
-				errorMessage = "Error al guardar datos: Ya existe el celular registrado=" + persona.getCelular();
-			} else if (e.getMessage().contains("uk_jmjk4q6y2fnm48qlml12e5cl9")) { // Identificación
-				errorMessage = "Error al guardar datos: Ya existe la identificacion registrada=" + persona.getIdentificacion();
-			} else {
-				// Mensaje genérico si no se detecta un campo específico
-				errorMessage = "Error al guardar datos: Se ha detectado un problema con los datos ingresados.";
-			}
+		} catch (Exception e) {
+            String errorMessage = "Error al guardar datos: Se ha detectado un problema con los datos ingresados.";
 			model.addAttribute("error", errorMessage);
 			model.addAttribute("nuevo", persona);
-
 			return "landing/persona-crear-cliente";
-		} catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+		}
     }
 
     @PostMapping("/createAccessUsuarioCliente")
-    private String personCreateAccess(@ModelAttribute("nuevo") UsuarioDetalleRequest usuario)
-            throws UnsupportedEncodingException, MessagingException, JsonProcessingException {
-        PersonaDetalleRequest persona = objectMapper.readValue(usuario.getPersona(), PersonaDetalleRequest.class);
-        var personaentity = servicioPersonaDetalle.guardarInformacionCompleta(persona, usuario);
-
-        String htmlContent = new String(parametroService.getParametro(KEY_PLANTILLA_MAIL).getArchivos(), StandardCharsets.UTF_8);
-        String mensajeDinamico = "BIENVENIDO A LA FUNDACION ARNUV! <br> "+personaentity.getNombres()+ " "+personaentity.getApellidos();
-        htmlContent = htmlContent.replace("{{mensajeBienvenida}}", "<p style=\"font-size: 14px; line-height: 140%; text-align: center;\"><span style=\"font-family: Lato, sans-serif; font-size: 16px; line-height: 22.4px;\">" + mensajeDinamico.toUpperCase() + "</span></p>");
-
-        emailSender.sendEmail(personaentity.getEmail(), "CREACIÓN DE USUARIO", htmlContent);
-
-        return "redirect:/index";
+    private String personCreateAccess(@ModelAttribute("nuevo") UsuarioDetalleRequest usuario,Model model) {
+        try {
+            PersonaDetalleRequest persona = objectMapper.readValue(usuario.getPersona(), PersonaDetalleRequest.class);
+            var personaentity = servicioPersonaDetalle.guardarInformacionCompleta(persona, usuario);
+            String htmlContent = new String(parametroService.getParametro(KEY_PLANTILLA_MAIL).getArchivos(), StandardCharsets.UTF_8);
+            String mensajeDinamico = "BIENVENIDO A LA FUNDACION ARNUV! <br> "+personaentity.getNombres()+ " "+personaentity.getApellidos();
+            htmlContent = htmlContent.replace("{{mensajeBienvenida}}", "<p style=\"font-size: 14px; line-height: 140%; text-align: center;\"><span style=\"font-family: Lato, sans-serif; font-size: 16px; line-height: 22.4px;\">" + mensajeDinamico.toUpperCase() + "</span></p>");
+            emailSender.sendEmail(personaentity.getEmail(), "CREACIÓN DE USUARIO", htmlContent);
+            return "redirect:/index";
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            model.addAttribute("error", e.getMessage());
+            return "landing/usuario-crear-cliente";
+        }
     }   
     
     /*-----------------------CREAR NUEVO CLIENTE ------------------------*/
