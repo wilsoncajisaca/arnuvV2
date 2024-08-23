@@ -131,4 +131,31 @@ public class ParametroController {
 			return "redirect:/home";
 		}
 	}
+
+	@GetMapping("/crearParametrosExpiraToken")
+	@PreAuthorize("hasRole('ADMIN')")
+	public String crearParametrosExpiraToken(Model model) {
+		model.addAttribute("nuevo", new Parametros());
+		return "content-page/parametro-tiempo-token";
+	}
+
+	@PostMapping("/modificarParametroExpiracionToken")
+	@PreAuthorize("hasRole('ADMIN')")
+	public String modificarParametroExpiracionToken(@ModelAttribute("nuevo") Parametros nuevo) {
+		try {
+			Parametros doc = new Parametros();
+			doc.setCodigo(KEY_MINUTES_EXPIRATION);
+			doc.setValorNumber(nuevo.getValorNumber());
+			doc.setEstado(Boolean.TRUE);
+			Parametros parametroPlantilla = parametroService.getParametro(KEY_MINUTES_EXPIRATION);
+			if (parametroPlantilla != null)  {
+				doc.setId(parametroPlantilla.getId());
+			}
+			parametroService.save(doc);
+			return "redirect:/home";
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "redirect:/home";
+		}
+	}
 }

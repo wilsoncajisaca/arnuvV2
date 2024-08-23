@@ -10,5 +10,5 @@ public enum RolEnum {
     ROLE_ADMIN("ROLE_ADMIN"),
     ROLE_WALKER("ROLE_PASEADOR");
 
-    private final String displayName;
+    private final String value;
 }

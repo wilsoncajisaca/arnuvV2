@@ -46,9 +46,6 @@
                 class="mb-4 text-xl font-semibold text-gray-700 dark:text-gray-200">
                 Login
               </h1>
-
-
-
               <form th:action="@{/auth/login}" method="post">
                 <label class="block text-sm">
                   <span class="text-gray-700 dark:text-gray-400">Email or Username</span>
@@ -68,9 +65,12 @@
               </form>
 
               <div th:if="${errorMessage!= null}">
-                <p id="error-text" th:text="${errorMessage}" style="color: red;">Error message here</p>
+                <p id="error-text" th:text="${errorMessage}" style="color: red;"></p>
               </div>
 
+              <div th:if="${info!= null}">
+                <p th:text="${info}" style="color: deepskyblue;"></p>
+              </div>
               
               
               <div class="text-sm font-medium text-black-600 dark:text-purple-400 hover:underline">

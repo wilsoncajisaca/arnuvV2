@@ -16,6 +16,8 @@ public class PersonaDetalleResponse extends RespuestaComun<PersonaDetalleRespons
 		@Comment("Codigo de personas")
 		private Integer id;
 
+		private Integer idusuario;
+
 		@Comment("Codigo de usuario de ingreso.")
 		private String idusuarioing;
 

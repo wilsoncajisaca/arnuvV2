@@ -39,8 +39,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static com.core.arnuv.constants.Constants.KEY_LINK_MAPA_GOOGLE;
-import static com.core.arnuv.constants.Constants.KEY_PLANTILLA_MAIL;
+import static com.core.arnuv.constants.Constants.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -104,24 +103,30 @@ public class AuthController {
     }
 
     @PostMapping("/createAccessUsuarioCliente")
-    private String personCreateAccess(@ModelAttribute("nuevo") UsuarioDetalleRequest usuario,Model model) {
+    private String personCreateAccess(@ModelAttribute("nuevo") UsuarioDetalleRequest usuario, Model model, RedirectAttributes redirectAttributes) {
         try {
             PersonaDetalleRequest persona = objectMapper.readValue(usuario.getPersona(), PersonaDetalleRequest.class);
             var personaentity = servicioPersonaDetalle.guardarInformacionCompleta(persona, usuario);
+            Usuariodetalle usuarioEnt = userService.buscarPorEmailOrUserName(personaentity.getEmail());
+            String token = generarTokenRecuperacion();
+            guardarToken(usuarioEnt, token);
+            String urlActivacion = "<a href=\"" + parametroService.getParametro(URL_DOMAIN_MAIL).getValorText() + "/auth/activarUsuario?token=" + token + "\">Clic para activar tu cuenta</a>";
             String htmlContent = new String(parametroService.getParametro(KEY_PLANTILLA_MAIL).getArchivos(), StandardCharsets.UTF_8);
-            String mensajeDinamico = "BIENVENIDO A LA FUNDACION ARNUV! <br> "+personaentity.getNombres()+ " "+personaentity.getApellidos();
-            htmlContent = htmlContent.replace("{{mensajeBienvenida}}", "<p style=\"font-size: 14px; line-height: 140%; text-align: center;\"><span style=\"font-family: Lato, sans-serif; font-size: 16px; line-height: 22.4px;\">" + mensajeDinamico.toUpperCase() + "</span></p>");
-            emailSender.sendEmail(personaentity.getEmail(), "CREACIÓN DE USUARIO", htmlContent);
-            return "redirect:/index";
+            String mensajeDinamico = "BIENVENIDO A LA FUNDACION ARNUV! <br> ACTIVA TU CUENTA EN EL SIGUIENTE ENLACE: <br>" + urlActivacion;
+            htmlContent = htmlContent.replace("{{mensajeBienvenida}}", "<p style=\"font-size: 14px; line-height: 140%; text-align: center;\"><span style=\"font-family: Lato, sans-serif; font-size: 16px; line-height: 22.4px;\">" + mensajeDinamico + "</span></p>");
+            emailSender.sendEmail(personaentity.getEmail(), "ACTIVACIÓN DE CUENTA", htmlContent);
+            redirectAttributes.addFlashAttribute("info", "Se ha enviado un correo electronico para activar la cuenta.");
+            return "redirect:/auth/login";
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             model.addAttribute("error", e.getMessage());
             return "landing/usuario-crear-cliente";
         }
     }   
-    
-    /*-----------------------CREAR NUEVO CLIENTE ------------------------*/
 
+
+
+    /*-----------------------CREAR NUEVO CLIENTE ------------------------*/
     @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession(false);
@@ -190,20 +195,37 @@ public class AuthController {
 
     // Paso 1: Validar y enviar enlace de recuperación
     @PostMapping("/validamail")
-    public String buscarMail(@RequestParam("email") String email, Model model)
-            throws MessagingException, UnsupportedEncodingException {
-        // Generar token y enviarlo por correo
-        String token = generarTokenRecuperacion();
-        Usuariodetalle usuario = userService.buscarPorEmailOrUserName(email);
-        if (usuario == null) {
-            model.addAttribute("error", "El correo electronico no se encuentra registrado.");
+    public String buscarMail(@RequestParam("email") String email, Model model) {
+        try {
+            String token = generarTokenRecuperacion();
+            Usuariodetalle usuario = userService.buscarPorEmailOrUserName(email);
+            if (usuario == null) {
+                model.addAttribute("error", "El correo electronico no se encuentra registrado.");
+                return "landing/recuperar-pass";
+            }
+            guardarToken(usuario, token);
+            enviarCorreoRecuperacion(email, token);
+            model.addAttribute("mensaje", "Se ha enviado un enlace de recuperación a su correo.");
+            return "landing/index";
+        }catch (Exception e) {
+            model.addAttribute("error", "Ocurrio un problema inesperado, comuniquese con el administrador.");
             return "landing/recuperar-pass";
         }
-        guardarToken(usuario, token);
-        enviarCorreoRecuperacion(email, token);
+    }
 
-        model.addAttribute("mensaje", "Se ha enviado un enlace de recuperación a su correo.");
-        return "landing/index";
+
+    @GetMapping("/activarUsuario")
+    public String activarUsuario(@RequestParam("token") String token, RedirectAttributes redirectAttributes) {
+        Usuariodetalle usuario = userService.buscarToken(token);
+        if (usuario != null) {
+            usuario.setEstado(Boolean.TRUE);
+            userService.insertarUsuarioDetalle(usuario);
+            redirectAttributes.addFlashAttribute("info", "Su usuario ha sido activado con exito.");
+            return "redirect:/auth/login";
+        }else{
+            redirectAttributes.addFlashAttribute("errorMessage", "No se pudo comprobar la cuenta registrada.");
+            return "redirect:/auth/login";
+        }
     }
 
     // Paso 2: Mostrar formulario para restablecer la contraseña
@@ -241,14 +263,17 @@ public class AuthController {
         return "landing/login";
     }
 
-    // Métodos auxiliares
     private String generarTokenRecuperacion() {
         return UUID.randomUUID().toString();
     }
 
     private void guardarToken(Usuariodetalle usuario, String token) {
         Instant now = Instant.now();
-        Instant expirationTime = now.plusSeconds(300);
+        Instant expirationTime = now.plusSeconds(convertMinutesToSeconds(DEFAULT_MINUTES_EXPIRATION));
+        Parametros parametro = parametroService.getParametro(KEY_MINUTES_EXPIRATION);
+        if(parametro != null){
+            expirationTime = now.plusSeconds(convertMinutesToSeconds(parametro.getValorNumber().intValue()));
+        }
         Token nuevoToken = new Token();
         nuevoToken.setToken(token);
         nuevoToken.setStartDate(now);
@@ -267,12 +292,11 @@ public class AuthController {
     }
 
     private void enviarCorreoRecuperacion(String email, String token)
-            throws MessagingException, UnsupportedEncodingException {
-        String urlRecuperacion = "<a href=\"https://fundacion-arnuv.onrender.com/auth/restablecer?token=" + token + "\">Clic para restablecer la contraseña</a>";
+            throws Exception {
+        String urlRecuperacion = "<a href=\"" + parametroService.getParametro(URL_DOMAIN_MAIL).getValorText() + "/auth/restablecer?token=" + token + "\">Clic para restablecer la contraseña</a>";
         String htmlContent = new String(parametroService.getParametro(KEY_PLANTILLA_MAIL).getArchivos(), StandardCharsets.UTF_8);
         String mensajeDinamico = "BIENVENIDO A LA FUNDACION ARNUV! <br> CAMBIA TU CONTRASEÑA EN EL SIGUIENTE ENLACE: <br>"+urlRecuperacion;
         htmlContent = htmlContent.replace("{{mensajeBienvenida}}", "<p style=\"font-size: 14px; line-height: 140%; text-align: center;\"><span style=\"font-family: Lato, sans-serif; font-size: 16px; line-height: 22.4px;\">" + mensajeDinamico + "</span></p>");
-
         emailSender.sendEmail(email, "RESTABLECER CONTRASEÑA", htmlContent);
     }
 

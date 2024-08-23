@@ -5,6 +5,7 @@ import com.core.arnuv.model.*;
 import com.core.arnuv.repository.IPersonaDetalleRepository;
 import com.core.arnuv.request.PersonaDetalleRequest;
 import com.core.arnuv.request.UsuarioDetalleRequest;
+import com.core.arnuv.response.PersonaDetalleResponse;
 import com.core.arnuv.service.*;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.util.Strings;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -105,6 +107,11 @@ public class PersonaDetalleServiceImp implements IPersonaDetalleService {
 		return personaEnt;
 	}
 
+	/**
+	 * CREAR UBICACION
+	 * @param persona
+	 * @param personaEnt
+	 */
 	private void crearUbicacion(PersonaDetalleRequest persona, Personadetalle personaEnt) {
 		var ubicacion = new Ubicacion();
 		ubicacion.setLatitud(persona.getLatitud());
@@ -114,20 +121,33 @@ public class PersonaDetalleServiceImp implements IPersonaDetalleService {
 		ubicacionService.insertarUbicacion(ubicacion);
 	}
 
-	private void crearUsuario(Personadetalle persona, UsuarioDetalleRequest usuario) throws Exception {
+	/**
+	 * CREAR USUARIO
+	 * @param persona
+	 * @param usuario
+	 * @throws Exception
+	 */
+	private Usuariodetalle crearUsuario(Personadetalle persona, UsuarioDetalleRequest usuario) throws Exception {
 		Usuariodetalle usuariodetalle = usuario.mapearDato(usuario, Usuariodetalle.class);
 		usuariodetalle.setPassword(passwordEncoder.encode(usuario.getPassword()));
-		usuariodetalle.setEstado(true);
+		usuariodetalle.setEstado(Boolean.FALSE);
 		usuariodetalle.setIdpersona(persona);
+		usuariodetalle.setFechaingreso(new Date());
 		if(userService.buscarPorEmailOrUserName(usuario.getUsername()) != null) {
 			throw new Exception("El nombre de usuario ya se encuentra registrado.");
 		}
 		Usuariodetalle usuarioEnt = userService.insertarUsuarioDetalle(usuariodetalle);
 		crearRol(usuarioEnt, RolEnum.ROLE_USER);
+		return usuarioEnt;
 	}
 
+	/**
+	 * CREAR ROL DEL USUARIO
+	 * @param usuario
+	 * @param role
+	 */
 	private void crearRol(Usuariodetalle usuario, RolEnum role) {
-		var rolentity = servicioRol.findByNombre(role.getDisplayName());
+		var rolentity = servicioRol.findByNombre(role.getValue());
 		UsuariorolId usuariorolId = new UsuariorolId();
 		usuariorolId.setIdusuario(usuario.getIdusuario());
 		usuariorolId.setIdrol(rolentity.getId());

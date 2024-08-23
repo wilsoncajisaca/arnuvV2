@@ -38,7 +38,7 @@ public class DataInitializer {
             usuarioDetalleRepository.save(usuario);
 
             Rol rol = new Rol();
-            rol.setNombre(RolEnum.ROLE_ADMIN.getDisplayName());
+            rol.setNombre(RolEnum.ROLE_ADMIN.getValue());
             rolRepository.save(rol);
 
             UsuariorolId usuariorolId = new UsuariorolId();
