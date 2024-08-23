@@ -9,6 +9,8 @@ import com.core.arnuv.request.UsuarioRolRequest;
 import com.core.arnuv.service.*;
 import com.core.arnuv.services.imp.EmailSender;
 import com.core.arnuv.utils.ArnuvNotFoundException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -48,11 +50,10 @@ public class AuthController {
     private final IPersonaDetalleService servicioPersonaDetalle;
     private final PasswordEncoder passwordEncoder;
     private final EmailSender emailSender;
-	private final IUbicacionService ubicacionService;
     private final IRolService servicioRol;
     private final IUsuarioRolService servicioUsuarioRol;
     private final IParametroService parametroService;
-    
+    ObjectMapper objectMapper = new ObjectMapper();
 
     @GetMapping("/login")
     public String login(Model model, HttpServletRequest request,
@@ -72,12 +73,6 @@ public class AuthController {
         }
         return "landing/login";
     }
-    /*-----------------------CREAR NUEVO PARAMATROS ------------------------*/
-    @GetMapping("/test")
-   	public String tsest(Model model) {   		
-    	
-   		return "landing/plantillamail";
-   	}
     
     /*-----------------------CREAR NUEVO CLIENTE ------------------------*/
     @GetMapping("/crearCliente")
@@ -87,22 +82,14 @@ public class AuthController {
 		model.addAttribute("linkMapaGoogle", linkMapaGoogle);
 		return "landing/persona-crear-cliente";
 	}
-    
-    
-    
+
     @PostMapping("/create-access")
 	private String personCreateAccess(@ModelAttribute("nuevo") PersonaDetalleRequest persona, Model model) {
-		Personadetalle personadetalle = persona.mapearDato(persona, Personadetalle.class, "idcatalogoidentificacion", "iddetalleidentificacion");
-		Personadetalle personaEntity;
 		try {
-			personaEntity = servicioPersonaDetalle.insertarPersonaDetalle(personadetalle);
-			var ubicacion = new Ubicacion();
-			ubicacion.setLatitud(persona.getLatitud());
-			ubicacion.setLongitud(persona.getLongitud());
-			ubicacion.setIsDefault(1);
-			ubicacion.setIdpersona(personaEntity);
-			ubicacionService.insertarUbicacion(ubicacion);
-			return "redirect:/auth/crearUsuarioCliente/".concat(personaEntity.getId().toString());
+            UsuarioDetalleRequest requestUser = new UsuarioDetalleRequest();
+            requestUser.setPersona(objectMapper.writeValueAsString(persona));
+            model.addAttribute("nuevo", requestUser);
+			return "landing/usuario-crear-cliente";
 		} catch (DataIntegrityViolationException e) {
 			String errorMessage;
 			if (e.getMessage().contains("uk_eqrqigy92n8fi43p0e9pmf9aw")) { // Email
@@ -119,46 +106,31 @@ public class AuthController {
 			model.addAttribute("nuevo", persona);
 
 			return "landing/persona-crear-cliente";
-		}
-	}
+		} catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
     
-    @GetMapping("/crearUsuarioCliente/{personaId}")
+/*    @GetMapping("/crearUsuarioCliente/{personaId}")
     public String personCreate(Model model, @PathVariable("personaId") Integer personaId) {
         UsuarioDetalleRequest requestUser = new UsuarioDetalleRequest();
         requestUser.setIdpersona(personaId);
         model.addAttribute("nuevo", requestUser);
         return "landing/usuario-crear-cliente";
-    }
+    }*/
+
     @PostMapping("/createAccessUsuarioCliente")
-    private String personCreateAccess(@ModelAttribute("nuevo") UsuarioDetalleRequest usuario) throws UnsupportedEncodingException, MessagingException {
-        var personaentity = servicioPersonaDetalle.buscarPorId(usuario.getIdpersona());
-        Usuariodetalle usuariodetalle = usuario.mapearDato(usuario, Usuariodetalle.class);
-        usuariodetalle.setPassword(passwordEncoder.encode(usuario.getPassword()));
-        usuariodetalle.setIdpersona(personaentity);
-        usuariodetalle.setEstado(true);
-        Usuariodetalle entity = null;
-        try {
-            entity = userService.insertarUsuarioDetalle(usuariodetalle);
-            var rolCliente = servicioRol.findByNombre(RolEnum.ROLE_USER.getDisplayName());
-            var rolentity = servicioRol.buscarPorId(rolCliente.getId());
-            UsuariorolId usuariorolId = new UsuariorolId();
-            UsuarioRolRequest nuevo1 = new UsuarioRolRequest();
-            usuariorolId.setIdusuario(entity.getIdusuario());
-            usuariorolId.setIdrol(rolCliente.getId());
-            var usuariorolentity = nuevo1.mapearDato(nuevo1, Usuariorol.class, "idrol","idusuario");
-            usuariorolentity.setIdusuario(entity);
-            usuariorolentity.setIdrol(rolentity);
-            usuariorolentity.setId(usuariorolId);            
-            servicioUsuarioRol.insertarUsuarioRol(usuariorolentity);            
-            
-            String htmlContent = new String(parametroService.getParametro(KEY_PLANTILLA_MAIL).getArchivos(), StandardCharsets.UTF_8);
-            String mensajeDinamico = "BIENVENIDO A LA FUNDACION ARNUV! <br> "+personaentity.getNombres()+ " "+personaentity.getApellidos();
-            htmlContent = htmlContent.replace("{{mensajeBienvenida}}", "<p style=\"font-size: 14px; line-height: 140%; text-align: center;\"><span style=\"font-family: Lato, sans-serif; font-size: 16px; line-height: 22.4px;\">" + mensajeDinamico.toUpperCase() + "</span></p>");
-            
-            emailSender.sendEmail(personaentity.getEmail(), "CREACIÓN DE USUARIO", htmlContent);
-        } catch (DataIntegrityViolationException e) {
-            throw new ArnuvNotFoundException("Error al guardar datos: {0}", e.getMessage().split("Detail:")[1].split("]")[0]);
-        }
+    private String personCreateAccess(@ModelAttribute("nuevo") UsuarioDetalleRequest usuario)
+            throws UnsupportedEncodingException, MessagingException, JsonProcessingException {
+        PersonaDetalleRequest persona = objectMapper.readValue(usuario.getPersona(), PersonaDetalleRequest.class);
+        var personaentity = servicioPersonaDetalle.guardarInformacionCompleta(persona, usuario);
+
+        String htmlContent = new String(parametroService.getParametro(KEY_PLANTILLA_MAIL).getArchivos(), StandardCharsets.UTF_8);
+        String mensajeDinamico = "BIENVENIDO A LA FUNDACION ARNUV! <br> "+personaentity.getNombres()+ " "+personaentity.getApellidos();
+        htmlContent = htmlContent.replace("{{mensajeBienvenida}}", "<p style=\"font-size: 14px; line-height: 140%; text-align: center;\"><span style=\"font-family: Lato, sans-serif; font-size: 16px; line-height: 22.4px;\">" + mensajeDinamico.toUpperCase() + "</span></p>");
+
+        emailSender.sendEmail(personaentity.getEmail(), "CREACIÓN DE USUARIO", htmlContent);
+
         return "redirect:/index";
     }   
     

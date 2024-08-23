@@ -49,4 +49,5 @@ public class UsuarioDetalleRequest extends RequestComun<Usuariodetalle> {
     @Comment("Observacion del usuario, ejemplo cuando hay cambio de estado")
     private String observacion;
 
+    private String persona;
 }

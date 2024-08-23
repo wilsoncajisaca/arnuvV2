@@ -3,6 +3,8 @@ package com.core.arnuv.service;
 import java.util.List;
 
 import com.core.arnuv.model.Personadetalle;
+import com.core.arnuv.request.PersonaDetalleRequest;
+import com.core.arnuv.request.UsuarioDetalleRequest;
 
 public interface IPersonaDetalleService {
 
@@ -18,5 +20,7 @@ public interface IPersonaDetalleService {
 
 	public boolean eliminar(Personadetalle data);
    public  Personadetalle buscarEmail(String email);
+
+	Personadetalle guardarInformacionCompleta(PersonaDetalleRequest persona, UsuarioDetalleRequest usuario);
 
 }

@@ -9,10 +9,8 @@ import java.util.Optional;
 
 @Repository
 public interface IUsuarioDetalleRepository extends JpaRepository<Usuariodetalle, Integer> {
-
     @Query("SELECT u from Usuariodetalle u where u.username = ?1 or u.idpersona.email = ?1")
     Optional<Usuariodetalle> buscarPorEmailOrUsername(String username);
-
 
     @Query("Select t from Usuariodetalle t where t.username= ?1")
     Optional<Usuariodetalle> buscarPorUsername(String username);
