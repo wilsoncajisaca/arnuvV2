@@ -1,14 +1,14 @@
 package com.core.arnuv.controller;
 
-import com.core.arnuv.enums.RolEnum;
 import com.core.arnuv.model.*;
 import com.core.arnuv.request.ChangePasswordRequest;
 import com.core.arnuv.request.PersonaDetalleRequest;
 import com.core.arnuv.request.UsuarioDetalleRequest;
-import com.core.arnuv.request.UsuarioRolRequest;
-import com.core.arnuv.service.*;
+import com.core.arnuv.service.IMenuService;
+import com.core.arnuv.service.IParametroService;
+import com.core.arnuv.service.IPersonaDetalleService;
+import com.core.arnuv.service.IUsuarioDetalleService;
 import com.core.arnuv.services.imp.EmailSender;
-import com.core.arnuv.utils.ArnuvNotFoundException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.mail.MessagingException;
@@ -29,7 +29,6 @@ import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
@@ -37,8 +36,9 @@ import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import static com.core.arnuv.constants.Constants.KEY_PLANTILLA_MAIL;
+
 import static com.core.arnuv.constants.Constants.KEY_LINK_MAPA_GOOGLE;
+import static com.core.arnuv.constants.Constants.KEY_PLANTILLA_MAIL;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -50,8 +50,6 @@ public class AuthController {
     private final IPersonaDetalleService servicioPersonaDetalle;
     private final PasswordEncoder passwordEncoder;
     private final EmailSender emailSender;
-    private final IRolService servicioRol;
-    private final IUsuarioRolService servicioUsuarioRol;
     private final IParametroService parametroService;
     ObjectMapper objectMapper = new ObjectMapper();
 
@@ -110,14 +108,6 @@ public class AuthController {
             throw new RuntimeException(e);
         }
     }
-    
-/*    @GetMapping("/crearUsuarioCliente/{personaId}")
-    public String personCreate(Model model, @PathVariable("personaId") Integer personaId) {
-        UsuarioDetalleRequest requestUser = new UsuarioDetalleRequest();
-        requestUser.setIdpersona(personaId);
-        model.addAttribute("nuevo", requestUser);
-        return "landing/usuario-crear-cliente";
-    }*/
 
     @PostMapping("/createAccessUsuarioCliente")
     private String personCreateAccess(@ModelAttribute("nuevo") UsuarioDetalleRequest usuario)
