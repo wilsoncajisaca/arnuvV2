@@ -5,10 +5,10 @@ import com.core.arnuv.model.*;
 import com.core.arnuv.repository.IPersonaDetalleRepository;
 import com.core.arnuv.request.PersonaDetalleRequest;
 import com.core.arnuv.request.UsuarioDetalleRequest;
-import com.core.arnuv.request.UsuarioRolRequest;
+import com.core.arnuv.response.PersonaDetalleResponse;
 import com.core.arnuv.service.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -27,7 +27,7 @@ public class PersonaDetalleServiceImp implements IPersonaDetalleService {
 	private final IUsuarioDetalleService userService;
 	private final IRolService servicioRol;
 	private final IUsuarioRolService servicioUsuarioRol;
-	
+
 	@Override
 	public List<Personadetalle> listarTodosPersonaDetalle() {
 		return repo.findAll();
@@ -73,17 +73,46 @@ public class PersonaDetalleServiceImp implements IPersonaDetalleService {
 	public Personadetalle buscarEmail(String email) {
 		return repo.buscarEmail(email);
 	}
+	@Override
+	public String verificarDuplicados(String email, String celular, String identificacion) {
+		String error = Strings.EMPTY;
+		if(buscarEmail(email)!=null){
+			error ="El correo electronico ya se encuentra registrado";
+		}
+		if(buscarPorIdentificacion(identificacion) != null){
+			error ="La identificación ya se encuentra registrada";
+		}
+		if (buscarPorCelular(celular) != null) {
+			error ="El celular ya se encuentra registrado";
+		}
+		return error;
+	}
 
 	@Override
-	@Transactional
-	public Personadetalle guardarInformacionCompleta(PersonaDetalleRequest persona, UsuarioDetalleRequest usuario) {
-		var personaEnt = insertarPersonaDetalle(persona.mapearDato(persona, Personadetalle.class, "idcatalogoidentificacion", "iddetalleidentificacion"));
-		personaEnt.setFechaingreso(new Date());
-		crearUbicacion(persona, personaEnt);
-		crearUsuario(personaEnt, usuario);
+	public Personadetalle buscarPorCelular(String celular) {
+		return repo.findByCelular(celular);
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public Personadetalle guardarInformacionCompleta(PersonaDetalleRequest persona, UsuarioDetalleRequest usuario) throws Exception {
+		var personaEnt = persona.mapearDato(persona, Personadetalle.class, "idcatalogoidentificacion", "iddetalleidentificacion");
+		try {
+			personaEnt.setFechaingreso(new Date());
+			personaEnt = insertarPersonaDetalle(personaEnt);
+			crearUbicacion(persona, personaEnt);
+			crearUsuario(personaEnt, usuario);
+		}catch (Exception e) {
+			throw new Exception(e.getMessage());
+		}
 		return personaEnt;
 	}
 
+	/**
+	 * CREAR UBICACION
+	 * @param persona
+	 * @param personaEnt
+	 */
 	private void crearUbicacion(PersonaDetalleRequest persona, Personadetalle personaEnt) {
 		var ubicacion = new Ubicacion();
 		ubicacion.setLatitud(persona.getLatitud());
@@ -93,16 +122,33 @@ public class PersonaDetalleServiceImp implements IPersonaDetalleService {
 		ubicacionService.insertarUbicacion(ubicacion);
 	}
 
-	private void crearUsuario(Personadetalle persona, UsuarioDetalleRequest usuario) {
+	/**
+	 * CREAR USUARIO
+	 * @param persona
+	 * @param usuario
+	 * @throws Exception
+	 */
+	private Usuariodetalle crearUsuario(Personadetalle persona, UsuarioDetalleRequest usuario) throws Exception {
 		Usuariodetalle usuariodetalle = usuario.mapearDato(usuario, Usuariodetalle.class);
 		usuariodetalle.setPassword(passwordEncoder.encode(usuario.getPassword()));
-		usuariodetalle.setEstado(true);
+		usuariodetalle.setEstado(Boolean.FALSE);
+		usuariodetalle.setIdpersona(persona);
+		usuariodetalle.setFechaingreso(new Date());
+		if(userService.buscarPorEmailOrUserName(usuario.getUsername()) != null) {
+			throw new Exception("El nombre de usuario ya se encuentra registrado.");
+		}
 		Usuariodetalle usuarioEnt = userService.insertarUsuarioDetalle(usuariodetalle);
 		crearRol(usuarioEnt, RolEnum.ROLE_USER);
+		return usuarioEnt;
 	}
 
+	/**
+	 * CREAR ROL DEL USUARIO
+	 * @param usuario
+	 * @param role
+	 */
 	private void crearRol(Usuariodetalle usuario, RolEnum role) {
-		var rolentity = servicioRol.findByNombre(role.getDisplayName());
+		var rolentity = servicioRol.findByNombre(role.getValue());
 		UsuariorolId usuariorolId = new UsuariorolId();
 		usuariorolId.setIdusuario(usuario.getIdusuario());
 		usuariorolId.setIdrol(rolentity.getId());
@@ -113,4 +159,3 @@ public class PersonaDetalleServiceImp implements IPersonaDetalleService {
 		servicioUsuarioRol.insertarUsuarioRol(usuariorol);
 	}
 }
-

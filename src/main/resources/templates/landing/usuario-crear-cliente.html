@@ -62,6 +62,9 @@
                               </div>
                           </div>
                       </form>
+                      <div th:if="${error != null}">
+                          <p th:text="${error}"style="color: red;"></p>
+                      </div>
                   </div>
               </div>
           </div>

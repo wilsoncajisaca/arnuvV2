@@ -9,9 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -25,6 +27,7 @@ public class UsuarioDetalleServiceImp implements IUsuarioDetalleService {
 	}
 
 	@Override
+	@Transactional
 	public Usuariodetalle insertarUsuarioDetalle(Usuariodetalle data) {
 		return repo.save(data);
 	}
@@ -53,7 +56,11 @@ public class UsuarioDetalleServiceImp implements IUsuarioDetalleService {
 
 	@Override
 	public Usuariodetalle buscarPorEmailOrUserName(String email) {
-		return repo.buscarPorEmailOrUsername(email).get();
+		Optional<Usuariodetalle> user = repo.buscarPorEmailOrUsername(email);
+		if(user.isPresent()) {
+			return user.get();
+		}
+		return null;
 	}
 
 	@Override

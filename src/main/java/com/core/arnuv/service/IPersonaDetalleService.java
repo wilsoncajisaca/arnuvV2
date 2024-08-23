@@ -21,6 +21,10 @@ public interface IPersonaDetalleService {
 	public boolean eliminar(Personadetalle data);
    public  Personadetalle buscarEmail(String email);
 
-	Personadetalle guardarInformacionCompleta(PersonaDetalleRequest persona, UsuarioDetalleRequest usuario);
+	String verificarDuplicados(String email, String celular, String identificacion);
+
+	Personadetalle buscarPorCelular(String celular);
+
+	Personadetalle guardarInformacionCompleta(PersonaDetalleRequest persona, UsuarioDetalleRequest usuario) throws Exception;
 
 }

@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,13 +23,12 @@ public class ParametroService implements IParametroService {
 
     @Override
     public Parametros getParametro(String code) {
-    	Parametros parametro = new Parametros();
-    	try {
-    		parametro= repo.findByCodigoAndEstado(code, true).get();
-		} catch (Exception e) {
-			log.error("{}",e.getMessage());
+		Optional<Parametros> parametro = repo.findByCodigoAndEstado(code, true);
+		if(parametro.isPresent()){
+			return parametro.get();
+		}else {
+			return null;
 		}
-    	return parametro;
     }
 
     @Override

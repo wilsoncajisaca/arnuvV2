@@ -3,14 +3,13 @@ package com.core.arnuv.services.imp;
 import com.core.arnuv.enums.RolEnum;
 import com.core.arnuv.model.Personadetalle;
 import com.core.arnuv.model.Ubicacion;
-import com.core.arnuv.model.Usuariorol;
 import com.core.arnuv.repository.IUbicacionRepository;
 import com.core.arnuv.repository.IUsuarioRolRepository;
 import com.core.arnuv.service.IUbicacionService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
@@ -34,6 +33,7 @@ public class UbicacionServiceImp implements IUbicacionService {
     }
 
     @Override
+    @Transactional
     public Ubicacion insertarUbicacion(Ubicacion data) {
         try {
             return repo.save(data);
@@ -79,7 +79,7 @@ public class UbicacionServiceImp implements IUbicacionService {
 
 	@Override
 	public Set<Ubicacion> ubicacionPaseadores() {
-        Set<Personadetalle> paseadores = repoRol.getAllByRolePerson(RolEnum.ROLE_WALKER.getDisplayName());
+        Set<Personadetalle> paseadores = repoRol.getAllByRolePerson(RolEnum.ROLE_WALKER.getValue());
         return repo.getAllByListPersonId(paseadores.stream()
                 .map(Personadetalle::getId)
                 .collect(Collectors.toSet()), 1);
