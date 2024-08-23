@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -77,6 +78,7 @@ public class PersonaDetalleServiceImp implements IPersonaDetalleService {
 	@Transactional
 	public Personadetalle guardarInformacionCompleta(PersonaDetalleRequest persona, UsuarioDetalleRequest usuario) {
 		var personaEnt = insertarPersonaDetalle(persona.mapearDato(persona, Personadetalle.class, "idcatalogoidentificacion", "iddetalleidentificacion"));
+		personaEnt.setFechaingreso(new Date());
 		crearUbicacion(persona, personaEnt);
 		crearUsuario(personaEnt, usuario);
 		return personaEnt;

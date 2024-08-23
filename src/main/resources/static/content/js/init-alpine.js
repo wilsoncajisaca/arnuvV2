@@ -364,3 +364,37 @@ function toggleColumnVisibility() {
 		}
 	});
 }
+
+//funcion para validar que la fecha no sea menor a al actual
+function handleDateChange(input) {
+	const selectedDate = new Date(input.value);
+	const currentDate = new Date();
+
+	if (selectedDate < currentDate) {
+		alert("La fecha seleccionada no puede ser anterior a la fecha y hora actuales.");
+		// Restablece el valor al mínimo permitido
+		input.value = input.min;
+	} else {
+		console.log("Fecha seleccionada: ", input.value);
+		// Aquí puedes añadir la lógica adicional que necesites
+	}
+}
+
+//mouestra las observsacion de las tarifas en el caso de tener 
+function mostrarObservacionesLabel() {
+	var select = document.getElementById("opcionesTarifa");
+	var label = document.getElementById("resultadoObservacion");
+	var selectedOption = select.options[select.selectedIndex];
+	// Obtener el valor seleccionado
+	var seleccion = selectedOption.getAttribute("data-observacion");
+
+	if (!seleccion) {
+
+		label.textContent = "";
+
+	} else {
+
+		label.textContent = "Observación de tarifa: " + seleccion;
+	}
+
+}

@@ -223,7 +223,7 @@
 								class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
 							<label class="block text-sm"> <span
 								class="text-gray-700 dark:text-gray-400">Observacion del
-									paseo</span> <input
+									paseo</span> <input id="observacionpaseo"
 								class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
 								placeholder="observacion paseo" th:field="*{observacionpaseo}" />
 
@@ -240,6 +240,7 @@
 									<option th:text="PENDIENTE" th:value="PENDIENTE"></option>
 									<option th:text="APROBADO" th:value="APROBADO"></option>
 									<option th:text="RECHAZADO" th:value="RECHAZADO"></option>
+									<option th:text="PASEO_FINALIZADO" th:value="PASEO_FINALIZADO"></option>
 									<option th:text="FINALIZADO" th:value="FINALIZADO"></option>
 
 							</select>
@@ -262,7 +263,7 @@
 												d="M10 18a8 8 0 100-16 8 8 0 000 16zm-1-4.293l-3.707-3.707 1.414-1.414L9 11.586l4.293-4.293 1.414 1.414L9 13.707z"
 												clip-rule="evenodd"></path>
                 				</svg>
-										Aprobar
+										 <span id="botonTexto">Aprobar</span>
 									</button>
 								</div>
 
@@ -302,10 +303,22 @@
 								function() {
 									DeshabilitarSelect('personaSelect');
 								});
+						
+						
 					</script>
 					<script>
 						function cambiarEstadoAprobado() {
-							document.getElementById('estadoSelect').value = 'APROBADO';
+							var estado = document.getElementById('estadoSelect').value;
+							if (estado === 'PENDIENTE'){
+								
+								document.getElementById('estadoSelect').value = 'APROBADO';
+							}
+							if (estado === 'APROBADO'){
+								
+								document.getElementById('estadoSelect').value = 'PASEO_FINALIZADO';
+							}
+							
+							
 						}
 
 						function cambiarEstadoRechazado() {
@@ -313,26 +326,57 @@
 						}
 
 						window.onload = function() {
-							var estado = document
-									.getElementById('estadoSelect').value;
+							var estado = document.getElementById('estadoSelect').value;
+							var observacionpaseo = document.getElementById('observacionpaseo');
+							
+							if (estado === 'APROBADO') {
+						    	 observacionpaseo.disabled = false;
+						    }
+							else {
+						    	
+								observacionpaseo.disabled = true;
+						    }
+							
 							var aprobarBoton = document
 									.getElementById('aprobarBoton');
 							var rechazarBoton = document
 									.getElementById('rechazarBoton');
 
-							if (estado === 'APROBADO' || estado === 'RECHAZADO' || estado === 'FINALIZADO') {
+							if (estado === 'RECHAZADO' || estado === 'FINALIZADO' || estado === 'PASEO_FINALIZADO') {
 								aprobarBoton.onclick = function(event) {
-									event.preventDefault(); // Evita la navegación
+									event.preventDefault();
 								};
 								aprobarBoton.classList.add('disabled-link');
-								aprobarBoton// Añade una clase para cambiar el estilo
-
+								aprobarBoton
+								
+							}
+							
+							if (estado === 'APROBADO' || estado === 'RECHAZADO' || estado === 'FINALIZADO' || estado === 'PASEO_FINALIZADO') {
+								
 								rechazarBoton.onclick = function(event) {
-									event.preventDefault(); // Evita la navegación
+									event.preventDefault();
 								};
 								rechazarBoton.classList.add('disabled-link');
-								rechazarBoton// Añade una clase para cambiar el estilo
+								rechazarBoton
 							}
+							
+							let estadoActual = document.getElementById('estadoSelect').value; // Ejemplo de estado inicial
+							console.log("aqui javi");
+						   
+					        const botonTexto = document.getElementById('botonTexto');
+					        console.log("aqui javi");
+
+					        if (estadoActual === "PENDIENTE") {
+					            botonTexto.textContent = "Aprobar";
+					            estadoActual = "APROBADO"; // Actualiza el estado
+					        } else if (estadoActual === "APROBADO") {
+					            botonTexto.textContent = "Finalizar Paseo";
+					            estadoActual = "FINALIZADO"; // Actualiza el estado
+					        } else {
+					            botonTexto.textContent = "Aprobado";
+					            estadoActual = "Aprobar"; // Reinicia el estado
+					        }
+						    
 						};
 					</script>
 					<script th:inline="javascript">

@@ -18,4 +18,6 @@ public interface IUsuarioRolService {
 	public boolean eliminar(Usuariorol data);
 
 	Set<Usuariorol> buscarPorRolName(String rolName);
+	
+	public Usuariorol  buscarIdUsuario(int idusuario);
 }

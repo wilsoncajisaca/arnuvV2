@@ -262,6 +262,7 @@
 									<option th:text="PENDIENTE" th:value="PENDIENTE"></option>
 									<option th:text="APROBADO" th:value="APROBADO"></option>
 									<option th:text="RECHAZADO" th:value="RECHAZADO"></option>
+									<option th:text="PASEO_FINALIZADO" th:value="PASEO_FINALIZADO"></option>
 									<option th:text="FINALIZADO" th:value="FINALIZADO"></option>
 
 							</select>
@@ -299,7 +300,7 @@
 						<input type="hidden" th:field="*{id}">
 						
 						<div th:if="${error != null}">											
-							<input id="idpaseo" th:value="${error}"
+							<input id="iderror" th:value="${error}"
 								class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
 								type="hidden" />
 						</div>
@@ -339,20 +340,18 @@
 						    console.log("Aprobar Botón:", aprobarBoton); // Verifica si el botón se seleccionó correctamente
 						    console.log("Botón Valorar:", botonValorar); // Verifica si el botón se seleccionó correctamente
 
-						    if (estado === 'APROBADO') {
+						    if (estado === 'PASEO_FINALIZADO') {
 						    	 botonValorar.classList.remove('disabled');
 						        aprobarBoton.disabled = false;
-						        console.log("Entró en el if");
 						    } else {
 						    	botonValorar.classList.add('disabled');
 						        aprobarBoton.disabled = true;
-						        console.log("Entró en el else");
 						    }
 						    
 						    const buscarPorFechaLink = document.getElementById('enviaracalificacion').href;
 
-							if (idpaseo.value !== "") {
-								alert(idpaseo.value);
+							if (iderror.value !== "") {
+								alert(iderror.value);
 								
 
 							}

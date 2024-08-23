@@ -21,4 +21,7 @@ public interface IUsuarioRolRepository extends JpaRepository<Usuariorol, Usuario
 
     @Query("SELECT ur.idusuario.idpersona FROM Usuariorol ur WHERE ur.idrol.nombre = ?1")
     Set<Personadetalle> getAllByRolePerson(String rolName);
+    
+    @Query("SELECT u FROM Usuariorol u WHERE u.idusuario.idusuario =?1")
+    Usuariorol buscarIdUsuario(int idusuario);
 }

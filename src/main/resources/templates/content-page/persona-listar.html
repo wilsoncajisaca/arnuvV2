@@ -52,6 +52,7 @@
 										<th scope="col" >Identificación</th>
 										<th scope="col" class="estado-column">Teléfono</th>
 										<th scope="col" class="estado-column">Correo</th>
+										<th scope="col" >Ver</th>
 										
 										
 
@@ -68,19 +69,29 @@
 										<td  th:text="${datos.identificacion}"></td>
 										<td class="estado-column" th:text="${datos.celular}"></td>
 										<td class="estado-column" th:text="${datos.email}"></td>
+										<td class="px-4 py-3">
+											<div class="flex items-center space-x-4 text-sm">
+												<div
+													class="bg-cream flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-text-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray">
+													<a id="visualizarBoton"
+														th:href="@{/persona/editar/}+${datos.id}"> <i>Visualizar</i>
+													</a>
+												</div>
+
+											
+
+											</div>
+										</td>
 									</tr>
 
 								</tbody>
 							</table>
-
-							<div
-								class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray">
-								<a id="toggleColumn" class="btn btn-outline-secondary" href="#"
-									role="button"> <i
-									class="fas fa-plus-circle mr-1 text-secondary comic-font"></i>
-
-								</a>
-							</div>
+				<div
+				    class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray">
+				    <a id="toggleColumn" class="btn btn-outline-secondary" href="#" role="button">
+				        <i class="fas fa-chevron-down mr-1 text-secondary comic-font"> Col.</i>
+				    </a>
+				</div>
 							<script type="text/javascript">
 								$(document).ready(function() {
 									initDataTable();

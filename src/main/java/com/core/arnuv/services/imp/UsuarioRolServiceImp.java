@@ -47,4 +47,9 @@ public class UsuarioRolServiceImp implements IUsuarioRolService {
 	public Set<Usuariorol> buscarPorRolName(String rolName) {
 		return this.buscarPorRolName(rolName);
 	}
+
+	@Override
+	public Usuariorol buscarIdUsuario(int idusuario) {
+		return repo.buscarIdUsuario(idusuario);
+	}
 }

@@ -130,7 +130,7 @@ public class PaseosController {
 	public String guardar(@ModelAttribute("nuevo") Paseo nuevo, HttpServletRequest request)
 			throws UnsupportedEncodingException, MessagingException {
 		Date date = new Date();
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm");
 		String formattedDate = formatter.format(date);
 		if (request.isUserInRole("CLIENTE")) {
 			Personadetalle personaCLiente = new Personadetalle();
@@ -149,9 +149,38 @@ public class PaseosController {
 		} catch (ParseException e) {
 			log.error("Ocurrio un error: {}", e.getMessage());
 		}
-		String mensajeDinamico = "SOLICITUD DE SERVICIO DE PASEO A MASCOTA ! FECHA:" + fechaEspanol+", REVISA TU BANDEJA DE PASEOS !!";
-		htmlContent = htmlContent.replace("{{mensajeBienvenida}}", "<p style=\"font-size: 14px; line-height: 140%; text-align: center;\"><span style=\"font-family: Lato, sans-serif; font-size: 16px; line-height: 22.4px;\">" + mensajeDinamico.toUpperCase() + "</span></p>");
-		emailSender.sendEmail(personadetalle.getEmail(), "SOLICITUD DE SERVICIO", htmlContent);
+		if (nuevo.getEstado().equals(ESTADO_PENDIENTE)) {
+			String mensajeDinamico = "SOLICITUD DE SERVICIO DE PASEO A MASCOTA ! FECHA:" + fechaEspanol+", REVISA TU BANDEJA DE PASEOS !!";
+			htmlContent = htmlContent.replace("{{mensajeBienvenida}}", "<p style=\"font-size: 14px; line-height: 140%; text-align: center;\"><span style=\"font-family: Lato, sans-serif; font-size: 16px; line-height: 22.4px;\">" + mensajeDinamico.toUpperCase() + "</span></p>");
+			emailSender.sendEmail(personadetalle.getEmail(), "SOLICITUD DE SERVICIO", htmlContent);					
+		}
+		if (nuevo.getEstado().equals(ESTADO_APROBADO)) {
+			Personadetalle personaCliente = personaDetalleService.buscarPorId(nuevo.getIdpersonacliente().getId());
+			String mensajeDinamico = "SU SOLICITUD DE SERVICIO FUE "+ESTADO_APROBADO+" FECHA:" + formattedDate+", REVISA TU BANDEJA DE PASEOS !!";
+			htmlContent = htmlContent.replace("{{mensajeBienvenida}}", "<p style=\"font-size: 14px; line-height: 140%; text-align: center;\"><span style=\"font-family: Lato, sans-serif; font-size: 16px; line-height: 22.4px;\">" + mensajeDinamico.toUpperCase() + "</span></p>");
+			emailSender.sendEmail(personaCliente.getEmail(), "SOLICITUD DE SERVICIO", htmlContent);					
+		}
+		if (nuevo.getEstado().equals(ESTADO_RECHAZADO)) {
+			Personadetalle personaCliente = personaDetalleService.buscarPorId(nuevo.getIdpersonacliente().getId());
+			String mensajeDinamico = "SU SOLICITUD DE SERVICIO FUE "+ESTADO_RECHAZADO+" FECHA:" + formattedDate+", REVISA TU BANDEJA DE PASEOS !!";
+			htmlContent = htmlContent.replace("{{mensajeBienvenida}}", "<p style=\"font-size: 14px; line-height: 140%; text-align: center;\"><span style=\"font-family: Lato, sans-serif; font-size: 16px; line-height: 22.4px;\">" + mensajeDinamico.toUpperCase() + "</span></p>");
+			emailSender.sendEmail(personaCliente.getEmail(), "SOLICITUD DE SERVICIO", htmlContent);					
+		}
+		
+		if (nuevo.getEstado().equals(ESTADO_PASEO_FINALIZADO)) {
+			Personadetalle personaCliente = personaDetalleService.buscarPorId(nuevo.getIdpersonacliente().getId());
+			String mensajeDinamico = "SU SOLICITUD DE SERVICIO CAMBIO A "+ESTADO_PASEO_FINALIZADO+" FECHA:" + formattedDate+", REVISA TU BANDEJA DE PASEOS !!";
+			htmlContent = htmlContent.replace("{{mensajeBienvenida}}", "<p style=\"font-size: 14px; line-height: 140%; text-align: center;\"><span style=\"font-family: Lato, sans-serif; font-size: 16px; line-height: 22.4px;\">" + mensajeDinamico.toUpperCase() + "</span></p>");
+			emailSender.sendEmail(personaCliente.getEmail(), "SOLICITUD DE SERVICIO", htmlContent);					
+		}
+		
+		if (nuevo.getEstado().equals(ESTADO_FINALIZADO)) {
+			String mensajeDinamico = "LA SOLICITUD DEL SERVICIO CAMBIO A "+ESTADO_FINALIZADO+" FECHA:" + formattedDate+", REVISA TU BANDEJA DE PASEOS !!";
+			htmlContent = htmlContent.replace("{{mensajeBienvenida}}", "<p style=\"font-size: 14px; line-height: 140%; text-align: center;\"><span style=\"font-family: Lato, sans-serif; font-size: 16px; line-height: 22.4px;\">" + mensajeDinamico.toUpperCase() + "</span></p>");
+			emailSender.sendEmail(personadetalle.getEmail(), "SOLICITUD DE SERVICIO", htmlContent);								
+		}
+	
+		
 		paseoService.insertarPaseo(nuevo);
 		return "redirect:/paseo/listar";
 
@@ -187,10 +216,11 @@ public class PaseosController {
 	@GetMapping("/editarCliente/{idpaseo}")
 	public String editarCliente(@PathVariable(value = "idpaseo") int codigo, Model model) {
 		Paseo itemrecuperado = paseoService.buscarPorId(codigo);
+		System.out.println(itemrecuperado.getEstado());
 		Parametros linkMapaGoogle = parametroService.getParametro(KEY_LINK_MAPA_GOOGLE);
 		Calificacion calificacion =  calificacionService.findByIdpaseoId(codigo);
 		String errorMessag= Strings.EMPTY;
-		if(calificacion == null && itemrecuperado.getEstado().equals(ESTADO_APROBADO)) {
+		if(calificacion == null && itemrecuperado.getEstado().equals(ESTADO_PASEO_FINALIZADO)) {
 			errorMessag ="Tienes que calificar el paseo antes de finalizar";
 		}
 		model.addAttribute("nuevo", itemrecuperado);
@@ -204,12 +234,34 @@ public class PaseosController {
 	}
 
 	@PostMapping("/finalizarPaseo")
-	public String finalizarPaseo(@ModelAttribute("nuevo") Paseo nuevo, HttpServletRequest request,Model model) {
+	public String finalizarPaseo(@ModelAttribute("nuevo") Paseo nuevo, HttpServletRequest request,Model model) throws UnsupportedEncodingException, MessagingException {
 		Calificacion calificacion =  calificacionService.findByIdpaseoId(nuevo.getId());
 		if(calificacion == null) {
 			model.addAttribute("error", "Tienes que calificar el paseo antes de finalizar");
 			return "redirect:/paseo/editarCliente/".concat(String.valueOf(nuevo.getId()));
 		}else {
+			
+			Personadetalle personadetalle = personaDetalleService.buscarPorId(nuevo.getIdpersonapasedor().getId());
+			String htmlContent = new String(parametroService.getParametro(KEY_PLANTILLA_MAIL).getArchivos(), StandardCharsets.UTF_8);
+
+			String fechaRealInicio = nuevo.getFecharealinicio().toString();
+			String fechaEspanol= Strings.EMPTY;
+			try {
+				Date fecha = FECHA_FORMATO_ENTRADA.parse(fechaRealInicio);
+				fechaEspanol = FECHA_FORMATO_SALIDA.format(fecha);
+			} catch (ParseException e) {
+				log.error("Ocurrio un error: {}", e.getMessage());
+			}
+
+			Date date = new Date();
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm");
+			String formattedDate = formatter.format(date);
+			
+			if (nuevo.getEstado().equals(ESTADO_FINALIZADO)) {
+				String mensajeDinamico = "LA SOLICITUD DEL SERVICIO CAMBIO A "+ESTADO_FINALIZADO+" FECHA:" + formattedDate+", REVISA TU BANDEJA DE PASEOS !!";
+				htmlContent = htmlContent.replace("{{mensajeBienvenida}}", "<p style=\"font-size: 14px; line-height: 140%; text-align: center;\"><span style=\"font-family: Lato, sans-serif; font-size: 16px; line-height: 22.4px;\">" + mensajeDinamico.toUpperCase() + "</span></p>");
+				emailSender.sendEmail(personadetalle.getEmail(), "SOLICITUD DE SERVICIO", htmlContent);								
+			}
 			paseoService.insertarPaseo(nuevo);
 			return "redirect:/paseo/listar";
 		}

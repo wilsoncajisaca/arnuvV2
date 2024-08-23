@@ -25,4 +25,6 @@ public interface IUsuarioDetalleService {
 
 	public String encriptarPassword(String password) throws Exception;
 	public Usuariodetalle buscarToken(String token);
+	
+	public Usuariodetalle buscarpersona(int idpersona);
 }

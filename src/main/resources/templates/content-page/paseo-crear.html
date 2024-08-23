@@ -45,7 +45,8 @@
 								<label class="float-label">Fecha</label> <input
 									type="datetime-local" name="fecha"
 									class="readonly-select block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
-									th:field="*{fecha}" required> <span
+									th:field="*{fecha}" required
+									min="[[${#dates.format(#dates.createNow(), 'yyyy-MM-dd\'T\'HH:mm')}]]"> <span
 									class="form-bar"></span>
 							</div>
 
@@ -53,18 +54,20 @@
 								class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
 								<label class="float-label">Fecha del paseo</label> <input
 									type="datetime-local" name="fecharealinicio"
+									id="fechapaseo"
 									class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
-									th:field="*{fecharealinicio}" required> <span
+									th:field="*{fecharealinicio}" required									
+        							onchange="handleDateChange(this)"> <span
 									class="form-bar"></span>
-							</div>
+							</div>							
+							
 							<h2	class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
 							<label class="block mt-4 text-sm"> <span class="text-gray-700 dark:text-gray-400"> Persona Paseadora </span> 
 							<select id="personaSelect"
 									th:field="*{idpersonapasedor.id}" required
 								class="readonly-select block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
 									<option value="0" selected>Seleccione una persona</option>
-									<option th:each="persona : ${persona}"
-										th:text="${persona.nombres}" th:value="${persona.id}" ></option>
+									<option th:each="persona : ${persona}"	th:text="${persona.nombres}" th:value="${persona.id}" ></option>
 
 							</select>
 							</label>
@@ -107,41 +110,20 @@
 							</label> 
 							<label id="resultadoObservacion" class="block mt-4 text-sm text-gray-700 dark:text-gray-400 "></label>
 
-							<script>
-								function mostrarObservacionesLabel() {
-									  var select = document.getElementById("opcionesTarifa");
-									  var label = document.getElementById("resultadoObservacion");
-									  var selectedOption = select.options[select.selectedIndex];
-									  // Obtener el valor seleccionado
-									  var seleccion = selectedOption.getAttribute("data-observacion");
-									
-									  if (!seleccion){
-										  
-										  label.textContent = "" ;
-										  
-									  }else{
-										  
-										  label.textContent = "Observación de tarifa: " + seleccion;
-									  } 
-									  
-									}
-							</script>
 							<h2
 								class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
 
 							<label class="block mt-4 text-sm"> <span
 								class="text-gray-700 dark:text-gray-400">Estado </span> <select
 								id="estadoSelect" th:field="*{estado}" required
-								class=" readonly-select block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
+								class="readonly-select block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-multiselect focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
 
 									<option th:text="PENDIENTE" th:value="PENDIENTE"></option>
 									<option th:text="APROBADO" th:value="APROBADO"></option>
+									<option th:text="PASEO_FINALIZADO" th:value="PASEO_FINALIZADO"></option>
 									<option th:text="FINALIZADO" th:value="FINALIZADO"></option>
 
 							</select>
-
-
-
 							</label>
 
 							<h2
@@ -168,11 +150,10 @@
 						});
 						
 						document.addEventListener('DOMContentLoaded', function() {
-					        var now = new Date();
-					        // Obtener la zona horaria local
-					        var timezoneOffset = now.getTimezoneOffset() * 60000; // Offset en milisegundos
+					        var now = new Date();					        
+					        var timezoneOffset = now.getTimezoneOffset() * 60000; 
 					        var localDate = new Date(now.getTime() - timezoneOffset);
-					        var formattedDateTime = localDate.toISOString().slice(0, 16); // yyyy-MM-ddTHH:mm
+					        var formattedDateTime = localDate.toISOString().slice(0, 16); 
 					        document.querySelector('input[type="datetime-local"]').value = formattedDateTime;
 					    });
 					</script>
@@ -182,7 +163,7 @@
 
 						async function initMap12() {
 							var personId = '[[${session.loggedInUser.id}]]';
-							const apiURL = 'https://fundacion-arnuv.onrender.com/paseos/listar/'+personId.trim();
+							const apiURL = 'http://127.0.0.1:8087/paseos/listar/'+personId.trim();
 							try {
 								const response = await fetch(apiURL);
 								if (!response.ok) {
@@ -196,7 +177,6 @@
 																
 								const listaUbicacionesDetalle =textoJSON.ubicacionDetalleResponse;	
 								const markers = [];
-								console.log("aqui javi "),
 								console.log(listaUbicacionesDetalle.length);
 								if (listaUbicacionesDetalle.length===0){
 									alert("!! No tienes paseadores cerca a tu ubicación !!\n Se procede a mostrar tu ubicación");
