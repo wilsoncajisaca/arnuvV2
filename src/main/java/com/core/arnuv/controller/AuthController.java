@@ -122,9 +122,7 @@ public class AuthController {
             model.addAttribute("error", e.getMessage());
             return "landing/usuario-crear-cliente";
         }
-    }   
-
-
+    }
 
     /*-----------------------CREAR NUEVO CLIENTE ------------------------*/
     @GetMapping("/logout")
@@ -297,7 +295,7 @@ public class AuthController {
         String htmlContent = new String(parametroService.getParametro(KEY_PLANTILLA_MAIL).getArchivos(), StandardCharsets.UTF_8);
         String mensajeDinamico = "BIENVENIDO A LA FUNDACION ARNUV! <br> CAMBIA TU CONTRASEÑA EN EL SIGUIENTE ENLACE: <br>"+urlRecuperacion;
         htmlContent = htmlContent.replace("{{mensajeBienvenida}}", "<p style=\"font-size: 14px; line-height: 140%; text-align: center;\"><span style=\"font-family: Lato, sans-serif; font-size: 16px; line-height: 22.4px;\">" + mensajeDinamico + "</span></p>");
-        emailSender.sendEmail(email, "RESTABLECER CONTRASEÑA", htmlContent);
+        emailSender.sendEmailRemitentePersonalizado(email, "RESTABLECER CONTRASEÑA", htmlContent);
     }
 
     private String encriptarContrasena(String contrasena) {

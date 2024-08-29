@@ -13,7 +13,6 @@ import java.util.Properties;
 @RequiredArgsConstructor
 public class MailConfig {
     private final IParametroService serviceParam;
-
     @Bean
     public JavaMailSender javaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
