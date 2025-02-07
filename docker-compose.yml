@@ -14,11 +14,17 @@ services:
     command: -p 5432
     volumes:
       - ./init-schema.sql:/docker-entrypoint-initdb.d/init-schema.sql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d arnuv-db" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   arnuv-service:
     container_name: arnuv-service
     depends_on:
-      - db-postgres
+      db-postgres:
+        condition: service_healthy
     image: arnuv-service:1.0.0
     environment:
       DB_HOST: db-arnuv

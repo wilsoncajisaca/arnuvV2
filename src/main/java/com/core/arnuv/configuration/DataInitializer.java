@@ -33,9 +33,15 @@ public class DataInitializer {
     @EventListener(ApplicationReadyEvent.class)
     public void initMenu() {
         try {
-            if(!CollectionUtils.isEmpty(rolRepository.findAll())) return;
+            if(!CollectionUtils.isEmpty(rolRepository.findAll())){
+                log.info("Ya existen roles en la base de datos.");
+                return;
+            }
 
-            if(Objects.nonNull(personaDetalleRepository.buscarPorIdentificacion("0105022248"))) return;
+            if(Objects.nonNull(personaDetalleRepository.buscarPorIdentificacion("0105022248"))){
+                log.info("Ya existen usuarios en la base de datos.");
+                return;
+            }
 
             String sql = new String(Files.readAllBytes(Paths.get(new ClassPathResource("schema.sql").getURI())));
             jdbcTemplate.execute(sql);
