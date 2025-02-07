@@ -1,3 +1,15 @@
+INSERT INTO public.personadetalle (apellidos, celular, email, identificacion, nombres)
+VALUES('admin', '0967325098', 'admin@gmail.com','0105022248', 'admin');
+
+INSERT INTO public.usuariodetalle (estado, "password", username, idpersona)
+VALUES(1, '$2a$10$24gd1zfug.iQ5Z7Tv6tSduXt9iZCc5V2LFgJn0jbFriseX0dpnpiS', 'admin', 1);
+
+INSERT INTO public.rol (activo, nombre, idpolitica)
+VALUES(NULL, 'ADMIN', NULL);
+
+INSERT INTO public.usuariorol (idrol, idusuario)
+VALUES(1, 1);
+
 --INGRESAR LOS MENUS REALIZADOS HASTA EL MOMENTO.
 INSERT INTO public.menu_item
 (id, icono, nombre, orden, url, parent_menu_item_id)
@@ -29,13 +41,16 @@ VALUES(5, 'fa fa-rocket', 'Paseos', '5', '/paseo/listar', NULL);
 
 --INGRESO DE LOS ROLES
 INSERT INTO public.rol
-(idrol, activo, nombre, idpolitica) VALUES(2, 1, 'ROLE_CLIENTE', NULL);
+(idrol, activo, nombre, idpolitica)
+VALUES(2, 1, 'ROLE_CLIENTE', NULL);
 
 INSERT INTO public.rol
-(idrol, activo, nombre, idpolitica) VALUES(3, 1, 'ROLE_PASEADOR', NULL);
+(idrol, activo, nombre, idpolitica)
+VALUES(3, 1, 'ROLE_PASEADOR', NULL);
 
 INSERT INTO public.rol
-(idrol, activo, nombre, idpolitica) VALUES(1, 1, 'ROLE_ADMIN', NULL);
+(idrol, activo, nombre, idpolitica)
+VALUES(1, 1, 'ROLE_ADMIN', NULL);
 
 --ASIGNACION DE UN MENU A UN ROL DE USUARIO
 INSERT INTO public.menu_item_role

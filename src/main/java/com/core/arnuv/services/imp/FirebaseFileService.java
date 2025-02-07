@@ -60,6 +60,6 @@ public class FirebaseFileService {
     }
 
     private String generateFileName(String extensionFile) {
-        return UUID.randomUUID().toString() + "." + extensionFile;
+        return UUID.randomUUID() + "." + extensionFile;
     }
 }

@@ -15,5 +15,5 @@ public interface IRolRepository extends JpaRepository<Rol, Integer> {
 	@Query("Select r from Rol r where r.activo= ?1")
 	List<Rol> buscarPorEstado(Boolean estado);
 	
-	public Rol findByNombre(String nombre); 
+	Rol findByNombre(String nombre);
 }
