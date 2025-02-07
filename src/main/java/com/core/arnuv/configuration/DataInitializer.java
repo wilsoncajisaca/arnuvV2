@@ -33,16 +33,14 @@ public class DataInitializer {
     @EventListener(ApplicationReadyEvent.class)
     public void initMenu() {
         try {
-            List<Rol> roles = rolRepository.findAll();
-            if(!CollectionUtils.isEmpty(roles)) return;
+            if(!CollectionUtils.isEmpty(rolRepository.findAll())) return;
 
-            Personadetalle personaEnt = personaDetalleRepository.buscarPorIdentificacion("0105022248");
-            if(Objects.nonNull(personaEnt)) return;
+            if(Objects.nonNull(personaDetalleRepository.buscarPorIdentificacion("0105022248"))) return;
 
             String sql = new String(Files.readAllBytes(Paths.get(new ClassPathResource("schema.sql").getURI())));
             jdbcTemplate.execute(sql);
             this.init();
-            System.out.println("✅Script SQL ejecutado correctamente después de que la aplicación esté lista.");
+            System.out.println("✅Script SQL ejecutado correctamente.");
         } catch (Exception e) {
             e.printStackTrace();
         }
