@@ -3,7 +3,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{content-page/plantilla}">
 <head>
-<script	th:src="@{${linkMapaGoogle.valorText}}"></script>
+<script	th:src="@{${linkMapaGoogle} ?: 'https://maps.googleapis.com/maps/api/js?key='}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
 #map {
@@ -124,4 +124,7 @@
 </div>
 
 </body>
+<script th:if="${error}">
+    alert([[${error}]]);
+</script>
 </html>

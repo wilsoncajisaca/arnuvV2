@@ -3,16 +3,12 @@ package com.core.arnuv.services.imp;
 import com.core.arnuv.model.Parametros;
 import com.core.arnuv.repository.IParametroRepository;
 import com.core.arnuv.service.IParametroService;
-
+import com.core.arnuv.utils.ArnuvNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Optional;
-
-import org.apache.logging.log4j.util.Strings;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
@@ -23,12 +19,8 @@ public class ParametroService implements IParametroService {
 
     @Override
     public Parametros getParametro(String code) {
-		Optional<Parametros> parametro = repo.findByCodigoAndEstado(code, true);
-		if(parametro.isPresent()){
-			return parametro.get();
-		}else {
-			return null;
-		}
+		return repo.findByCodigoAndEstado(code, Boolean.TRUE)
+				.orElseThrow(() -> new ArnuvNotFoundException("Parametro para " + code + " no se encontro."));
     }
 
     @Override

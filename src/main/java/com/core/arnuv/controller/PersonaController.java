@@ -49,8 +49,6 @@ public class PersonaController {
 	private final IUsuarioDetalleService usuarioDetalleService;
 	private final IUsuarioRolService usuarioRolService;
 	private final EmailSender emailSender;
-
-	
 	
 	@GetMapping("listar")
 	public String personListar(Model model) {		
@@ -62,9 +60,13 @@ public class PersonaController {
 	
 	@GetMapping("crear")
 	public String personCreate(Model model) {
-		Parametros linkMapaGoogle = parametroService.getParametro(KEY_LINK_MAPA_GOOGLE);
 		model.addAttribute("nuevo", new PersonaDetalleRequest());
-		model.addAttribute("linkMapaGoogle", linkMapaGoogle);		
+		try {
+			Parametros linkMapaGoogle = parametroService.getParametro(KEY_LINK_MAPA_GOOGLE);
+			model.addAttribute("linkMapaGoogle", linkMapaGoogle.getValorText());
+		}catch (ArnuvNotFoundException e) {
+			model.addAttribute("error", e.getMessage());
+		}
 		return "content-page/persona-crear";
 	}
 
