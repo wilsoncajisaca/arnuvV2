@@ -38,7 +38,7 @@ public class AutenticacionRestController {
     @Autowired
     private IOpcionesPermisoService servicioOpciones;
 
-    //@Autowired
+    @Autowired
     private JwtServiceImpl serviceJwt;
 
     @Autowired
